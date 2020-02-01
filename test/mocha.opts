@@ -1,0 +1,5 @@
+--require @babel/register
+--require test/provider/chai.provider.js
+--require test/provider/sinon.provider.js
+--reporter spec
+--recursive test
