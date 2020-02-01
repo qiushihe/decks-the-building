@@ -4,8 +4,8 @@
   "description": "Decks the Building",
   "main": "src/index.jsx",
   "scripts": {
-    "dev": "./node_modules/.bin/webpack-dev-server --progress --hot --config ./webpack.config.dev.babel.js",
-    "build": "./node_modules/.bin/webpack --progress --config ./webpack.config.build.babel.js",
+    "dev": "webpack-dev-server --progress --hot --config ./webpack.config.dev.babel.js",
+    "build": "webpack --progress --config ./webpack.config.build.babel.js",
     "eslint": "eslint --ext .js --ext .jsx ./src ./test",
     "eslint-fix": "eslint --fix --ext .js --ext .jsx ./src ./test",
     "test-mocha": "cross-env NODE_ENV=test mocha",
