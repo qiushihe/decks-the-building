@@ -1,3 +1,6 @@
 import thunkMiddleware from "redux-thunk";
 
-export default () => [thunkMiddleware];
+import laneMiddleware from "./lane";
+import stackMiddleware from "./stack";
+
+export default () => [thunkMiddleware, ...laneMiddleware, ...stackMiddleware];

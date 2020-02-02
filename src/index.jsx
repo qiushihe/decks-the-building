@@ -4,6 +4,7 @@ import flowRight from "lodash/fp/flowRight";
 
 import ReduxStoreProvider from "/src/provider/redux-store.provider";
 import createStore from "/src/store/create";
+import Application from "./component/application";
 
 const store = createStore({}, { history });
 
@@ -15,7 +16,7 @@ const withProviders = flowRight([withProvider(ReduxStoreProvider, { store })]);
 
 class AppRoot extends React.PureComponent {
   render() {
-    return React.Children.toArray([withProviders(<h1>It Worked!</h1>)]);
+    return React.Children.toArray([withProviders(<Application />)]);
   }
 }
 

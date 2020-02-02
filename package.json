@@ -4,10 +4,9 @@
   "description": "Decks the Building",
   "main": "src/index.jsx",
   "scripts": {
-    "dev": "webpack-dev-server --progress --hot --config ./webpack.config.dev.babel.js",
-    "build": "webpack --progress --config ./webpack.config.build.babel.js",
-    "eslint": "eslint --ext .js --ext .jsx ./src ./test",
-    "eslint-fix": "eslint --fix --ext .js --ext .jsx ./src ./test",
+    "dev": "npm run eslint && webpack-dev-server --progress --hot --config ./webpack.config.dev.babel.js",
+    "build": "npm run eslint && webpack --progress --config ./webpack.config.build.babel.js",
+    "eslint": "eslint --fix --ext .js --ext .jsx ./src ./test",
     "test-mocha": "cross-env NODE_ENV=test mocha",
     "test-cov": "cross-env NODE_ENV=test nyc npm run test-mocha",
     "test": "npm run eslint && npm run test-cov"
