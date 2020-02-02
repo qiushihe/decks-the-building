@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+import Lanes from "/src/component/lanes";
+
 class Application extends React.PureComponent {
   componentDidMount() {
     const { onMount } = this.props;
@@ -8,7 +10,11 @@ class Application extends React.PureComponent {
   }
 
   render() {
-    return <h1>Application Yo!</h1>;
+    return (
+      <div>
+        <Lanes />
+      </div>
+    );
   }
 }
 

@@ -6,7 +6,8 @@ export default (state = {}, { id, laneId, label } = {}) => {
       [id]: {
         id,
         laneId,
-        label
+        label,
+        cardIds: []
       }
     }
   };

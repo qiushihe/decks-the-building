@@ -28,6 +28,7 @@
   "dependencies": {
     "bluebird": "^3.5.5",
     "flowtip-react-dom": "^5.2.1",
+    "js-base64": "^2.5.1",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
