@@ -8,7 +8,16 @@ export const createPromisedAction = (type, payloadAttrNames, dispatchFn) => {
   return payload => (dispatch, getState) =>
     Promise.resolve().then(() =>
       dispatchFn(
-        () => dispatch(plainAction(payload)),
+        (morePayload = {}) => {
+          const action = plainAction(payload);
+          return dispatch({
+            ...action,
+            payload: {
+              ...action.payload,
+              ...morePayload
+            }
+          });
+        },
         payload,
         dispatch,
         getState

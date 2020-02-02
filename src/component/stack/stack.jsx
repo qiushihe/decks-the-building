@@ -6,6 +6,8 @@ import map from "lodash/fp/map";
 
 import Card from "/src/component/card";
 
+const uncappedMap = map.convert({ cap: false });
+
 const Base = styled.div``;
 
 class Stack extends React.PureComponent {
@@ -15,7 +17,9 @@ class Stack extends React.PureComponent {
       <Base>
         <h1>Stack: {label}</h1>
         <Container shouldAcceptDrop={() => true}>
-          {map(cardId => <Card key={cardId} cardId={cardId} />)(cardIds)}
+          {uncappedMap((cardId, index) => (
+            <Card key={`${index}-${cardId}`} cardId={cardId} />
+          ))(cardIds)}
         </Container>
       </Base>
     );

@@ -35,7 +35,7 @@ export default {
     new CleanWebpackPlugin(),
 
     new DefinePlugin({
-      "process.env.DUMMY_ENV": JSON.stringify(process.env.DUMMY_ENV)
+      "process.env.SCRYFALL_API_ORIGIN": JSON.stringify(process.env.SCRYFALL_API_ORIGIN)
     }),
 
     new HtmlWebpackPlugin({

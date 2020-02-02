@@ -6,6 +6,8 @@ import values from "lodash/fp/values";
 import isEmpty from "lodash/fp/isEmpty";
 import negate from "lodash/fp/negate";
 
+import { fromProps } from "/src/util/selector.util";
+
 import { lane as laneState } from "./root.selector";
 
 export const hasLanes = createSelector(
@@ -19,7 +21,7 @@ export const allLaneIds = createSelector(
 );
 
 export const landById = createSelector(
-  (_, { laneId }) => laneId,
+  fromProps(get("laneId")),
   laneState,
   (laneId, state) => flow([get("allLanes"), get(laneId)])(state)
 );

@@ -4,7 +4,7 @@
   "description": "Decks the Building",
   "main": "src/index.jsx",
   "scripts": {
-    "dev": "npm run eslint && webpack-dev-server --progress --hot --config ./webpack.config.dev.babel.js",
+    "dev": "webpack-dev-server --progress --hot --config ./webpack.config.dev.babel.js",
     "build": "npm run eslint && webpack --progress --config ./webpack.config.build.babel.js",
     "eslint": "eslint --fix --ext .js --ext .jsx ./src ./test",
     "test-mocha": "cross-env NODE_ENV=test mocha",
@@ -26,9 +26,12 @@
   },
   "homepage": "https://github.com/qiushihe/decks-the-building",
   "dependencies": {
+    "async-mutex": "^0.1.4",
     "bluebird": "^3.5.5",
     "flowtip-react-dom": "^5.2.1",
+    "isomorphic-fetch": "^2.2.1",
     "js-base64": "^2.5.1",
+    "localforage": "^1.7.3",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
