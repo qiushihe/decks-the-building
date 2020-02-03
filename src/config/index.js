@@ -1,7 +1,7 @@
 export const SCRYFALL_API_ORIGIN =
   process.env.SCRYFALL_API_ORIGIN || "https://api.scryfall.com";
 
-export const CARD_DEFAULT_SCALE = 3.5;
+export const CARD_DEFAULT_SCALE = 4;
 export const CARD_WIDTH = 63;
 export const CARD_HEIGHT = 88;
 export const CARD_HEIGHT_COLLAPSED_SHRINK_FACTOR = 17 / 154;
