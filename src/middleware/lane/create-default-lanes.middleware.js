@@ -6,7 +6,7 @@ import cond from "lodash/fp/cond";
 import identity from "lodash/fp/identity";
 import negate from "lodash/fp/negate";
 
-import { BOOT } from "/src/action/app.action";
+import { READY } from "/src/action/app.action";
 import { create as createLane } from "/src/action/lane.action";
 import { hasLanes } from "/src/selector/lane.selector";
 
@@ -14,7 +14,7 @@ export default ({ getState, dispatch }) => next => action => {
   const { type: actionType } = action;
 
   return Promise.resolve(next(action)).then(() => {
-    if (actionType === BOOT) {
+    if (actionType === READY) {
       const newState = getState();
 
       return flow([

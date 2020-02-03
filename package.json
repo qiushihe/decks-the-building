@@ -27,6 +27,7 @@
   "homepage": "https://github.com/qiushihe/decks-the-building",
   "dependencies": {
     "async-mutex": "^0.1.4",
+    "aws-sdk": "^2.610.0",
     "bluebird": "^3.5.5",
     "flowtip-react-dom": "^5.2.1",
     "isomorphic-fetch": "^2.2.1",

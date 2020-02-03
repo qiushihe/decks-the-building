@@ -5,6 +5,9 @@ import map from "lodash/fp/map";
 import flow from "lodash/fp/flow";
 import negate from "lodash/fp/negate";
 import isEmpty from "lodash/fp/isEmpty";
+import concat from "lodash/fp/concat";
+import compact from "lodash/fp/compact";
+import uniq from "lodash/fp/uniq";
 
 LocalForage.config({
   name: "Decks the Building",
@@ -26,7 +29,10 @@ export const record = (model, id, { storageEngine } = {}) => {
       return engine
         .getItem(`${model}:${id}::__attrs`)
         .then(attrs =>
-          engine.setItem(`${model}:${id}::__attrs`, [...(attrs || []), name])
+          engine.setItem(
+            `${model}:${id}::__attrs`,
+            flow([concat([name]), compact, uniq])(attrs)
+          )
         )
         .then(() => engine.setItem(`${model}:${id}::${name}`, value))
         .then(() => engine.setItem(`${model}:${id}`, id));
