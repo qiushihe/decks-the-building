@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Container } from "react-smooth-dnd";
+import { Container, Draggable } from "react-smooth-dnd";
 import flow from "lodash/fp/flow";
 import map from "lodash/fp/map";
 import get from "lodash/fp/get";
@@ -17,18 +17,12 @@ const uncappedMap = map.convert({ cap: false });
 
 const Base = styled(props => {
   const componentProps = omit(["scale"])(props);
-  return <div {...componentProps} />;
+  return <Draggable {...componentProps} />;
 })`
   min-width: ${flow([get("scale"), multiply(CARD_WIDTH)])}px;
 `;
 
-const StyledCard = styled(Card)`
-  margin-bottom: 4px;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-`;
+const StyledCard = styled(Card)``;
 
 const StackIcon = styled(Layers)`
   width: 16px;
@@ -43,7 +37,10 @@ class Stack extends React.PureComponent {
         <div>
           <StackIcon /> {label}
         </div>
-        <Container shouldAcceptDrop={() => true}>
+        <Container
+          groupName="card"
+          shouldAcceptDrop={({ groupName }) => groupName === "card"}
+        >
           {uncappedMap((cardId, index) => (
             <StyledCard
               key={`${index}-${cardId}`}

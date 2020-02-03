@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Container } from "react-smooth-dnd";
 import map from "lodash/fp/map";
 
 import Lane from "/src/component/lane";
@@ -9,7 +10,12 @@ class Lanes extends React.PureComponent {
     const { laneIds } = this.props;
 
     return (
-      <div>{map(laneId => <Lane key={laneId} laneId={laneId} />)(laneIds)}</div>
+      <Container
+        groupName="lane"
+        shouldAcceptDrop={({ groupName }) => groupName === "lane"}
+      >
+        {map(laneId => <Lane key={laneId} laneId={laneId} />)(laneIds)}
+      </Container>
     );
   }
 }
