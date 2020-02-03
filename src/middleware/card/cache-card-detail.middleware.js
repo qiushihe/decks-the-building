@@ -1,6 +1,9 @@
 import Promise from "bluebird";
 
-import { UPDATE } from "/src/action/card.action";
+import {
+  RESTORE_FROM_SCRYFALL,
+  RESTORE_FROM_S3
+} from "/src/action/card.action";
 import { withProps } from "/src/util/selector.util";
 import { record } from "/src/storage";
 
@@ -18,7 +21,10 @@ export default ({ getState }) => next => action => {
   const { type: actionType } = action;
 
   return Promise.resolve(next(action)).then(() => {
-    if (actionType === UPDATE) {
+    if (
+      actionType === RESTORE_FROM_SCRYFALL ||
+      actionType === RESTORE_FROM_S3
+    ) {
       const newState = getState();
 
       const {

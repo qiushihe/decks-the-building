@@ -7,7 +7,7 @@ import uniq from "lodash/fp/uniq";
 import compact from "lodash/fp/compact";
 
 import { READY } from "/src/action/app.action";
-import { ADD, update, restore } from "/src/action/card.action";
+import { ADD, restoreFromS3, restoreFromCache } from "/src/action/card.action";
 import { login } from "/src/selector/s3.selector";
 import { cardName } from "/src/selector/card.selector";
 import { withProps } from "/src/util/selector.util";
@@ -30,7 +30,7 @@ export default ({ getState, dispatch }) => {
       return getS3Client({ login: s3Login })
         .downloadJson(`cards/${cardId}.json`)
         .then(cardJson => {
-          return dispatch(update({ id: cardId, ...cardJson }));
+          return dispatch(restoreFromS3({ id: cardId, ...cardJson }));
         })
         .catch(() => getFetchCardQueue({ dispatch }).fetch({ cardId, name }));
     } else {
@@ -80,7 +80,9 @@ export default ({ getState, dispatch }) => {
                     Promise.all
                   ])
                 )
-                .then(() => dispatch(restore({ id: cardId, ...details })));
+                .then(() =>
+                  dispatch(restoreFromCache({ id: cardId, ...details }))
+                );
             } else {
               if (appReady) {
                 return fetchCardDetail({ cardId });

@@ -2,7 +2,7 @@ import { Mutex } from "async-mutex";
 
 import { SCRYFALL_API_ORIGIN } from "/src/config";
 import { normalizeCardDetail } from "/src/util/scryfall.util";
-import { update } from "/src/action/card.action";
+import { restoreFromScryfall } from "/src/action/card.action";
 
 import { get as getRequest } from "./request";
 
@@ -25,14 +25,14 @@ class Queue {
         )
           .then(res => {
             return this.dispatch(
-              update({
+              restoreFromScryfall({
                 id: cardId,
                 ...normalizeCardDetail(res)
               })
             );
           })
           .catch(err => {
-            console.error(err);
+            throw err;
           })
           .finally(() => {
             setTimeout(() => {

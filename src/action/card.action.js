@@ -7,8 +7,9 @@ import { invoke } from "/src/util/function.util";
 import { encode } from "/src/util/base64.util";
 
 export const ADD = "CARD/ADD";
-export const UPDATE = "CARD/UPDATE";
-export const RESTORE = "CARD/RESTORE";
+export const RESTORE_FROM_CACHE = "CARD/RESTORE_FROM_CACHE";
+export const RESTORE_FROM_S3 = "CARD/RESTORE_FROM_S3";
+export const RESTORE_FROM_SCRYFALL = "CARD/RESTORE_FROM_SCRYFALL";
 
 export const add = createPromisedAction(ADD, ["name"], (dispatchMe, { name }) =>
   dispatchMe({
@@ -26,14 +27,20 @@ const cardDetailAttrNames = [
   "imageUrl"
 ];
 
-export const update = createPromisedAction(
-  UPDATE,
+export const restoreFromCache = createPromisedAction(
+  RESTORE_FROM_CACHE,
   ["id", ...cardDetailAttrNames],
   invoke
 );
 
-export const restore = createPromisedAction(
-  RESTORE,
+export const restoreFromS3 = createPromisedAction(
+  RESTORE_FROM_S3,
+  ["id", ...cardDetailAttrNames],
+  invoke
+);
+
+export const restoreFromScryfall = createPromisedAction(
+  RESTORE_FROM_SCRYFALL,
   ["id", ...cardDetailAttrNames],
   invoke
 );
