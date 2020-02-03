@@ -6,16 +6,80 @@ import omit from "lodash/fp/omit";
 import flow from "lodash/fp/flow";
 import get from "lodash/fp/get";
 import multiply from "lodash/fp/multiply";
+import cond from "lodash/fp/cond";
+import stubTrue from "lodash/fp/stubTrue";
+import constant from "lodash/fp/constant";
+
+import CardMenu from "/src/component/card-menu";
+
+import {
+  CARD_DEFAULT_SCALE,
+  CARD_WIDTH,
+  CARD_HEIGHT,
+  CARD_HEIGHT_COLLAPSED_SHRINK_FACTOR,
+  CARD_IMAGE_COLLAPSED_SHIFT_FACTOR,
+  CARD_MENU_EDGE_OFFSET_FACTOR,
+  CARD_MENU_EXPANDED_TOP_OFFSET_FACTOR,
+  CARD_MENU_ICON_SIZE_FACTOR
+} from "/src/config";
+
+const StyledCardMenu = styled(props => {
+  const componentProps = omit(["scale", "collapsed"])(props);
+  return <CardMenu {...componentProps} />;
+})`
+  position: absolute;
+  top: ${cond([
+    [
+      get("collapsed"),
+      flow([
+        get("scale"),
+        multiply(CARD_HEIGHT),
+        multiply(CARD_MENU_EDGE_OFFSET_FACTOR)
+      ])
+    ],
+    [
+      stubTrue,
+      flow([
+        get("scale"),
+        multiply(CARD_HEIGHT),
+        multiply(CARD_MENU_EXPANDED_TOP_OFFSET_FACTOR)
+      ])
+    ]
+  ])}px;
+  right: ${flow([
+    get("scale"),
+    multiply(CARD_HEIGHT),
+    multiply(CARD_MENU_EDGE_OFFSET_FACTOR)
+  ])}px;
+`;
 
 const Base = styled(props => {
-  const componentProps = omit(["scale"])(props);
+  const componentProps = omit(["scale", "collapsed"])(props);
   return <Draggable {...componentProps} />;
 })`
   border-radius: 10px;
-  width: ${flow([get("scale"), multiply(63)])}px;
-  height: ${flow([get("scale"), multiply(88)])}px;
+  width: ${flow([get("scale"), multiply(CARD_WIDTH)])}px;
+  height: ${cond([
+    [
+      get("collapsed"),
+      flow([
+        get("scale"),
+        multiply(CARD_HEIGHT),
+        multiply(CARD_HEIGHT_COLLAPSED_SHRINK_FACTOR)
+      ])
+    ],
+    [stubTrue, flow([get("scale"), multiply(CARD_HEIGHT)])]
+  ])}px;
   overflow: hidden !important;
   box-shadow: 0px 0px 3px 0px #000000;
+
+  ${StyledCardMenu} {
+    display: none;
+  }
+
+  &:hover ${StyledCardMenu} {
+    display: flex;
+  }
 `;
 
 const CardBase = styled.div`
@@ -25,7 +89,7 @@ const CardBase = styled.div`
 `;
 
 const CardImage = styled(props => {
-  const componentProps = omit(["imageUrl"])(props);
+  const componentProps = omit(["imageUrl", "scale", "collapsed"])(props);
   return <div {...componentProps} />;
 })`
   display: block;
@@ -33,6 +97,18 @@ const CardImage = styled(props => {
   height: 100%;
   background-image: url(${get("imageUrl")});
   background-size: cover;
+  background-position-y: ${cond([
+    [
+      get("collapsed"),
+      flow([
+        get("scale"),
+        multiply(CARD_HEIGHT),
+        multiply(CARD_IMAGE_COLLAPSED_SHIFT_FACTOR),
+        multiply(-1)
+      ])
+    ],
+    [stubTrue, constant(0)]
+  ])}px;
 `;
 
 const CardCount = styled.div`
@@ -58,7 +134,7 @@ const CardCount = styled.div`
     z-index: 2;
   }
 
-  &:before {
+  &::before {
     content: "";
     background-color: #808080;
     width: 200%;
@@ -74,17 +150,38 @@ const CardCount = styled.div`
 
 class Card extends React.PureComponent {
   render() {
-    const { scale, count, name, imageUrl } = this.props;
+    const {
+      className,
+      stackId,
+      cardId,
+      scale,
+      collapsed,
+      count,
+      name,
+      imageUrl
+    } = this.props;
 
     return (
-      <Base scale={scale}>
+      <Base className={className} scale={scale} collapsed={collapsed}>
         <CardBase>
+          <CardImage
+            title={name}
+            imageUrl={imageUrl}
+            scale={scale}
+            collapsed={collapsed}
+          />
           {count > 1 && (
             <CardCount>
               <span>{count}</span>
             </CardCount>
           )}
-          <CardImage title={name} imageUrl={imageUrl} />
+          <StyledCardMenu
+            stackId={stackId}
+            cardId={cardId}
+            scale={scale}
+            collapsed={collapsed}
+            size={scale * CARD_HEIGHT * CARD_MENU_ICON_SIZE_FACTOR}
+          />
         </CardBase>
       </Base>
     );
@@ -92,14 +189,22 @@ class Card extends React.PureComponent {
 }
 
 Card.propTypes = {
+  className: PropTypes.string,
+  stackId: PropTypes.string,
+  cardId: PropTypes.string,
   scale: PropTypes.number,
+  collapsed: PropTypes.bool,
   count: PropTypes.number,
   name: PropTypes.string,
   imageUrl: PropTypes.string
 };
 
 Card.defaultProps = {
-  scale: 3.5,
+  className: "",
+  stackId: "",
+  cardId: "",
+  scale: CARD_DEFAULT_SCALE,
+  collapsed: false,
   count: 1,
   name: "Card",
   imageUrl: ""

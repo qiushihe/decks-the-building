@@ -35,7 +35,13 @@ export default (state = {}, { id, cardId } = {}) => {
                 []
               )
             ],
-            [stubTrue, flow([concat([{ id: cardId, count: 1 }]), compact])]
+            [
+              stubTrue,
+              flow([
+                concat([{ id: cardId, count: 1, collapsed: true }]),
+                compact
+              ])
+            ]
           ])
         ])(state)
       }

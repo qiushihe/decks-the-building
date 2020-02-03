@@ -10,13 +10,27 @@ const Base = styled.div`
   flex-direction: row;
 `;
 
+const StyledStack = styled(Stack)`
+  margin: 0 6px;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+`;
+
 class Stacks extends React.PureComponent {
   render() {
     const { stackIds } = this.props;
 
     return (
       <Base>
-        {map(stackId => <Stack key={stackId} stackId={stackId} />)(stackIds)}
+        {map(stackId => <StyledStack key={stackId} stackId={stackId} />)(
+          stackIds
+        )}
       </Base>
     );
   }

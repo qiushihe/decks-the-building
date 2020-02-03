@@ -29,9 +29,18 @@ export const stackCardIds = createSelector(
   flow([get("cards"), map(get("id"))])
 );
 
-export const stackCardCountByCardId = createSelector(
+export const stackCardByCardId = createSelector(
   fromProps(get("cardId")),
   stackById,
-  (cardId, stack) =>
-    flow([get("cards"), find({ id: cardId }), get("count")])(stack)
+  (cardId, stack) => flow([get("cards"), find({ id: cardId })])(stack)
+);
+
+export const stackCardCountByCardId = createSelector(
+  stackCardByCardId,
+  get("count")
+);
+
+export const stackCardCollapsedCardId = createSelector(
+  stackCardByCardId,
+  get("collapsed")
 );

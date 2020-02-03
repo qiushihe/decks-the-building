@@ -1,6 +1,6 @@
 import { Mutex } from "async-mutex";
 
-import { ScryfallApiOrigin } from "/src/config";
+import { SCRYFALL_API_ORIGIN } from "/src/config";
 import { normalizeCardDetail } from "/src/util/scryfall.util";
 import { update } from "/src/action/card.action";
 
@@ -21,7 +21,7 @@ class Queue {
 
       if (!this.fetchedCards[nameParam]) {
         this.fetchedCards[nameParam] = getRequest(
-          `${ScryfallApiOrigin}/cards/named?exact=${nameParam}`
+          `${SCRYFALL_API_ORIGIN}/cards/named?exact=${nameParam}`
         )
           .then(res => {
             return this.dispatch(
