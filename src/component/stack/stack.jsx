@@ -12,13 +12,17 @@ const Base = styled.div``;
 
 class Stack extends React.PureComponent {
   render() {
-    const { label, cardIds } = this.props;
+    const { stackId, label, cardIds } = this.props;
     return (
       <Base>
         <h1>Stack: {label}</h1>
         <Container shouldAcceptDrop={() => true}>
           {uncappedMap((cardId, index) => (
-            <Card key={`${index}-${cardId}`} cardId={cardId} />
+            <Card
+              key={`${index}-${cardId}`}
+              stackId={stackId}
+              cardId={cardId}
+            />
           ))(cardIds)}
         </Container>
       </Base>
@@ -27,11 +31,13 @@ class Stack extends React.PureComponent {
 }
 
 Stack.propTypes = {
+  stackId: PropTypes.string,
   label: PropTypes.string,
   cardIds: PropTypes.array
 };
 
 Stack.defaultProps = {
+  stackId: "",
   label: "Stack",
   cardIds: []
 };

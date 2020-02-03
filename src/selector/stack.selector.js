@@ -1,6 +1,7 @@
 import { createSelector } from "reselect";
 import flow from "lodash/fp/flow";
 import get from "lodash/fp/get";
+import find from "lodash/fp/find";
 import filter from "lodash/fp/filter";
 import map from "lodash/fp/map";
 
@@ -23,4 +24,14 @@ export const stackById = createSelector(
 
 export const stackLabel = createSelector(stackById, get("label"));
 
-export const stackCardIds = createSelector(stackById, get("cardIds"));
+export const stackCardIds = createSelector(
+  stackById,
+  flow([get("cards"), map(get("id"))])
+);
+
+export const stackCardCountByCardId = createSelector(
+  fromProps(get("cardId")),
+  stackById,
+  (cardId, stack) =>
+    flow([get("cards"), find({ id: cardId }), get("count")])(stack)
+);

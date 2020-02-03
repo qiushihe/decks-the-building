@@ -1,7 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { createGlobalStyle } from "styled-components";
 
 import { Normalize as NormalizeStyles } from "styled-normalize";
+
+const GlobalStyle = createGlobalStyle`
+  html, body {
+    font-family: Arial, sans-serif;
+  }
+`;
 
 export class NormalizedStyleProvider extends React.PureComponent {
   render() {
@@ -10,6 +17,7 @@ export class NormalizedStyleProvider extends React.PureComponent {
     return (
       <React.Fragment>
         <NormalizeStyles />
+        <GlobalStyle />
         {children}
       </React.Fragment>
     );
