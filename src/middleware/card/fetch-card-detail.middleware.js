@@ -13,7 +13,7 @@ import { cardName } from "/src/selector/card.selector";
 import { withProps } from "/src/util/selector.util";
 import { getFetchCardQueue } from "/src/api/scryfall.api";
 import { getS3Client } from "/src/api/s3.api";
-import { record } from "/src/storage";
+import { getRecord } from "/src/api/localforge.api";
 
 import { cardHasDetail } from "/src/selector/card.selector";
 
@@ -62,7 +62,7 @@ export default ({ getState, dispatch }) => {
 
         const newState = getState();
         const hasDetail = withProps({ cardId })(cardHasDetail)(newState);
-        const cardRecord = record("Card", cardId);
+        const cardRecord = getRecord("Card", cardId);
 
         if (!hasDetail) {
           return cardRecord.exists().then(exists => {

@@ -14,7 +14,7 @@ LocalForage.config({
   driver: [LocalForage.INDEXEDDB, LocalForage.WEBSQL, LocalForage.LOCALSTORAGE]
 });
 
-export const record = (model, id, { storageEngine } = {}) => {
+export const getRecord = (model, id, { storageEngine } = {}) => {
   const engine = storageEngine || LocalForage;
 
   return {

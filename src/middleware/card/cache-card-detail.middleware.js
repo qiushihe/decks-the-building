@@ -5,7 +5,7 @@ import {
   RESTORE_FROM_S3
 } from "/src/action/card.action";
 import { withProps } from "/src/util/selector.util";
-import { record } from "/src/storage";
+import { getRecord } from "/src/api/localforge.api";
 
 import {
   cardName,
@@ -32,7 +32,7 @@ export default ({ getState }) => next => action => {
       } = action;
 
       const withCardId = withProps({ cardId });
-      const cardRecord = record("Card", cardId);
+      const cardRecord = getRecord("Card", cardId);
 
       return Promise.resolve()
         .then(() => cardRecord.setAttr("name", withCardId(cardName)(newState)))
