@@ -2,20 +2,18 @@ import { Mutex } from "async-mutex";
 
 import { SCRYFALL_API_ORIGIN } from "/src/config";
 import { normalizeCardDetail } from "/src/util/scryfall.util";
-import { restoreFromScryfall } from "/src/action/card.action";
 
 import { get as getRequest } from "./request";
 
 const FETCH_DELAY = 1000;
 
-class Queue {
-  constructor({ dispatch }) {
-    this.dispatch = dispatch;
+class ScryfallClient {
+  constructor() {
     this.fetchedCards = {};
     this.mutex = new Mutex();
   }
 
-  fetch({ cardId, name }) {
+  fetch({ name }) {
     return this.mutex.acquire().then(release => {
       const nameParam = encodeURIComponent(name);
 
@@ -24,12 +22,7 @@ class Queue {
           `${SCRYFALL_API_ORIGIN}/cards/named?exact=${nameParam}`
         )
           .then(res => {
-            return this.dispatch(
-              restoreFromScryfall({
-                id: cardId,
-                ...normalizeCardDetail(res)
-              })
-            );
+            return normalizeCardDetail(res);
           })
           .catch(err => {
             throw err;
@@ -46,16 +39,11 @@ class Queue {
   }
 }
 
-export const DEFAULT_FETCH_CARD_QUEUE_NAME = "DEFAULT";
+let ScryfallClientInstance = null;
 
-const fetchCardQueues = {};
-
-export const getFetchCardQueue = ({
-  dispatch,
-  queueName = DEFAULT_FETCH_CARD_QUEUE_NAME
-} = {}) => {
-  if (!fetchCardQueues[queueName]) {
-    fetchCardQueues[queueName] = new Queue({ dispatch });
+export const getScryfallClient = () => {
+  if (ScryfallClientInstance === null) {
+    ScryfallClientInstance = new ScryfallClient();
   }
-  return fetchCardQueues[queueName];
+  return ScryfallClientInstance;
 };

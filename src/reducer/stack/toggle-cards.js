@@ -16,12 +16,12 @@ export default (state = {}, { id, cardIds } = {}) => {
             (result, card) =>
               includes(card.id)(cardIds)
                 ? [
-                  ...result,
-                  {
-                    ...card,
-                    collapsed: !card.collapsed
-                  }
-                ]
+                    ...result,
+                    {
+                      ...card,
+                      collapsed: !card.collapsed
+                    }
+                  ]
                 : [...result, card],
             []
           )

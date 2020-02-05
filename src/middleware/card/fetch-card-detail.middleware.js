@@ -6,14 +6,18 @@ import uniq from "lodash/fp/uniq";
 import compact from "lodash/fp/compact";
 
 import { READY } from "/src/action/app.action";
-import { ADD, restoreFromS3, restoreFromCache } from "/src/action/card.action";
-import { cardName } from "/src/selector/card.selector";
+import { cardName, cardHasDetail } from "/src/selector/card.selector";
 import { withProps } from "/src/util/selector.util";
-import { getFetchCardQueue } from "/src/api/scryfall.api";
+import { getScryfallClient } from "/src/api/scryfall.api";
 import { getS3Client } from "/src/api/s3.api";
 import { getRecord } from "/src/api/localforge.api";
 
-import { cardHasDetail } from "/src/selector/card.selector";
+import {
+  ADD,
+  restoreFromScryfall,
+  restoreFromS3,
+  restoreFromCache
+} from "/src/action/card.action";
 
 export default ({ getState, dispatch }) => {
   let appReady = false;
@@ -23,18 +27,27 @@ export default ({ getState, dispatch }) => {
     const currentState = getState();
     const name = withProps({ cardId })(cardName)(currentState);
 
+    const scryfallClient = getScryfallClient();
     const s3Client = getS3Client();
 
     return s3Client.isLoggedIn().then(loggedIn => {
       if (loggedIn) {
         return s3Client
           .downloadJson(`cards/${cardId}.json`)
-          .then(cardJson => {
-            return dispatch(restoreFromS3({ id: cardId, ...cardJson }));
+          .then(cardDetail => {
+            return dispatch(restoreFromS3({ id: cardId, ...cardDetail }));
           })
-          .catch(() => getFetchCardQueue({ dispatch }).fetch({ cardId, name }));
+          .catch(() =>
+            scryfallClient.fetch({ cardId, name }).then(cardDetail => {
+              return dispatch(
+                restoreFromScryfall({ id: cardId, ...cardDetail })
+              );
+            })
+          );
       } else {
-        return getFetchCardQueue({ dispatch }).fetch({ cardId, name });
+        return scryfallClient.fetch({ cardId, name }).then(cardDetail => {
+          return dispatch(restoreFromScryfall({ id: cardId, ...cardDetail }));
+        });
       }
     });
   };
