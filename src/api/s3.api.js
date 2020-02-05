@@ -36,6 +36,10 @@ class S3Client {
   }
 
   storeCardById(id, data) {
+    if (this.s3 === null) {
+      return Promise.reject(new Error("S3 client not logged in"));
+    }
+
     return new Promise((resolve, reject) => {
       this.s3.upload(
         {
@@ -56,6 +60,10 @@ class S3Client {
   }
 
   fetchCardById(id) {
+    if (this.s3 === null) {
+      return Promise.reject(new Error("S3 client not logged in"));
+    }
+
     return new Promise((resolve, reject) => {
       this.s3.getObject(
         {

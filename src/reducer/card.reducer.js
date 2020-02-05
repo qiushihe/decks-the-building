@@ -1,11 +1,6 @@
 import { handleActions } from "redux-actions";
 
-import {
-  ADD,
-  RESTORE_FROM_CACHE,
-  RESTORE_FROM_S3,
-  RESTORE_FROM_SCRYFALL
-} from "/src/action/card.action";
+import { ADD, RESTORE } from "/src/action/card.action";
 import { withPayload } from "/src/util/reducer.util";
 
 import add from "./card/add";
@@ -18,9 +13,7 @@ const initialState = {
 export default handleActions(
   {
     [ADD]: withPayload(add),
-    [RESTORE_FROM_CACHE]: withPayload(restore),
-    [RESTORE_FROM_S3]: withPayload(restore),
-    [RESTORE_FROM_SCRYFALL]: withPayload(restore)
+    [RESTORE]: withPayload(restore)
   },
   initialState
 );

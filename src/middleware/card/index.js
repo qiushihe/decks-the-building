@@ -1,11 +1,4 @@
 import seedDemoCards from "./seed-demo-cards.middleware";
-import fetchCardDetail from "./fetch-card-detail.middleware";
-import cacheCardDetail from "./cache-card-detail.middleware";
-import persistCardDetail from "./persist-card-detail.middleware";
+import restoreCardDetail from "./restore-card-detail.middleware";
 
-export default [
-  seedDemoCards,
-  fetchCardDetail,
-  cacheCardDetail,
-  persistCardDetail
-];
+export default [seedDemoCards, restoreCardDetail];
