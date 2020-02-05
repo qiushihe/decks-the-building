@@ -15,11 +15,22 @@ import Card from "/src/component/card";
 
 const uncappedMap = map.convert({ cap: false });
 
-const Base = styled(props => {
+const Content = styled(props => {
   const componentProps = omit(["scale"])(props);
-  return <Draggable {...componentProps} />;
+  return <div {...componentProps} />;
 })`
   min-width: ${flow([get("scale"), multiply(CARD_WIDTH)])}px;
+  margin: 0 8px;
+`;
+
+const Base = styled(Draggable)`
+  &:first-child ${Content} {
+    margin-left: 0;
+  }
+
+  &:last-child ${Content} {
+    margin-right: 0;
+  }
 `;
 
 const StyledCard = styled(Card)``;
@@ -29,54 +40,66 @@ const IconStyle = css`
   height: 16px;
 `;
 
-const StackIcon = styled(Layers)`${IconStyle}`;
-const RenameStackIcon = styled(Edit)`${IconStyle}`;
-const AddCardIcon = styled(FilePlus)`${IconStyle}`;
-const DeleteStackIcon = styled(Trash2)`${IconStyle}`;
-const CreateStackIcon = styled(PlusCircle)`${IconStyle}`;
+const StackIcon = styled(Layers)`
+  ${IconStyle}
+`;
+const RenameStackIcon = styled(Edit)`
+  ${IconStyle}
+`;
+const AddCardIcon = styled(FilePlus)`
+  ${IconStyle}
+`;
+const DeleteStackIcon = styled(Trash2)`
+  ${IconStyle}
+`;
+const CreateStackIcon = styled(PlusCircle)`
+  ${IconStyle}
+`;
 
 class Stack extends React.PureComponent {
   render() {
     const { className, scale, stackId, label, cardIds } = this.props;
     return (
       <Base className={className} scale={scale}>
-        <Arrange>
-          <Arrange.Fit>
-            <StackIcon />
-          </Arrange.Fit>
-          <Arrange.Fit>&nbsp;</Arrange.Fit>
-          <Arrange.Fill>{label} </Arrange.Fill>
-          <Arrange.Fit>&nbsp;</Arrange.Fit>
-          <Arrange.Fit>
-            <RenameStackIcon />
-          </Arrange.Fit>
-          <Arrange.Fit>&nbsp;</Arrange.Fit>
-          <Arrange.Fit>
-            <AddCardIcon />
-          </Arrange.Fit>
-          <Arrange.Fit>&nbsp;</Arrange.Fit>
-          <Arrange.Fit>
-            <DeleteStackIcon />
-          </Arrange.Fit>
-          <Arrange.Fit>&nbsp;</Arrange.Fit>
-          <Arrange.Fit>
-            <CreateStackIcon />
-          </Arrange.Fit>
-          <Arrange.Fit>&nbsp;&nbsp;&nbsp;</Arrange.Fit>
-        </Arrange>
-        <Container
-          groupName="card"
-          shouldAcceptDrop={({ groupName }) => groupName === "card"}
-        >
-          {uncappedMap((cardId, index) => (
-            <StyledCard
-              key={`${index}-${cardId}`}
-              stackId={stackId}
-              cardId={cardId}
-              cardIndex={index}
-            />
-          ))(cardIds)}
-        </Container>
+        <Content scale={scale}>
+          <Arrange>
+            <Arrange.Fit>
+              <StackIcon />
+            </Arrange.Fit>
+            <Arrange.Fit>&nbsp;</Arrange.Fit>
+            <Arrange.Fill>{label} </Arrange.Fill>
+            <Arrange.Fit>&nbsp;</Arrange.Fit>
+            <Arrange.Fit>
+              <RenameStackIcon />
+            </Arrange.Fit>
+            <Arrange.Fit>&nbsp;</Arrange.Fit>
+            <Arrange.Fit>
+              <AddCardIcon />
+            </Arrange.Fit>
+            <Arrange.Fit>&nbsp;</Arrange.Fit>
+            <Arrange.Fit>
+              <DeleteStackIcon />
+            </Arrange.Fit>
+            <Arrange.Fit>&nbsp;</Arrange.Fit>
+            <Arrange.Fit>
+              <CreateStackIcon />
+            </Arrange.Fit>
+            <Arrange.Fit>&nbsp;&nbsp;&nbsp;</Arrange.Fit>
+          </Arrange>
+          <Container
+            groupName="card"
+            shouldAcceptDrop={({ groupName }) => groupName === "card"}
+          >
+            {uncappedMap((cardId, index) => (
+              <StyledCard
+                key={`${index}-${cardId}`}
+                stackId={stackId}
+                cardId={cardId}
+                cardIndex={index}
+              />
+            ))(cardIds)}
+          </Container>
+        </Content>
       </Base>
     );
   }

@@ -53,10 +53,11 @@ const StyledCardActions = styled(props => {
   ])}px;
 `;
 
-const Base = styled(props => {
+const Content = styled(props => {
   const componentProps = omit(["scale", "collapsed"])(props);
-  return <Draggable {...componentProps} />;
+  return <div {...componentProps} />;
 })`
+  position: relative;
   border-radius: 10px;
   width: ${flow([get("scale"), multiply(CARD_WIDTH)])}px;
   height: ${cond([
@@ -71,7 +72,6 @@ const Base = styled(props => {
     [stubTrue, flow([get("scale"), multiply(CARD_HEIGHT)])]
   ])}px;
   overflow: hidden !important;
-  box-shadow: 0px 0px 3px 0px #000000;
 
   ${StyledCardActions} {
     display: none;
@@ -82,10 +82,9 @@ const Base = styled(props => {
   }
 `;
 
-const CardBase = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
+const Base = styled(Draggable)`
+  overflow: visible !important;
+  padding: 1px 0;
 `;
 
 const CardImage = styled(props => {
@@ -153,7 +152,6 @@ class Card extends React.PureComponent {
     const {
       className,
       stackId,
-      cardId,
       cardIndex,
       scale,
       collapsed,
@@ -163,8 +161,8 @@ class Card extends React.PureComponent {
     } = this.props;
 
     return (
-      <Base className={className} scale={scale} collapsed={collapsed}>
-        <CardBase>
+      <Base className={className}>
+        <Content scale={scale} collapsed={collapsed}>
           <CardImage
             title={name}
             imageUrl={imageUrl}
@@ -183,7 +181,7 @@ class Card extends React.PureComponent {
             collapsed={collapsed}
             size={scale * CARD_HEIGHT * CARD_MENU_ICON_SIZE_FACTOR}
           />
-        </CardBase>
+        </Content>
       </Base>
     );
   }
@@ -192,7 +190,6 @@ class Card extends React.PureComponent {
 Card.propTypes = {
   className: PropTypes.string,
   stackId: PropTypes.string,
-  cardId: PropTypes.string,
   cardIndex: PropTypes.number,
   scale: PropTypes.number,
   collapsed: PropTypes.bool,
@@ -204,7 +201,6 @@ Card.propTypes = {
 Card.defaultProps = {
   className: "",
   stackId: "",
-  cardId: "",
   cardIndex: 0,
   scale: CARD_DEFAULT_SCALE,
   collapsed: false,

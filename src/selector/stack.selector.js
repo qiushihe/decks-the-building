@@ -1,7 +1,6 @@
 import { createSelector } from "reselect";
 import flow from "lodash/fp/flow";
 import get from "lodash/fp/get";
-import find from "lodash/fp/find";
 import filter from "lodash/fp/filter";
 import map from "lodash/fp/map";
 

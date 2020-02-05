@@ -13,10 +13,11 @@ import CardActions from "./card-actions";
 export default connect(
   createStructuredSelector({
     collapsed: stackCardCollapsedByCardIndex,
-    count: stackCardCountByCardIndex,
+    count: stackCardCountByCardIndex
   }),
   dispatch => ({
-    toggleCards: ({ id, cardIndices }) => dispatch(toggleCards({ id, cardIndices }))
+    toggleCards: ({ id, cardIndices }) =>
+      dispatch(toggleCards({ id, cardIndices }))
   }),
   (stateProps, dispatchProps, ownProps) => ({
     ...stateProps,
