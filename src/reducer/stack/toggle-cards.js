@@ -1,8 +1,9 @@
 import flow from "lodash/fp/flow";
 import get from "lodash/fp/get";
 import reduce from "lodash/fp/reduce";
+import includes from "lodash/fp/includes";
 
-export default (state = {}, { id, cardId } = {}) => {
+export default (state = {}, { id, cardIds } = {}) => {
   return {
     ...state,
     allStacks: {
@@ -13,14 +14,14 @@ export default (state = {}, { id, cardId } = {}) => {
           get(`allStacks.${id}.cards`),
           reduce(
             (result, card) =>
-              card.id === cardId
+              includes(card.id)(cardIds)
                 ? [
-                    ...result,
-                    {
-                      ...card,
-                      collapsed: !card.collapsed
-                    }
-                  ]
+                  ...result,
+                  {
+                    ...card,
+                    collapsed: !card.collapsed
+                  }
+                ]
                 : [...result, card],
             []
           )

@@ -1,12 +1,12 @@
 import Promise from "bluebird";
 import flow from "lodash/fp/flow";
 import get from "lodash/fp/get";
-import map from "lodash/fp/map";
 import keys from "lodash/fp/keys";
 import random from "lodash/fp/random";
 import size from "lodash/fp/size";
+import isEmpty from "lodash/fp/isEmpty";
 
-import { CREATE, addCard } from "/src/action/stack.action";
+import { CREATE, addCards } from "/src/action/stack.action";
 
 export default ({ getState, dispatch }) => next => action => {
   const { type: actionType } = action;
@@ -31,9 +31,9 @@ export default ({ getState, dispatch }) => next => action => {
         payload: { id: stackId }
       } = action;
 
-      return map(cardId => dispatch(addCard({ id: stackId, cardId })))(
-        stackCardIds
-      );
+      if (!isEmpty(stackCardIds)) {
+        return dispatch(addCards({ id: stackId, cardIds: stackCardIds }));
+      }
     }
   });
 };

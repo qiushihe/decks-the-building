@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 
-import { toggleCard } from "/src/action/stack.action";
+import { toggleCards } from "/src/action/stack.action";
 import { stackCardCollapsedCardId } from "/src/selector/stack.selector";
 
 import CardMenu from "./card-menu";
@@ -11,16 +11,16 @@ export default connect(
     collapsed: stackCardCollapsedCardId
   }),
   dispatch => ({
-    toggleCard: ({ id, cardId }) => dispatch(toggleCard({ id, cardId }))
+    toggleCards: ({ id, cardIds }) => dispatch(toggleCards({ id, cardIds }))
   }),
   (stateProps, dispatchProps, ownProps) => ({
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
     onToggleClicked: () =>
-      dispatchProps.toggleCard({
+      dispatchProps.toggleCards({
         id: ownProps.stackId,
-        cardId: ownProps.cardId
+        cardIds: [ownProps.cardId]
       })
   })
 )(CardMenu);

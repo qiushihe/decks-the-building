@@ -1,11 +1,11 @@
 import { handleActions } from "redux-actions";
 
-import { CREATE, ADD_CARD, TOGGLE_CARD } from "/src/action/stack.action";
+import { CREATE, ADD_CARDS, TOGGLE_CARDS } from "/src/action/stack.action";
 import { withPayload } from "/src/util/reducer.util";
 
 import create from "./stack/create";
-import addCard from "./stack/add-card";
-import toggleCard from "./stack/toggle-card";
+import addCards from "./stack/add-cards";
+import toggleCards from "./stack/toggle-cards";
 
 const initialState = {
   allStacks: {}
@@ -14,8 +14,8 @@ const initialState = {
 export default handleActions(
   {
     [CREATE]: withPayload(create),
-    [ADD_CARD]: withPayload(addCard),
-    [TOGGLE_CARD]: withPayload(toggleCard)
+    [ADD_CARDS]: withPayload(addCards),
+    [TOGGLE_CARDS]: withPayload(toggleCards)
   },
   initialState
 );

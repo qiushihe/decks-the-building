@@ -13,7 +13,11 @@ export default ({ dispatch }) => next => action => {
     if (actionType === BOOT) {
       return getRecord("Login", "S3")
         .getAttr("value")
-        .then(value => getS3Client().setLogin(value).then(constant(value)))
+        .then(value =>
+          getS3Client()
+            .setLogin(value)
+            .then(constant(value))
+        )
         .then(value => dispatch(restoreLogin({ login: value })));
     } else if (actionType === UPDATE_LOGIN) {
       const {

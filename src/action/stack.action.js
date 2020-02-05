@@ -2,8 +2,8 @@ import { createPromisedAction } from "/src/util/action.util";
 import { invoke } from "/src/util/function.util";
 
 export const CREATE = "STACK/CREATE";
-export const ADD_CARD = "STACK/ADD_CARD";
-export const TOGGLE_CARD = "STACK/TOGGLE_CARD";
+export const ADD_CARDS = "STACK/ADD_CARDS";
+export const TOGGLE_CARDS = "STACK/TOGGLE_CARDS";
 
 export const create = createPromisedAction(
   CREATE,
@@ -11,10 +11,14 @@ export const create = createPromisedAction(
   invoke
 );
 
-export const addCard = createPromisedAction(ADD_CARD, ["id", "cardId"], invoke);
+export const addCards = createPromisedAction(
+  ADD_CARDS,
+  ["id", "cardIds"],
+  invoke
+);
 
-export const toggleCard = createPromisedAction(
-  TOGGLE_CARD,
-  ["id", "cardId"],
+export const toggleCards = createPromisedAction(
+  TOGGLE_CARDS,
+  ["id", "cardIds"],
   invoke
 );
