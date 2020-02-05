@@ -14,7 +14,7 @@ LocalForage.config({
   driver: [LocalForage.INDEXEDDB, LocalForage.WEBSQL, LocalForage.LOCALSTORAGE]
 });
 
-export const getRecord = (model, id, { storageEngine } = {}) => {
+const getRecord = (model, id, { storageEngine } = {}) => {
   const engine = storageEngine || LocalForage;
 
   return {
@@ -58,4 +58,42 @@ export const getRecord = (model, id, { storageEngine } = {}) => {
         .then(() => engine.removeItem(`${model}:${id}`));
     }
   };
+};
+
+class LocalForgeClient {
+  storeS3Login(login) {
+    return getRecord("Login", "S3").setAttr("value", login);
+  }
+
+  fetchS3Login() {
+    return getRecord("Login", "S3")
+      .getAttr("value")
+      .then(login => {
+        return login || "";
+      });
+  }
+
+  storeCardById(id, data) {
+    return getRecord("Card", id).setAttr("data", JSON.stringify(data));
+  }
+
+  fetchCardById(id) {
+    const record = getRecord("Card", id);
+    return record.exists().then(recordExists => {
+      if (recordExists) {
+        return record.getAttr("data").then(data => JSON.parse(`${data}`));
+      } else {
+        throw new Error(`Unable to find card with ID: ${id}`);
+      }
+    });
+  }
+}
+
+let LocalForgeClientInstance = null;
+
+export const getLocalForgeClient = () => {
+  if (LocalForgeClientInstance === null) {
+    LocalForgeClientInstance = new LocalForgeClient();
+  }
+  return LocalForgeClientInstance;
 };

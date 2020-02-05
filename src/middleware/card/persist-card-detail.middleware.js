@@ -9,14 +9,14 @@ export default () => next => action => {
   return Promise.resolve(next(action)).then(() => {
     if (actionType === RESTORE_FROM_SCRYFALL) {
       const {
-        payload: { id: cardId, ...restPayload }
+        payload: { id: cardId, ...cardDetail }
       } = action;
 
       const s3Client = getS3Client();
 
       return s3Client.isLoggedIn().then(loggedIn => {
         if (loggedIn) {
-          return s3Client.uploadJson(`cards/${cardId}.json`, restPayload);
+          return s3Client.storeCardById(cardId, cardDetail);
         }
       });
     }

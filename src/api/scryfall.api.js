@@ -13,7 +13,7 @@ class ScryfallClient {
     this.mutex = new Mutex();
   }
 
-  fetch({ name }) {
+  fetchCardByName(name) {
     return this.mutex.acquire().then(release => {
       const nameParam = encodeURIComponent(name);
 

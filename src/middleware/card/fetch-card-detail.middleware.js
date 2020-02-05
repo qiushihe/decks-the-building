@@ -10,7 +10,7 @@ import { cardName, cardHasDetail } from "/src/selector/card.selector";
 import { withProps } from "/src/util/selector.util";
 import { getScryfallClient } from "/src/api/scryfall.api";
 import { getS3Client } from "/src/api/s3.api";
-import { getRecord } from "/src/api/localforge.api";
+import { getLocalForgeClient } from "/src/api/localforge.api";
 
 import {
   ADD,
@@ -33,19 +33,19 @@ export default ({ getState, dispatch }) => {
     return s3Client.isLoggedIn().then(loggedIn => {
       if (loggedIn) {
         return s3Client
-          .downloadJson(`cards/${cardId}.json`)
+          .fetchCardById(cardId)
           .then(cardDetail => {
             return dispatch(restoreFromS3({ id: cardId, ...cardDetail }));
           })
           .catch(() =>
-            scryfallClient.fetch({ cardId, name }).then(cardDetail => {
+            scryfallClient.fetchCardByName(name).then(cardDetail => {
               return dispatch(
                 restoreFromScryfall({ id: cardId, ...cardDetail })
               );
             })
           );
       } else {
-        return scryfallClient.fetch({ cardId, name }).then(cardDetail => {
+        return scryfallClient.fetchCardByName(name).then(cardDetail => {
           return dispatch(restoreFromScryfall({ id: cardId, ...cardDetail }));
         });
       }
@@ -76,28 +76,15 @@ export default ({ getState, dispatch }) => {
 
         const newState = getState();
         const hasDetail = withProps({ cardId })(cardHasDetail)(newState);
-        const cardRecord = getRecord("Card", cardId);
+        const localForgeClient = getLocalForgeClient();
 
         if (!hasDetail) {
-          return cardRecord.exists().then(exists => {
-            if (exists) {
-              const details = {};
-              return cardRecord
-                .getAttrs()
-                .then(
-                  flow([
-                    map(name =>
-                      cardRecord.getAttr(name).then(value => {
-                        details[name] = value;
-                      })
-                    ),
-                    Promise.all
-                  ])
-                )
-                .then(() =>
-                  dispatch(restoreFromCache({ id: cardId, ...details }))
-                );
-            } else {
+          localForgeClient
+            .fetchCardById(cardId)
+            .then(cardDetail => {
+              return dispatch(restoreFromCache({ id: cardId, ...cardDetail }));
+            })
+            .catch(() => {
               if (appReady) {
                 return fetchCardDetail({ cardId });
               } else {
@@ -106,8 +93,7 @@ export default ({ getState, dispatch }) => {
                 );
                 return fetchCardsIfReady();
               }
-            }
-          });
+            });
         }
       }
     });

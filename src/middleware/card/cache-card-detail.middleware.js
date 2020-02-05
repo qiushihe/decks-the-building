@@ -4,8 +4,9 @@ import {
   RESTORE_FROM_SCRYFALL,
   RESTORE_FROM_S3
 } from "/src/action/card.action";
+
 import { withProps } from "/src/util/selector.util";
-import { getRecord } from "/src/api/localforge.api";
+import { getLocalForgeClient } from "/src/api/localforge.api";
 
 import {
   cardName,
@@ -32,46 +33,17 @@ export default ({ getState }) => next => action => {
       } = action;
 
       const withCardId = withProps({ cardId });
-      const cardRecord = getRecord("Card", cardId);
+      const localForgeClient = getLocalForgeClient();
 
-      return Promise.resolve()
-        .then(() => cardRecord.setAttr("name", withCardId(cardName)(newState)))
-        .then(() =>
-          cardRecord.setAttr(
-            "manaCost",
-            withCardId(cardDetailManaCost)(newState)
-          )
-        )
-        .then(() =>
-          cardRecord.setAttr(
-            "convertedManaCost",
-            withCardId(cardDetailConvertedManaCost)(newState)
-          )
-        )
-        .then(() =>
-          cardRecord.setAttr(
-            "typeLine",
-            withCardId(cardDetailTypeLine)(newState)
-          )
-        )
-        .then(() =>
-          cardRecord.setAttr(
-            "oracleText",
-            withCardId(cardDetailOracleText)(newState)
-          )
-        )
-        .then(() =>
-          cardRecord.setAttr(
-            "flavorText",
-            withCardId(cardDetailFlavorText)(newState)
-          )
-        )
-        .then(() =>
-          cardRecord.setAttr(
-            "imageUrl",
-            withCardId(cardDetailImageUrl)(newState)
-          )
-        );
+      return localForgeClient.storeCardById(cardId, {
+        name: withCardId(cardName)(newState),
+        manaCost: withCardId(cardDetailManaCost)(newState),
+        convertedManaCost: withCardId(cardDetailConvertedManaCost)(newState),
+        typeLine: withCardId(cardDetailTypeLine)(newState),
+        oracleText: withCardId(cardDetailOracleText)(newState),
+        flavorText: withCardId(cardDetailFlavorText)(newState),
+        imageUrl: withCardId(cardDetailImageUrl)(newState)
+      });
     }
   });
 };

@@ -35,12 +35,12 @@ class S3Client {
     return Promise.resolve();
   }
 
-  uploadJson(path, data) {
+  storeCardById(id, data) {
     return new Promise((resolve, reject) => {
       this.s3.upload(
         {
           Bucket: this.bucketName,
-          Key: path,
+          Key: `cards/${id}.json`,
           Body: JSON.stringify(data, null, 2),
           ContentType: "text/plain"
         },
@@ -55,12 +55,12 @@ class S3Client {
     });
   }
 
-  downloadJson(path) {
+  fetchCardById(id) {
     return new Promise((resolve, reject) => {
       this.s3.getObject(
         {
           Bucket: this.bucketName,
-          Key: path,
+          Key: `cards/${id}.json`,
           ResponseContentType: "text/plain",
           ResponseContentDisposition: "inline"
         },
