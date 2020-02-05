@@ -1,22 +1,39 @@
 import Promise from "bluebird";
 import { Config, Credentials, S3 } from "aws-sdk";
+import flow from "lodash/fp/flow";
+import trim from "lodash/fp/trim";
+import split from "lodash/fp/split";
+import size from "lodash/fp/size";
 
 class S3Client {
-  constructor({ login }) {
-    const parts = (login || "").split("@");
-    this.bucketName = parts[3] || "";
+  constructor() {
+    this.s3 = null;
+  }
 
-    const config = new Config({
-      region: parts[2] || "",
-      credentials: new Credentials({
-        accessKeyId: parts[0] || "",
-        secretAccessKey: parts[1] || ""
-      })
-    });
+  isLoggedIn() {
+    return Promise.resolve(this.s3 !== null);
+  }
 
-    this.s3 = new S3(config);
+  setLogin(login) {
+    const parts = flow([
+      trim,
+      split("@")
+    ])(login);
 
-    console.log("S3Client", this);
+    if (size(parts) === 4) {
+      this.bucketName = parts[3] || "";
+      this.s3 = new S3(new Config({
+        region: parts[2] || "",
+        credentials: new Credentials({
+          accessKeyId: parts[0] || "",
+          secretAccessKey: parts[1] || ""
+        })
+      }));
+    } else {
+      this.s3 = null;
+    }
+
+    return Promise.resolve();
   }
 
   uploadJson(path, data) {
@@ -66,9 +83,9 @@ class S3Client {
 
 let s3ClientInstance = null;
 
-export const getS3Client = ({ login }) => {
+export const getS3Client = () => {
   if (s3ClientInstance === null) {
-    s3ClientInstance = new S3Client({ login });
+    s3ClientInstance = new S3Client();
   }
   return s3ClientInstance;
 };

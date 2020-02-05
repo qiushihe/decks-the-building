@@ -1,14 +1,12 @@
 import Promise from "bluebird";
 import map from "lodash/fp/map";
 import flow from "lodash/fp/flow";
-import isEmpty from "lodash/fp/isEmpty";
 import concat from "lodash/fp/concat";
 import uniq from "lodash/fp/uniq";
 import compact from "lodash/fp/compact";
 
 import { READY } from "/src/action/app.action";
 import { ADD, restoreFromS3, restoreFromCache } from "/src/action/card.action";
-import { login } from "/src/selector/s3.selector";
 import { cardName } from "/src/selector/card.selector";
 import { withProps } from "/src/util/selector.util";
 import { getFetchCardQueue } from "/src/api/scryfall.api";
@@ -23,19 +21,22 @@ export default ({ getState, dispatch }) => {
 
   const fetchCardDetail = ({ cardId }) => {
     const currentState = getState();
-    const s3Login = login(currentState);
     const name = withProps({ cardId })(cardName)(currentState);
 
-    if (!isEmpty(s3Login)) {
-      return getS3Client({ login: s3Login })
-        .downloadJson(`cards/${cardId}.json`)
-        .then(cardJson => {
-          return dispatch(restoreFromS3({ id: cardId, ...cardJson }));
-        })
-        .catch(() => getFetchCardQueue({ dispatch }).fetch({ cardId, name }));
-    } else {
-      return getFetchCardQueue({ dispatch }).fetch({ cardId, name });
-    }
+    const s3Client = getS3Client();
+
+    return s3Client.isLoggedIn().then(loggedIn => {
+      if (loggedIn) {
+        return s3Client
+          .downloadJson(`cards/${cardId}.json`)
+          .then(cardJson => {
+            return dispatch(restoreFromS3({ id: cardId, ...cardJson }));
+          })
+          .catch(() => getFetchCardQueue({ dispatch }).fetch({ cardId, name }));
+      } else {
+        return getFetchCardQueue({ dispatch }).fetch({ cardId, name });
+      }
+    });
   };
 
   const fetchCardsIfReady = () => {
