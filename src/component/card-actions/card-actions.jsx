@@ -40,15 +40,19 @@ const IconStyle = css`
 const AddCopyIcon = styled(Plus)`
   ${IconStyle}
 `;
+
 const RemoveCopyIcon = styled(Minus)`
   ${IconStyle}
 `;
+
 const SplitCopyIcon = styled(Copy)`
   ${IconStyle}
 `;
+
 const ExpandIcon = styled(Maximize2)`
   ${IconStyle}
 `;
+
 const CollapseIcon = styled(Minimize2)`
   ${IconStyle}
 `;

@@ -33,12 +33,15 @@ const IconStyle = css`
 const LaneIcon = styled(Trello)`
   ${IconStyle}
 `;
+
 const RenameLandIcon = styled(Edit)`
   ${IconStyle}
 `;
+
 const DeleteLandIcon = styled(Trash2)`
   ${IconStyle}
 `;
+
 const CreateLandIcon = styled(PlusCircle)`
   ${IconStyle}
 `;
