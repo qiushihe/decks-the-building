@@ -4,16 +4,16 @@ import { createStructuredSelector } from "reselect";
 import { cardName, cardDetailImageUrl } from "/src/selector/card.selector";
 
 import {
-  stackCardCountByCardId,
-  stackCardCollapsedCardId
+  stackCardCountByCardIndex,
+  stackCardCollapsedByCardIndex
 } from "/src/selector/stack.selector";
 
 import Card from "./card";
 
 export default connect(
   createStructuredSelector({
-    collapsed: stackCardCollapsedCardId,
-    count: stackCardCountByCardId,
+    collapsed: stackCardCollapsedByCardIndex,
+    count: stackCardCountByCardIndex,
     name: cardName,
     imageUrl: cardDetailImageUrl
   })

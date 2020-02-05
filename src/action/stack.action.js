@@ -19,6 +19,6 @@ export const addCards = createPromisedAction(
 
 export const toggleCards = createPromisedAction(
   TOGGLE_CARDS,
-  ["id", "cardIds"],
+  ["id", "cardIndices"],
   invoke
 );

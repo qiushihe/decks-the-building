@@ -10,7 +10,7 @@ import cond from "lodash/fp/cond";
 import stubTrue from "lodash/fp/stubTrue";
 import constant from "lodash/fp/constant";
 
-import CardMenu from "/src/component/card-menu";
+import CardActions from "/src/component/card-actions";
 
 import {
   CARD_DEFAULT_SCALE,
@@ -23,9 +23,9 @@ import {
   CARD_MENU_ICON_SIZE_FACTOR
 } from "/src/config";
 
-const StyledCardMenu = styled(props => {
+const StyledCardActions = styled(props => {
   const componentProps = omit(["scale", "collapsed"])(props);
-  return <CardMenu {...componentProps} />;
+  return <CardActions {...componentProps} />;
 })`
   position: absolute;
   top: ${cond([
@@ -73,11 +73,11 @@ const Base = styled(props => {
   overflow: hidden !important;
   box-shadow: 0px 0px 3px 0px #000000;
 
-  ${StyledCardMenu} {
+  ${StyledCardActions} {
     display: none;
   }
 
-  &:hover ${StyledCardMenu} {
+  &:hover ${StyledCardActions} {
     display: flex;
   }
 `;
@@ -154,6 +154,7 @@ class Card extends React.PureComponent {
       className,
       stackId,
       cardId,
+      cardIndex,
       scale,
       collapsed,
       count,
@@ -175,9 +176,9 @@ class Card extends React.PureComponent {
               <span>{count}</span>
             </CardCount>
           )}
-          <StyledCardMenu
+          <StyledCardActions
             stackId={stackId}
-            cardId={cardId}
+            cardIndex={cardIndex}
             scale={scale}
             collapsed={collapsed}
             size={scale * CARD_HEIGHT * CARD_MENU_ICON_SIZE_FACTOR}
@@ -192,6 +193,7 @@ Card.propTypes = {
   className: PropTypes.string,
   stackId: PropTypes.string,
   cardId: PropTypes.string,
+  cardIndex: PropTypes.number,
   scale: PropTypes.number,
   collapsed: PropTypes.bool,
   count: PropTypes.number,
@@ -203,6 +205,7 @@ Card.defaultProps = {
   className: "",
   stackId: "",
   cardId: "",
+  cardIndex: 0,
   scale: CARD_DEFAULT_SCALE,
   collapsed: false,
   count: 1,

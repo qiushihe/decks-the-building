@@ -3,7 +3,9 @@ import get from "lodash/fp/get";
 import reduce from "lodash/fp/reduce";
 import includes from "lodash/fp/includes";
 
-export default (state = {}, { id, cardIds } = {}) => {
+const uncappedReduce = reduce.convert({ cap: false });
+
+export default (state = {}, { id, cardIndices } = {}) => {
   return {
     ...state,
     allStacks: {
@@ -12,9 +14,9 @@ export default (state = {}, { id, cardIds } = {}) => {
         ...state.allStacks[id],
         cards: flow([
           get(`allStacks.${id}.cards`),
-          reduce(
-            (result, card) =>
-              includes(card.id)(cardIds)
+          uncappedReduce(
+            (result, card, index) =>
+              includes(index)(cardIndices)
                 ? [
                     ...result,
                     {

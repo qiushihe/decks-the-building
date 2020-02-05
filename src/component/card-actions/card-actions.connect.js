@@ -2,16 +2,21 @@ import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 
 import { toggleCards } from "/src/action/stack.action";
-import { stackCardCollapsedCardId } from "/src/selector/stack.selector";
 
-import CardMenu from "./card-menu";
+import {
+  stackCardCountByCardIndex,
+  stackCardCollapsedByCardIndex
+} from "/src/selector/stack.selector";
+
+import CardActions from "./card-actions";
 
 export default connect(
   createStructuredSelector({
-    collapsed: stackCardCollapsedCardId
+    collapsed: stackCardCollapsedByCardIndex,
+    count: stackCardCountByCardIndex,
   }),
   dispatch => ({
-    toggleCards: ({ id, cardIds }) => dispatch(toggleCards({ id, cardIds }))
+    toggleCards: ({ id, cardIndices }) => dispatch(toggleCards({ id, cardIndices }))
   }),
   (stateProps, dispatchProps, ownProps) => ({
     ...stateProps,
@@ -20,7 +25,7 @@ export default connect(
     onToggleClicked: () =>
       dispatchProps.toggleCards({
         id: ownProps.stackId,
-        cardIds: [ownProps.cardId]
+        cardIndices: [ownProps.cardIndex]
       })
   })
-)(CardMenu);
+)(CardActions);
