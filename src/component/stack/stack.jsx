@@ -1,12 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
-import { Container, Draggable } from "react-smooth-dnd";
+import { Draggable } from "react-smooth-dnd";
 import flow from "lodash/fp/flow";
-import map from "lodash/fp/map";
 import get from "lodash/fp/get";
 import multiply from "lodash/fp/multiply";
 import omit from "lodash/fp/omit";
+
 import {
   Layers,
   Edit,
@@ -18,9 +18,7 @@ import {
 
 import { CARD_DEFAULT_SCALE, CARD_WIDTH } from "/src/config";
 import Arrange from "/src/component/arrange";
-import Card from "/src/component/card";
-
-const uncappedMap = map.convert({ cap: false });
+import Cards from "/src/component/cards";
 
 const Content = styled(props => {
   const componentProps = omit(["scale"])(props);
@@ -39,8 +37,6 @@ const Base = styled(Draggable)`
     margin-right: 0;
   }
 `;
-
-const StyledCard = styled(Card)``;
 
 const IconStyle = css`
   width: 16px;
@@ -73,7 +69,7 @@ const CreateStackIcon = styled(PlusCircle)`
 
 class Stack extends React.PureComponent {
   render() {
-    const { className, scale, stackId, label, cardIds, moveCard } = this.props;
+    const { className, scale, stackId, label } = this.props;
     return (
       <Base className={className} scale={scale}>
         <Content scale={scale}>
@@ -105,30 +101,7 @@ class Stack extends React.PureComponent {
             </Arrange.Fit>
             <Arrange.Fit>&nbsp;&nbsp;&nbsp;</Arrange.Fit>
           </Arrange>
-          <Container
-            groupName="card"
-            getChildPayload={index => ({ stackId, cardIndex: index })}
-            shouldAcceptDrop={({ groupName }) => groupName === "card"}
-            onDrop={({ addedIndex, payload }) => {
-              if (addedIndex !== null) {
-                moveCard({
-                  fromId: payload.stackId,
-                  toId: stackId,
-                  fromCardIndex: payload.cardIndex,
-                  toCardIndex: addedIndex
-                });
-              }
-            }}
-          >
-            {uncappedMap((cardId, index) => (
-              <StyledCard
-                key={`${index}-${cardId}`}
-                stackId={stackId}
-                cardId={cardId}
-                cardIndex={index}
-              />
-            ))(cardIds)}
-          </Container>
+          <Cards stackId={stackId} scale={scale} />
         </Content>
       </Base>
     );
@@ -139,18 +112,14 @@ Stack.propTypes = {
   className: PropTypes.string,
   scale: PropTypes.number,
   stackId: PropTypes.string,
-  label: PropTypes.string,
-  cardIds: PropTypes.array,
-  moveCard: PropTypes.func
+  label: PropTypes.string
 };
 
 Stack.defaultProps = {
   className: "",
   scale: CARD_DEFAULT_SCALE,
   stackId: "",
-  label: "Stack",
-  cardIds: [],
-  moveCard: () => {}
+  label: "Stack"
 };
 
 export default Stack;

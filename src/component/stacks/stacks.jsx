@@ -3,21 +3,10 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Container } from "react-smooth-dnd";
 import map from "lodash/fp/map";
-import omit from "lodash/fp/omit";
 
 import Stack from "/src/component/stack";
 
-const Base = styled(props => {
-  const componentProps = omit([])(props);
-  return (
-    <Container
-      {...componentProps}
-      orientation="horizontal"
-      groupName="stack"
-      shouldAcceptDrop={({ groupName }) => groupName === "stack"}
-    />
-  );
-})`
+const Base = styled(Container)`
   display: flex;
   flex-direction: row;
 `;
@@ -29,7 +18,11 @@ class Stacks extends React.PureComponent {
     const { stackIds } = this.props;
 
     return (
-      <Base>
+      <Base
+        orientation="horizontal"
+        groupName="stack"
+        shouldAcceptDrop={({ groupName }) => groupName === "stack"}
+      >
         {map(stackId => <StyledStack key={stackId} stackId={stackId} />)(
           stackIds
         )}
