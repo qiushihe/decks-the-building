@@ -8,7 +8,7 @@ export const MOVE_CARD = "STACK/MOVE_CARD";
 
 export const create = createPromisedAction(
   CREATE,
-  ["id", "laneId", "label"],
+  ["id", "label"],
   invoke
 );
 

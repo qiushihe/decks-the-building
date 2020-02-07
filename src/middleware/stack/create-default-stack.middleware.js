@@ -18,7 +18,7 @@ export default ({ dispatch }) => next => action => {
       return flow([
         map(label => ({ id: uuidV4(), label })),
         map(({ id: stackId, label }) =>
-          dispatch(createStack({ id: stackId, laneId, label })).then(() =>
+          dispatch(createStack({ id: stackId, label })).then(() =>
             dispatch(addStacks({ id: laneId, stackIds: [stackId] }))
           )
         ),
