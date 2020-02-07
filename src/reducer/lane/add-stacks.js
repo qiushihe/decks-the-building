@@ -8,26 +8,33 @@ import stubTrue from "lodash/fp/stubTrue";
 import constant from "lodash/fp/constant";
 
 export default (state = {}, { id, stackIds } = {}) => {
-  const stateStacks = getOr([], `allLanes.${id}.stacks`)(state);
-
   return {
     ...state,
-    allLanes: {
-      ...state.allLanes,
-      [id]: {
-        ...state.allLanes[id],
-        stacks: reduce(
-          (existingStacks, stackId) =>
-            flow([
-              find({ id: stackId }),
-              cond([
-                [isNil, () => [...existingStacks, { id: stackId }]],
-                [stubTrue, constant(existingStacks)]
-              ])
-            ])(existingStacks),
-          stateStacks
-        )(stackIds)
-      }
-    }
+    allLanes: flow([
+      getOr([], "allLanes"),
+      reduce(
+        (result, lane) =>
+          lane.id === id
+            ? [
+                ...result,
+                {
+                  ...lane,
+                  stacks: reduce(
+                    (result, stackId) =>
+                      flow([
+                        find({ id: stackId }),
+                        cond([
+                          [isNil, () => [...result, { id: stackId }]],
+                          [stubTrue, constant(result)]
+                        ])
+                      ])(result),
+                    getOr([], "stacks")(lane)
+                  )(stackIds)
+                }
+              ]
+            : [...result, lane],
+        []
+      )
+    ])(state)
   };
 };

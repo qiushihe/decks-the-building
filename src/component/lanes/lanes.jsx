@@ -7,12 +7,21 @@ import Lane from "/src/component/lane";
 
 class Lanes extends React.PureComponent {
   render() {
-    const { laneIds } = this.props;
+    const { laneIds, move } = this.props;
 
     return (
       <Container
         groupName="lane"
+        getChildPayload={index => ({ laneIndex: index })}
         shouldAcceptDrop={({ groupName }) => groupName === "lane"}
+        onDrop={({ addedIndex, payload }) => {
+          if (addedIndex !== null) {
+            move({
+              fromIndex: payload.laneIndex,
+              toIndex: addedIndex
+            });
+          }
+        }}
       >
         {map(laneId => <Lane key={laneId} laneId={laneId} />)(laneIds)}
       </Container>
@@ -21,11 +30,13 @@ class Lanes extends React.PureComponent {
 }
 
 Lanes.propTypes = {
-  laneIds: PropTypes.array
+  laneIds: PropTypes.array,
+  move: PropTypes.func
 };
 
 Lanes.defaultProps = {
-  laneIds: []
+  laneIds: [],
+  move: () => {}
 };
 
 export default Lanes;

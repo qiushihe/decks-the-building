@@ -6,11 +6,7 @@ export const ADD_CARDS = "STACK/ADD_CARDS";
 export const TOGGLE_CARDS = "STACK/TOGGLE_CARDS";
 export const MOVE_CARD = "STACK/MOVE_CARD";
 
-export const create = createPromisedAction(
-  CREATE,
-  ["id", "label"],
-  invoke
-);
+export const create = createPromisedAction(CREATE, ["id", "label"], invoke);
 
 export const addCards = createPromisedAction(
   ADD_CARDS,
