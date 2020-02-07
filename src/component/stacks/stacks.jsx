@@ -15,13 +15,24 @@ const StyledStack = styled(Stack)``;
 
 class Stacks extends React.PureComponent {
   render() {
-    const { stackIds } = this.props;
+    const { laneId, stackIds, moveStack } = this.props;
 
     return (
       <Base
         orientation="horizontal"
         groupName="stack"
+        getChildPayload={index => ({ laneId, stackIndex: index })}
         shouldAcceptDrop={({ groupName }) => groupName === "stack"}
+        onDrop={({ addedIndex, payload }) => {
+          if (addedIndex !== null) {
+            moveStack({
+              fromId: payload.laneId,
+              toId: laneId,
+              fromStackIndex: payload.stackIndex,
+              toStackIndex: addedIndex
+            });
+          }
+        }}
       >
         {map(stackId => <StyledStack key={stackId} stackId={stackId} />)(
           stackIds
@@ -32,11 +43,15 @@ class Stacks extends React.PureComponent {
 }
 
 Stacks.propTypes = {
-  stackIds: PropTypes.array
+  laneId: PropTypes.string,
+  stackIds: PropTypes.array,
+  moveStack: PropTypes.func
 };
 
 Stacks.defaultProps = {
-  stackIds: []
+  laneId: "",
+  stackIds: [],
+  moveStack: () => {}
 };
 
 export default Stacks;

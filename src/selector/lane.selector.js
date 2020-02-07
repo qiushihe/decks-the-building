@@ -27,3 +27,8 @@ export const landById = createSelector(
 );
 
 export const landLabel = createSelector(landById, get("label"));
+
+export const laneStackIds = createSelector(
+  landById,
+  flow([get("stacks"), map(get("id"))])
+);

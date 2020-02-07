@@ -5,7 +5,8 @@ export default (state = {}, { id, label } = {}) => {
       ...state.allLanes,
       [id]: {
         id,
-        label
+        label,
+        stacks: []
       }
     }
   };

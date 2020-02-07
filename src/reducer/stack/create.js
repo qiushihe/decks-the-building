@@ -1,11 +1,10 @@
-export default (state = {}, { id, laneId, label } = {}) => {
+export default (state = {}, { id, label } = {}) => {
   return {
     ...state,
     allStacks: {
       ...state.allStacks,
       [id]: {
         id,
-        laneId,
         label,
         cards: []
       }

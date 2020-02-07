@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { Container } from "react-smooth-dnd";
 import map from "lodash/fp/map";
 
-import { CARD_DEFAULT_SCALE } from "/src/config";
 import Card from "/src/component/card";
 
 const uncappedMap = map.convert({ cap: false });
@@ -16,7 +15,7 @@ const Base = styled(Container)`
 
 class Cards extends React.PureComponent {
   render() {
-    const { className, scale, stackId, cardIds, moveCard } = this.props;
+    const { className, stackId, cardIds, moveCard } = this.props;
     return (
       <Base
         className={className}
@@ -40,7 +39,6 @@ class Cards extends React.PureComponent {
             stackId={stackId}
             cardId={cardId}
             cardIndex={index}
-            scale={scale}
           />
         ))(cardIds)}
       </Base>
@@ -50,7 +48,6 @@ class Cards extends React.PureComponent {
 
 Cards.propTypes = {
   className: PropTypes.string,
-  scale: PropTypes.number,
   stackId: PropTypes.string,
   cardIds: PropTypes.array,
   moveCard: PropTypes.func
@@ -58,7 +55,6 @@ Cards.propTypes = {
 
 Cards.defaultProps = {
   className: "",
-  scale: CARD_DEFAULT_SCALE,
   stackId: "",
   cardIds: [],
   moveCard: () => {}

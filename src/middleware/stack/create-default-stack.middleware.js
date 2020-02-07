@@ -1,8 +1,9 @@
 import Promise from "bluebird";
 import uuidV4 from "uuid/v4";
+import flow from "lodash/fp/flow";
 import map from "lodash/fp/map";
 
-import { CREATE } from "/src/action/lane.action";
+import { CREATE, addStacks } from "/src/action/lane.action";
 import { create as createStack } from "/src/action/stack.action";
 
 export default ({ dispatch }) => next => action => {
@@ -14,9 +15,15 @@ export default ({ dispatch }) => next => action => {
         payload: { id: laneId }
       } = action;
 
-      return map(label =>
-        dispatch(createStack({ id: uuidV4(), laneId, label }))
-      )(["Pile", "Untitled"]);
+      return flow([
+        map(label => ({ id: uuidV4(), label })),
+        map(({ id: stackId, label }) =>
+          dispatch(createStack({ id: stackId, laneId, label })).then(() =>
+            dispatch(addStacks({ id: laneId, stackIds: [stackId] }))
+          )
+        ),
+        Promise.all
+      ])(["Pile", "Untitled"]);
     }
   });
 };

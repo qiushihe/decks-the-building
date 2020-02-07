@@ -71,7 +71,7 @@ class Stack extends React.PureComponent {
   render() {
     const { className, scale, stackId, label } = this.props;
     return (
-      <Base className={className} scale={scale}>
+      <Base className={className}>
         <Content scale={scale}>
           <Arrange>
             <Arrange.Fit>
