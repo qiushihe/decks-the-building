@@ -10,10 +10,6 @@ class S3Client {
     this.s3 = null;
   }
 
-  isLoggedIn() {
-    return Promise.resolve(this.s3 !== null);
-  }
-
   setLogin(login) {
     const parts = flow([trim, split("@")])(login);
 
