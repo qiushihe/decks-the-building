@@ -1,12 +1,22 @@
-export default (state = {}, { id, name } = {}) => {
+import get from "lodash/fp/get";
+import reduce from "lodash/fp/reduce";
+import isNil from "lodash/fp/isNil";
+
+export default (state = {}, { cards } = {}) => {
   return {
     ...state,
-    allCards: {
-      ...state.allCards,
-      [id]: {
-        name,
-        detail: null
-      }
-    }
+    allCards: reduce(
+      (result, { id, name }) =>
+        isNil(result[id])
+          ? {
+              ...result,
+              [id]: {
+                name,
+                detail: null
+              }
+            }
+          : result,
+      get("allCards")(state)
+    )(cards)
   };
 };

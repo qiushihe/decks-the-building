@@ -15,8 +15,38 @@ const StyledTextarea = styled.textarea`
 `;
 
 export class AddCardsToStack extends React.PureComponent {
-  render() {
+  constructor(...args) {
+    super(...args);
+
+    this.state = {
+      fieldValue: ""
+    };
+
+    this.handleFieldChange = this.handleFieldChange.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
+    this.handleAddCard = this.handleAddCard.bind(this);
+  }
+
+  handleFieldChange(evt) {
+    this.setState({
+      fieldValue: evt.target.value
+    });
+  }
+
+  handleCancel() {
     const { hideModal } = this.props;
+    hideModal();
+  }
+
+  handleAddCard() {
+    const { onSubmit } = this.props;
+    const { fieldValue } = this.state;
+    onSubmit(fieldValue);
+  }
+
+  render() {
+    const { fieldValue } = this.state;
+
     return (
       <BaseModal>
         <Arrange vertical={true}>
@@ -25,18 +55,21 @@ export class AddCardsToStack extends React.PureComponent {
           </Arrange.Fit>
           <Arrange.Fit>&nbsp;</Arrange.Fit>
           <Arrange.Fit>
-            <StyledTextarea />
+            <StyledTextarea
+              value={fieldValue}
+              onChange={this.handleFieldChange}
+            />
           </Arrange.Fit>
           <Arrange.Fit>&nbsp;</Arrange.Fit>
           <Arrange.Fit>
             <Arrange>
               <Arrange.Fill>&nbsp;</Arrange.Fill>
               <Arrange.Fit>
-                <button onClick={hideModal}>Close</button>
+                <button onClick={this.handleCancel}>Cancel</button>
               </Arrange.Fit>
               <Arrange.Fit>&nbsp;&nbsp;</Arrange.Fit>
               <Arrange.Fit>
-                <button onClick={() => {}}>Submit</button>
+                <button onClick={this.handleAddCard}>Add</button>
               </Arrange.Fit>
             </Arrange>
           </Arrange.Fit>
@@ -47,11 +80,13 @@ export class AddCardsToStack extends React.PureComponent {
 }
 
 AddCardsToStack.propTypes = {
-  hideModal: PropTypes.func
+  hideModal: PropTypes.func,
+  onSubmit: PropTypes.func
 };
 
 AddCardsToStack.defaultProps = {
-  hideModal: () => {}
+  hideModal: () => {},
+  onSubmit: () => {}
 };
 
 export default AddCardsToStack;
