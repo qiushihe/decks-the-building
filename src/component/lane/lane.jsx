@@ -13,6 +13,8 @@ const Content = styled.div`
   margin: 6px 0;
 `;
 
+const StyledLaneActions = styled(LaneActions)``;
+
 const Base = styled(props => {
   const componentProps = omit([])(props);
   return <Draggable {...componentProps} />;
@@ -23,6 +25,14 @@ const Base = styled(props => {
 
   &:last-child ${Content} {
     margin-bottom: 0;
+  }
+
+  ${StyledLaneActions} {
+    opacity: 0;
+  }
+
+  &:hover ${StyledLaneActions} {
+    opacity: 1;
   }
 `;
 
@@ -49,7 +59,7 @@ class Lane extends React.PureComponent {
             <Arrange.Fill>{label}</Arrange.Fill>
             <Arrange.Fit>&nbsp;</Arrange.Fit>
             <Arrange.Fit>
-              <LaneActions laneId={laneId} />
+              <StyledLaneActions laneId={laneId} />
             </Arrange.Fit>
             <Arrange.Fit>&nbsp;&nbsp;&nbsp;</Arrange.Fit>
           </Arrange>

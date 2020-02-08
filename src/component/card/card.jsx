@@ -74,11 +74,11 @@ const Content = styled(props => {
   overflow: hidden !important;
 
   ${StyledCardActions} {
-    display: none;
+    opacity: 0;
   }
 
   &:hover ${StyledCardActions} {
-    display: flex;
+    opacity: 1;
   }
 `;
 

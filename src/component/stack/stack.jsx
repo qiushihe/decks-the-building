@@ -14,6 +14,8 @@ import Arrange from "/src/component/arrange";
 import StackActions from "/src/component/stack-actions";
 import Cards from "/src/component/cards";
 
+const StyledStackActions = styled(StackActions)``;
+
 const Content = styled(props => {
   const componentProps = omit(["scale"])(props);
   return <div {...componentProps} />;
@@ -29,6 +31,14 @@ const Base = styled(Draggable)`
 
   &:last-child ${Content} {
     margin-right: 0;
+  }
+
+  ${StyledStackActions} {
+    opacity: 0;
+  }
+
+  &:hover ${StyledStackActions} {
+    opacity: 1;
   }
 `;
 
@@ -56,7 +66,7 @@ class Stack extends React.PureComponent {
             <Arrange.Fill>{label} </Arrange.Fill>
             <Arrange.Fit>&nbsp;</Arrange.Fit>
             <Arrange.Fit>
-              <StackActions stackId={stackId} />
+              <StyledStackActions stackId={stackId} />
             </Arrange.Fit>
             <Arrange.Fit>&nbsp;&nbsp;&nbsp;</Arrange.Fit>
           </Arrange>
