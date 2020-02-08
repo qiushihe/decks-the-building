@@ -2,10 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import { Draggable } from "react-smooth-dnd";
-import { Trello, Edit, Trash2, PlusCircle } from "react-feather";
 import omit from "lodash/fp/omit";
+import { Trello } from "react-feather";
 
 import Arrange from "/src/component/arrange";
+import LaneActions from "/src/component/lane-actions";
 import Stacks from "/src/component/stacks";
 
 const Content = styled.div`
@@ -34,18 +35,6 @@ const LaneIcon = styled(Trello)`
   ${IconStyle}
 `;
 
-const RenameLandIcon = styled(Edit)`
-  ${IconStyle}
-`;
-
-const DeleteLandIcon = styled(Trash2)`
-  ${IconStyle}
-`;
-
-const CreateLandIcon = styled(PlusCircle)`
-  ${IconStyle}
-`;
-
 class Lane extends React.PureComponent {
   render() {
     const { laneId, label } = this.props;
@@ -60,15 +49,7 @@ class Lane extends React.PureComponent {
             <Arrange.Fill>{label}</Arrange.Fill>
             <Arrange.Fit>&nbsp;</Arrange.Fit>
             <Arrange.Fit>
-              <RenameLandIcon />
-            </Arrange.Fit>
-            <Arrange.Fit>&nbsp;</Arrange.Fit>
-            <Arrange.Fit>
-              <DeleteLandIcon />
-            </Arrange.Fit>
-            <Arrange.Fit>&nbsp;</Arrange.Fit>
-            <Arrange.Fit>
-              <CreateLandIcon />
+              <LaneActions laneId={laneId} />
             </Arrange.Fit>
             <Arrange.Fit>&nbsp;&nbsp;&nbsp;</Arrange.Fit>
           </Arrange>

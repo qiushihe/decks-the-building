@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/qiushihe/decks-the-building",
   "dependencies": {
+    "add-class": "^1.0.3",
     "async-mutex": "^0.1.4",
     "aws-sdk": "^2.610.0",
     "bluebird": "^3.5.5",
@@ -44,6 +45,7 @@
     "redux": "^4.0.4",
     "redux-actions": "^2.6.5",
     "redux-thunk": "^2.3.0",
+    "remove-class": "^1.0.0",
     "reselect": "^4.0.0",
     "styled-components": "^4.3.2",
     "styled-normalize": "^8.0.6",

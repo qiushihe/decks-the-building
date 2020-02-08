@@ -4,6 +4,7 @@ import flowRight from "lodash/fp/flowRight";
 
 import NormalizedStyleProvider from "/src/provider/normalized-style.provider";
 import ReduxStoreProvider from "/src/provider/redux-store.provider";
+import ModalProvider from "/src/provider/modal.provider";
 import createStore from "/src/store/create";
 import Application from "./component/application";
 
@@ -15,7 +16,8 @@ const withProvider = (Provider, props = {}) => children => (
 
 const withProviders = flowRight([
   withProvider(NormalizedStyleProvider),
-  withProvider(ReduxStoreProvider, { store })
+  withProvider(ReduxStoreProvider, { store }),
+  withProvider(ModalProvider)
 ]);
 
 class AppRoot extends React.PureComponent {

@@ -12,10 +12,10 @@ class Application extends React.PureComponent {
 
   render() {
     return (
-      <div>
+      <React.Fragment>
         <S3Login />
         <Lanes />
-      </div>
+      </React.Fragment>
     );
   }
 }

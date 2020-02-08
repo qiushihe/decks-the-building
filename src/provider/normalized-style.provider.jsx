@@ -5,8 +5,15 @@ import { createGlobalStyle } from "styled-components";
 import { Normalize as NormalizeStyles } from "styled-normalize";
 
 const GlobalStyle = createGlobalStyle`
-  html, body {
-    font-family: Arial, sans-serif;
+  html, body, #root {
+    font-family: Arial,sans-serif;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
   }
 `;
 
