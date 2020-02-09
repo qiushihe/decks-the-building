@@ -11,6 +11,8 @@ import Stacks from "/src/component/stacks";
 
 const Content = styled.div`
   margin: 6px 0;
+  overflow: auto;
+  min-width: 0;
 `;
 
 const StyledLaneActions = styled(LaneActions)``;
