@@ -1,6 +1,9 @@
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import uuidV4 from "uuid/v4";
+import flow from "lodash/fp/flow";
+import first from "lodash/fp/first";
+import without from "lodash/fp/without";
 
 import { RENAME_OBJECT } from "/src/enum/modal.enum";
 import { WORKSPACE } from "/src/enum/nameable.enum";
@@ -52,8 +55,16 @@ export default connect(
           dispatchProps.activate({ id: workspaceId })
         ),
     removeWorkspace: () =>
-      dispatchProps.remove({
-        id: ownProps.workspaceId
-      })
+      dispatchProps
+        .remove({
+          id: ownProps.workspaceId
+        })
+        .then(() =>
+          flow([
+            without([ownProps.workspaceId]),
+            first,
+            workspaceId => dispatchProps.activate({ id: workspaceId })
+          ])(stateProps.allWorkspaceIds)
+        )
   })
 )(WorkspaceActions);
