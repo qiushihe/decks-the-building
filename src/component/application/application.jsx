@@ -11,20 +11,23 @@ class Application extends React.PureComponent {
   }
 
   render() {
+    const { workspaceId } = this.props;
     return (
       <React.Fragment>
         <S3Login />
-        <Lanes />
+        <Lanes workspaceId={workspaceId} />
       </React.Fragment>
     );
   }
 }
 
 Application.propTypes = {
+  workspaceId: PropTypes.string,
   onMount: PropTypes.func
 };
 
 Application.defaultProps = {
+  workspaceId: "",
   onMount: () => {}
 };
 

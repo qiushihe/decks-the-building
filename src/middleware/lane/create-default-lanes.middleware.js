@@ -2,33 +2,28 @@ import Promise from "bluebird";
 import uuidV4 from "uuid/v4";
 import flow from "lodash/fp/flow";
 import map from "lodash/fp/map";
-import cond from "lodash/fp/cond";
-import identity from "lodash/fp/identity";
-import negate from "lodash/fp/negate";
 
-import { READY } from "/src/action/app.action";
+import { CREATE, addLanes } from "/src/action/workspace.action";
 import { create as createLane } from "/src/action/lane.action";
-import { hasLanes } from "/src/selector/lane.selector";
 
-export default ({ getState, dispatch }) => next => action => {
+export default ({ dispatch }) => next => action => {
   const { type: actionType } = action;
 
   return Promise.resolve(next(action)).then(() => {
-    if (actionType === READY) {
-      const newState = getState();
+    if (actionType === CREATE) {
+      const {
+        payload: { id: workspaceId }
+      } = action;
 
       return flow([
-        hasLanes,
-        cond([
-          [
-            negate(identity),
-            () =>
-              map(label => dispatch(createLane({ id: uuidV4(), label })))([
-                "Untitled"
-              ])
-          ]
-        ])
-      ])(newState);
+        map(label => ({ id: uuidV4(), label })),
+        map(({ id: laneId, label }) => {
+          return dispatch(createLane({ id: laneId, label })).then(() => {
+            return dispatch(addLanes({ id: workspaceId, laneIds: [laneId] }));
+          });
+        }),
+        Promise.all
+      ])(["Untitled", "Untitled2"]);
     }
   });
 };

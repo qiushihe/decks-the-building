@@ -1,22 +1,34 @@
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 
-import { allLaneIds } from "/src/selector/lane.selector";
-import { move } from "/src/action/lane.action";
+import { activeWorkspaceLaneIds } from "/src/selector/workspace.selector";
+import { moveLane } from "/src/action/workspace.action";
 
 import Lanes from "./lanes";
 
 export default connect(
   createStructuredSelector({
-    laneIds: allLaneIds
+    laneIds: activeWorkspaceLaneIds
   }),
   dispatch => ({
-    move: ({ fromIndex, toIndex }) =>
+    moveLane: ({ id, fromLaneIndex, toLaneIndex }) =>
       dispatch(
-        move({
-          fromIndex,
-          toIndex
+        moveLane({
+          id,
+          fromLaneIndex,
+          toLaneIndex
         })
       )
+  }),
+  (stateProps, dispatchProps, ownProps) => ({
+    ...stateProps,
+    ...dispatchProps,
+    ...ownProps,
+    moveLane: ({ fromIndex, toIndex }) =>
+      dispatchProps.moveLane({
+        id: ownProps.workspaceId,
+        fromLaneIndex: fromIndex,
+        toLaneIndex: toIndex
+      })
   })
 )(Lanes);

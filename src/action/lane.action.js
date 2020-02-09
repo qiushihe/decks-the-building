@@ -8,12 +8,6 @@ export const MOVE_STACK = "LANE/MOVE_STACK";
 
 export const create = createPromisedAction(CREATE, ["id", "label"], invoke);
 
-export const move = createPromisedAction(
-  MOVE,
-  ["fromIndex", "toIndex"],
-  invoke
-);
-
 export const addStacks = createPromisedAction(
   ADD_STACKS,
   ["id", "stackIds"],

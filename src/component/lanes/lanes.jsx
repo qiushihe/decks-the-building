@@ -12,7 +12,7 @@ const Base = styled.div`
 
 class Lanes extends React.PureComponent {
   render() {
-    const { laneIds, move } = this.props;
+    const { laneIds, moveLane } = this.props;
 
     return (
       <Base data-scrollable="true">
@@ -22,7 +22,7 @@ class Lanes extends React.PureComponent {
           shouldAcceptDrop={({ groupName }) => groupName === "lane"}
           onDrop={({ addedIndex, payload }) => {
             if (addedIndex !== null) {
-              move({
+              moveLane({
                 fromIndex: payload.laneIndex,
                 toIndex: addedIndex
               });
@@ -38,12 +38,12 @@ class Lanes extends React.PureComponent {
 
 Lanes.propTypes = {
   laneIds: PropTypes.array,
-  move: PropTypes.func
+  moveLane: PropTypes.func
 };
 
 Lanes.defaultProps = {
   laneIds: [],
-  move: () => {}
+  moveLane: () => {}
 };
 
 export default Lanes;

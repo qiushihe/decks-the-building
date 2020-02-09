@@ -23,7 +23,7 @@ export default ({ dispatch }) => next => action => {
           )
         ),
         Promise.all
-      ])(["Untitled"]);
+      ])(["Untitled", "Untitled2"]);
     }
   });
 };
