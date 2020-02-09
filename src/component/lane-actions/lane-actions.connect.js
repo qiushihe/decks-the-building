@@ -3,8 +3,11 @@ import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import uuidV4 from "uuid/v4";
 
+import { RENAME_OBJECT } from "/src/enum/modal.enum";
+import { LANE } from "/src/enum/nameable.enum";
 import { show as showModal } from "/src/action/modal.action";
 import { workspaceLanesCount } from "/src/selector/workspace.selector";
+import { laneLabel } from "/src/selector/lane.selector";
 
 import {
   create as createLaneAction,
@@ -21,6 +24,7 @@ import LaneActions from "./lane-actions";
 
 export default connect(
   createStructuredSelector({
+    laneLabel,
     lanesCount: workspaceLanesCount
   }),
   dispatch => ({
@@ -53,6 +57,15 @@ export default connect(
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
+    showRenameModal: () =>
+      dispatchProps.showModal({
+        name: RENAME_OBJECT,
+        props: {
+          nameable: LANE,
+          name: stateProps.laneLabel,
+          laneId: ownProps.laneId
+        }
+      }),
     addLane: () =>
       dispatchProps.addLane({
         id: ownProps.workspaceId,

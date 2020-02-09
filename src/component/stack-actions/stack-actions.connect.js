@@ -3,9 +3,11 @@ import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import uuidV4 from "uuid/v4";
 
-import { ADD_CARDS_TO_STACK } from "/src/enum/modal.enum";
+import { ADD_CARDS_TO_STACK, RENAME_OBJECT } from "/src/enum/modal.enum";
+import { STACK } from "/src/enum/nameable.enum";
 import { show as showModal } from "/src/action/modal.action";
 import { laneStacksCount } from "/src/selector/lane.selector";
+import { stackLabel } from "/src/selector/stack.selector";
 
 import {
   create as createStackAction,
@@ -22,6 +24,7 @@ import StackActions from "./stack-actions";
 
 export default connect(
   createStructuredSelector({
+    stackLabel,
     stacksCount: laneStacksCount
   }),
   dispatch => ({
@@ -56,6 +59,15 @@ export default connect(
       dispatchProps.showModal({
         name: ADD_CARDS_TO_STACK,
         props: { stackId: ownProps.stackId }
+      }),
+    showRenameModal: () =>
+      dispatchProps.showModal({
+        name: RENAME_OBJECT,
+        props: {
+          nameable: STACK,
+          name: stateProps.stackLabel,
+          stackId: ownProps.stackId
+        }
       }),
     addStack: () =>
       dispatchProps.addStack({

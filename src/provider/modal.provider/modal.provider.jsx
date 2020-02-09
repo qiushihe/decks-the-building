@@ -6,10 +6,12 @@ import removeClass from "remove-class";
 import forEach from "lodash/fp/forEach";
 
 import AddCardsToStack from "/src/component/modal/add-cards-to-stack";
-import { ADD_CARDS_TO_STACK } from "/src/enum/modal.enum";
+import RenameObject from "/src/component/modal/rename-object";
+import { ADD_CARDS_TO_STACK, RENAME_OBJECT } from "/src/enum/modal.enum";
 
 const ALL_MODAL_COMPONENTS = {
-  [ADD_CARDS_TO_STACK]: AddCardsToStack
+  [ADD_CARDS_TO_STACK]: AddCardsToStack,
+  [RENAME_OBJECT]: RenameObject
 };
 
 const DisableScrollStyle = createGlobalStyle`

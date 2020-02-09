@@ -5,7 +5,7 @@ import { SAVE } from "/src/action/workspace.action";
 import { withProps } from "/src/util/selector.util";
 import { getWorkspaceDetailService } from "/src/services/workspace-detail.service";
 
-import { landLabel, laneStackIds } from "/src/selector/lane.selector";
+import { laneLabel, laneStackIds } from "/src/selector/lane.selector";
 import { stackLabel, stackCardEntries } from "/src/selector/stack.selector";
 import { cardName } from "/src/selector/card.selector";
 
@@ -30,7 +30,7 @@ export default ({ getState }) => next => action => {
         label: withProps({ workspaceId })(workspaceLabel)(newState),
         lanes: map(laneId => ({
           id: laneId,
-          label: withProps({ laneId })(landLabel)(newState),
+          label: withProps({ laneId })(laneLabel)(newState),
           stacks: map(stackId => ({
             id: stackId,
             label: withProps({ stackId })(stackLabel)(newState),

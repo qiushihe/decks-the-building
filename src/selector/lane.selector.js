@@ -8,16 +8,16 @@ import { fromProps } from "/src/util/selector.util";
 
 import { lane as laneState } from "./root.selector";
 
-export const landById = createSelector(
+export const laneById = createSelector(
   fromProps(get("laneId")),
   laneState,
   (laneId, state) => get(`allLanes.${laneId}`)(state)
 );
 
-export const landLabel = createSelector(landById, get("label"));
+export const laneLabel = createSelector(laneById, get("label"));
 
 export const laneStackIds = createSelector(
-  landById,
+  laneById,
   flow([get("stacks"), map(get("id"))])
 );
 

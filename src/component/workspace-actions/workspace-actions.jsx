@@ -30,12 +30,12 @@ const SaveIcon = styled(Save)`
 
 class WorkspaceActions extends React.PureComponent {
   render() {
-    const { className, save } = this.props;
+    const { className, showRenameModal, save } = this.props;
     return (
       <div className={className}>
         <Arrange>
           <Arrange.Fit>
-            <RenameLandIcon />
+            <RenameLandIcon onClick={showRenameModal} />
           </Arrange.Fit>
           <Arrange.Fit>&nbsp;</Arrange.Fit>
           <Arrange.Fit>
@@ -53,11 +53,13 @@ class WorkspaceActions extends React.PureComponent {
 
 WorkspaceActions.propTypes = {
   className: PropTypes.string,
+  showRenameModal: PropTypes.func,
   save: PropTypes.func
 };
 
 WorkspaceActions.defaultProps = {
   className: "",
+  showRenameModal: () => {},
   save: () => {}
 };
 
