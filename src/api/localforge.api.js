@@ -71,18 +71,6 @@ const getRecord = (model, id, { storageEngine } = {}) => {
 };
 
 class LocalForgeClient {
-  storeS3Login(login) {
-    return getRecord("Login", "S3").setAttr("value", login);
-  }
-
-  fetchS3Login() {
-    return getRecord("Login", "S3")
-      .getAttr("value")
-      .then(login => {
-        return login || "";
-      });
-  }
-
   storeCardById(id, data) {
     return this.storeById("Card", id, data);
   }

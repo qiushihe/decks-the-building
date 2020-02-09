@@ -1,3 +1,3 @@
-import persistLogin from "./persist-login.middleware";
+import updateLogin from "./update-login.middleware";
 
-export default [persistLogin];
+export default [updateLogin];

@@ -15,24 +15,26 @@ class S3Client {
   }
 
   setLogin(login) {
-    const parts = flow([trim, split("@")])(login);
+    return new Promise((resolve, reject) => {
+      const parts = flow([trim, split("@")])(login);
 
-    if (size(parts) === 4) {
-      this.bucketName = parts[3] || "";
-      this.s3 = new S3(
-        new Config({
-          region: parts[2] || "",
-          credentials: new Credentials({
-            accessKeyId: parts[0] || "",
-            secretAccessKey: parts[1] || ""
+      if (size(parts) === 4) {
+        this.bucketName = parts[3] || "";
+        this.s3 = new S3(
+          new Config({
+            region: parts[2] || "",
+            credentials: new Credentials({
+              accessKeyId: parts[0] || "",
+              secretAccessKey: parts[1] || ""
+            })
           })
-        })
-      );
-    } else {
-      this.s3 = null;
-    }
-
-    return Promise.resolve();
+        );
+        resolve();
+      } else {
+        this.s3 = null;
+        reject();
+      }
+    });
   }
 
   storeCardById(id, data) {

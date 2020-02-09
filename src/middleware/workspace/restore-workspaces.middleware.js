@@ -10,6 +10,7 @@ import reduce from "lodash/fp/reduce";
 
 import { getWorkspaceDetailService } from "/src/services/workspace-detail.service";
 import { READY } from "/src/action/app.action";
+import { LOGGED_IN } from "/src/action/s3.action";
 import { add as addCard } from "/src/action/card.action";
 
 import {
@@ -161,6 +162,23 @@ export default ({ getState, dispatch }) => next => action => {
             workspaceId => dispatch(activateWorkspace({ id: workspaceId }))
           ])
         );
+    } else if (actionType === LOGGED_IN) {
+      const workspaceDetailService = getWorkspaceDetailService();
+
+      return workspaceDetailService
+        .retrieveAllWorkspaceIds()
+        .then(allWorkspaceIds =>
+          flow([
+            map(workspaceId =>
+              workspaceDetailService.retrieveDetailByWorkspaceId(
+                getState,
+                workspaceId
+              )
+            ),
+            Promise.all
+          ])(allWorkspaceIds)
+        )
+        .then(flow([map(restoreWorkspaceData), Promise.all]));
     }
   });
 };
