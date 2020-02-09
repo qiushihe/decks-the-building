@@ -5,6 +5,7 @@ export const CREATE = "STACK/CREATE";
 export const ADD_CARDS = "STACK/ADD_CARDS";
 export const TOGGLE_CARDS = "STACK/TOGGLE_CARDS";
 export const MOVE_CARD = "STACK/MOVE_CARD";
+export const CHANGE_COPIES = "STACK/CHANGE_COPIES";
 
 export const create = createPromisedAction(CREATE, ["id", "label"], invoke);
 
@@ -23,5 +24,11 @@ export const toggleCards = createPromisedAction(
 export const moveCard = createPromisedAction(
   MOVE_CARD,
   ["fromId", "toId", "fromCardIndex", "toCardIndex"],
+  invoke
+);
+
+export const changeCopies = createPromisedAction(
+  CHANGE_COPIES,
+  ["id", "cardIndex", "change"],
   invoke
 );

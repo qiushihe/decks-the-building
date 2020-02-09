@@ -24,8 +24,7 @@ export default ({ getState, dispatch }) => next => action => {
             negate(identity),
             () =>
               map(label => dispatch(createLane({ id: uuidV4(), label })))([
-                "Library",
-                "Deck"
+                "Untitled"
               ])
           ]
         ])

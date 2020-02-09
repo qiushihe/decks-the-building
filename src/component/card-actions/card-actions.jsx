@@ -58,19 +58,17 @@ const CollapseIcon = styled(Minimize2)`
 `;
 
 class CardActions extends React.PureComponent {
-  constructor(...args) {
-    super(...args);
-
-    this.handleToggleClick = this.handleToggleClick.bind(this);
-  }
-
-  handleToggleClick() {
-    const { onToggleClicked } = this.props;
-    onToggleClicked();
-  }
-
   render() {
-    const { className, size, collapsed, count } = this.props;
+    const {
+      className,
+      cardIndex,
+      size,
+      collapsed,
+      count,
+      toggleCardExpanded,
+      addCopy,
+      subtractCopy
+    } = this.props;
     return (
       <Base className={className}>
         {count > 1 && (
@@ -79,16 +77,16 @@ class CardActions extends React.PureComponent {
           </IconContainer>
         )}
         <IconContainer size={size}>
-          <RemoveCopyIcon />
+          <RemoveCopyIcon onClick={() => subtractCopy({ cardIndex })} />
         </IconContainer>
         <IconContainer size={size}>
-          <AddCopyIcon />
+          <AddCopyIcon onClick={() => addCopy({ cardIndex })} />
         </IconContainer>
         <IconContainer size={size}>
           {collapsed ? (
-            <ExpandIcon onClick={this.handleToggleClick} />
+            <ExpandIcon onClick={toggleCardExpanded} />
           ) : (
-            <CollapseIcon onClick={this.handleToggleClick} />
+            <CollapseIcon onClick={toggleCardExpanded} />
           )}
         </IconContainer>
       </Base>
@@ -98,18 +96,24 @@ class CardActions extends React.PureComponent {
 
 CardActions.propTypes = {
   className: PropTypes.string,
+  cardIndex: PropTypes.number,
   collapsed: PropTypes.bool,
   count: PropTypes.number,
   size: PropTypes.number,
-  onToggleClicked: PropTypes.func
+  toggleCardExpanded: PropTypes.func,
+  addCopy: PropTypes.func,
+  subtractCopy: PropTypes.func
 };
 
 CardActions.defaultProps = {
   className: "",
+  cardIndex: 0,
   collapsed: false,
   count: 0,
   size: 16,
-  onToggleClicked: () => {}
+  toggleCardExpanded: () => {},
+  addCopy: () => {},
+  subtractCopy: () => {}
 };
 
 export default CardActions;
