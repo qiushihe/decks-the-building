@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "webpack-dev-server --progress --hot --config ./webpack.config.dev.babel.js",
     "build": "npm run eslint && webpack --progress --config ./webpack.config.build.babel.js",
+    "build-docs": "npm run eslint && webpack -p --progress --config ./webpack.config.docs.babel.js",
     "eslint": "eslint --fix --ext .js --ext .jsx ./src ./test",
     "test-mocha": "cross-env NODE_ENV=test mocha",
     "test-cov": "cross-env NODE_ENV=test nyc npm run test-mocha",
