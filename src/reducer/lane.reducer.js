@@ -8,7 +8,7 @@ import addStacks from "./lane/add-stacks";
 import moveStack from "./lane/move-stack";
 
 const initialState = {
-  allLanes: []
+  allLanes: {}
 };
 
 export default handleActions(

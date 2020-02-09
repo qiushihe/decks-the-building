@@ -10,31 +10,22 @@ import constant from "lodash/fp/constant";
 export default (state = {}, { id, stackIds } = {}) => {
   return {
     ...state,
-    allLanes: flow([
-      getOr([], "allLanes"),
-      reduce(
-        (result, lane) =>
-          lane.id === id
-            ? [
-                ...result,
-                {
-                  ...lane,
-                  stacks: reduce(
-                    (result, stackId) =>
-                      flow([
-                        find({ id: stackId }),
-                        cond([
-                          [isNil, () => [...result, { id: stackId }]],
-                          [stubTrue, constant(result)]
-                        ])
-                      ])(result),
-                    getOr([], "stacks")(lane)
-                  )(stackIds)
-                }
-              ]
-            : [...result, lane],
-        []
-      )
-    ])(state)
+    allLanes: {
+      ...state.allLanes,
+      [id]: {
+        ...state.allLanes[id],
+        stacks: reduce(
+          (result, stackId) =>
+            flow([
+              find({ id: stackId }),
+              cond([
+                [isNil, () => [...result, { id: stackId }]],
+                [stubTrue, constant(result)]
+              ])
+            ])(result),
+          getOr([], "stacks")(state.allLanes[id])
+        )(stackIds)
+      }
+    }
   };
 };

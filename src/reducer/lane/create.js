@@ -1,13 +1,13 @@
 export default (state = {}, { id, label } = {}) => {
   return {
     ...state,
-    allLanes: [
+    allLanes: {
       ...state.allLanes,
-      {
+      [id]: {
         id,
         label,
         stacks: []
       }
-    ]
+    }
   };
 };
