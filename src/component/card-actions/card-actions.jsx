@@ -20,6 +20,11 @@ const IconContainer = styled.div`
   border-radius: 100%;
   background: #000000;
   box-shadow: 0 0 0 1px #ffffff;
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 1;
+  }
 
   &:first-child {
     margin-left: 0;

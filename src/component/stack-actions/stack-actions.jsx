@@ -9,6 +9,12 @@ import Arrange from "/src/component/arrange";
 const IconStyle = css`
   width: 16px;
   height: 16px;
+  cursor: pointer;
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 1;
+  }
 `;
 
 const RenameStackIcon = styled(Edit)`
@@ -33,7 +39,12 @@ const CreateStackIcon = styled(PlusCircle)`
 
 class StackActions extends React.PureComponent {
   render() {
-    const { className, showAddCardsToStackModal } = this.props;
+    const {
+      className,
+      showAddCardsToStackModal,
+      addStack,
+      removeStack
+    } = this.props;
 
     return (
       <Arrange className={className}>
@@ -50,11 +61,11 @@ class StackActions extends React.PureComponent {
         </Arrange.Fit>
         <Arrange.Fit>&nbsp;</Arrange.Fit>
         <Arrange.Fit>
-          <DeleteStackIcon />
+          <DeleteStackIcon onClick={removeStack} />
         </Arrange.Fit>
         <Arrange.Fit>&nbsp;</Arrange.Fit>
         <Arrange.Fit>
-          <CreateStackIcon />
+          <CreateStackIcon onClick={addStack} />
         </Arrange.Fit>
       </Arrange>
     );
@@ -63,12 +74,16 @@ class StackActions extends React.PureComponent {
 
 StackActions.propTypes = {
   className: PropTypes.string,
-  showAddCardsToStackModal: PropTypes.func
+  showAddCardsToStackModal: PropTypes.func,
+  addStack: PropTypes.func,
+  removeStack: PropTypes.func
 };
 
 StackActions.defaultProps = {
   className: "",
-  showAddCardsToStackModal: () => {}
+  showAddCardsToStackModal: () => {},
+  addStack: () => {},
+  removeStack: () => {}
 };
 
 export default StackActions;

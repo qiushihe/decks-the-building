@@ -2,6 +2,7 @@ import { handleActions } from "redux-actions";
 
 import {
   CREATE,
+  REMOVE,
   ADD_CARDS,
   TOGGLE_CARDS,
   MOVE_CARD,
@@ -10,6 +11,7 @@ import {
 import { withPayload } from "/src/util/reducer.util";
 
 import create from "./stack/create";
+import remove from "./stack/remove";
 import addCards from "./stack/add-cards";
 import toggleCards from "./stack/toggle-cards";
 import moveCard from "./stack/move-card";
@@ -22,6 +24,7 @@ const initialState = {
 export default handleActions(
   {
     [CREATE]: withPayload(create),
+    [REMOVE]: withPayload(remove),
     [ADD_CARDS]: withPayload(addCards),
     [TOGGLE_CARDS]: withPayload(toggleCards),
     [MOVE_CARD]: withPayload(moveCard),

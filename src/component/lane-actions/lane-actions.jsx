@@ -8,6 +8,12 @@ import Arrange from "/src/component/arrange";
 const IconStyle = css`
   width: 16px;
   height: 16px;
+  cursor: pointer;
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 1;
+  }
 `;
 
 const RenameLandIcon = styled(Edit)`

@@ -34,9 +34,9 @@ class Stacks extends React.PureComponent {
           }
         }}
       >
-        {map(stackId => <StyledStack key={stackId} stackId={stackId} />)(
-          stackIds
-        )}
+        {map(stackId => (
+          <StyledStack key={stackId} laneId={laneId} stackId={stackId} />
+        ))(stackIds)}
       </Base>
     );
   }
