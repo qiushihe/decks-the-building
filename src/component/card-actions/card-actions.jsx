@@ -70,7 +70,7 @@ class CardActions extends React.PureComponent {
       size,
       collapsed,
       count,
-      toggleCardExpanded,
+      toggleCard,
       addCopy,
       subtractCopy
     } = this.props;
@@ -89,9 +89,9 @@ class CardActions extends React.PureComponent {
         </IconContainer>
         <IconContainer size={size}>
           {collapsed ? (
-            <ExpandIcon onClick={toggleCardExpanded} />
+            <ExpandIcon onClick={toggleCard} />
           ) : (
-            <CollapseIcon onClick={toggleCardExpanded} />
+            <CollapseIcon onClick={toggleCard} />
           )}
         </IconContainer>
       </Base>
@@ -105,7 +105,7 @@ CardActions.propTypes = {
   collapsed: PropTypes.bool,
   count: PropTypes.number,
   size: PropTypes.number,
-  toggleCardExpanded: PropTypes.func,
+  toggleCard: PropTypes.func,
   addCopy: PropTypes.func,
   subtractCopy: PropTypes.func
 };
@@ -116,7 +116,7 @@ CardActions.defaultProps = {
   collapsed: false,
   count: 0,
   size: 16,
-  toggleCardExpanded: () => {},
+  toggleCard: () => {},
   addCopy: () => {},
   subtractCopy: () => {}
 };

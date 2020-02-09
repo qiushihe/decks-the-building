@@ -30,12 +30,12 @@ const CreateLaneIcon = styled(PlusCircle)`
 
 class LaneActions extends React.PureComponent {
   render() {
-    const { className, showRenameModal, addLane, removeLane } = this.props;
+    const { className, renameLane, createLane, removeLane } = this.props;
     return (
       <div className={className}>
         <Arrange>
           <Arrange.Fit>
-            <RenameLaneIcon onClick={showRenameModal} />
+            <RenameLaneIcon onClick={renameLane} />
           </Arrange.Fit>
           <Arrange.Fit>&nbsp;</Arrange.Fit>
           <Arrange.Fit>
@@ -43,7 +43,7 @@ class LaneActions extends React.PureComponent {
           </Arrange.Fit>
           <Arrange.Fit>&nbsp;</Arrange.Fit>
           <Arrange.Fit>
-            <CreateLaneIcon onClick={addLane} />
+            <CreateLaneIcon onClick={createLane} />
           </Arrange.Fit>
         </Arrange>
       </div>
@@ -53,15 +53,15 @@ class LaneActions extends React.PureComponent {
 
 LaneActions.propTypes = {
   className: PropTypes.string,
-  showRenameModal: PropTypes.func,
-  addLane: PropTypes.func,
+  renameLane: PropTypes.func,
+  createLane: PropTypes.func,
   removeLane: PropTypes.func
 };
 
 LaneActions.defaultProps = {
   className: "",
-  showRenameModal: () => {},
-  addLane: () => {},
+  renameLane: () => {},
+  createLane: () => {},
   removeLane: () => {}
 };
 

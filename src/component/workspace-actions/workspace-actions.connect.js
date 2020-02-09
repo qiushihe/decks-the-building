@@ -1,28 +1,36 @@
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
+import uuidV4 from "uuid/v4";
 
 import { RENAME_OBJECT } from "/src/enum/modal.enum";
 import { WORKSPACE } from "/src/enum/nameable.enum";
-import { show as showModal } from "/src/action/modal.action";
-import { save } from "/src/action/workspace.action";
-import { workspaceLabel } from "/src/selector/workspace.selector";
+import { show } from "/src/action/modal.action";
+import { save, create, remove, activate } from "/src/action/workspace.action";
+import {
+  allWorkspaceIds,
+  workspaceLabel
+} from "/src/selector/workspace.selector";
 
 import WorkspaceActions from "./workspace-actions";
 
 export default connect(
   createStructuredSelector({
+    allWorkspaceIds,
     workspaceLabel
   }),
   dispatch => ({
-    showModal: ({ name, props }) => dispatch(showModal({ name, props })),
-    save: ({ id }) => dispatch(save({ id }))
+    show: ({ name, props }) => dispatch(show({ name, props })),
+    save: ({ id }) => dispatch(save({ id })),
+    create: ({ id, label }) => dispatch(create({ id, label })),
+    remove: ({ id }) => dispatch(remove({ id })),
+    activate: ({ id }) => dispatch(activate({ id }))
   }),
   (stateProps, dispatchProps, ownProps) => ({
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    showRenameModal: () =>
-      dispatchProps.showModal({
+    renameWorkspace: () =>
+      dispatchProps.show({
         name: RENAME_OBJECT,
         props: {
           nameable: WORKSPACE,
@@ -30,8 +38,21 @@ export default connect(
           workspaceId: ownProps.workspaceId
         }
       }),
-    save: () =>
+    saveWorkspace: () =>
       dispatchProps.save({
+        id: ownProps.workspaceId
+      }),
+    createWorkspace: () =>
+      dispatchProps
+        .create({
+          id: uuidV4(),
+          label: "Untitled"
+        })
+        .then(({ payload: { id: workspaceId } }) =>
+          dispatchProps.activate({ id: workspaceId })
+        ),
+    removeWorkspace: () =>
+      dispatchProps.remove({
         id: ownProps.workspaceId
       })
   })

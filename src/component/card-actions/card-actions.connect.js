@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 
-import { toggleCards, changeCopies } from "/src/action/stack.action";
+import { toggleCards, changeCardCopies } from "/src/action/stack.action";
 
 import {
   stackCardCountByCardIndex,
@@ -18,9 +18,9 @@ export default connect(
   dispatch => ({
     toggleCards: ({ id, cardIndices }) =>
       dispatch(toggleCards({ id, cardIndices })),
-    changeCopies: ({ id, cardIndex, change }) =>
+    changeCardCopies: ({ id, cardIndex, change }) =>
       dispatch(
-        changeCopies({
+        changeCardCopies({
           id,
           cardIndex,
           change
@@ -31,19 +31,19 @@ export default connect(
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    toggleCardExpanded: () =>
+    toggleCard: () =>
       dispatchProps.toggleCards({
         id: ownProps.stackId,
         cardIndices: [ownProps.cardIndex]
       }),
     addCopy: ({ cardIndex }) =>
-      dispatchProps.changeCopies({
+      dispatchProps.changeCardCopies({
         id: ownProps.stackId,
         cardIndex,
         change: 1
       }),
     subtractCopy: ({ cardIndex }) =>
-      dispatchProps.changeCopies({
+      dispatchProps.changeCardCopies({
         id: ownProps.stackId,
         cardIndex,
         change: -1

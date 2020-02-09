@@ -16,7 +16,7 @@ import { add as addCard } from "/src/action/card.action";
 import {
   restore as restoreStack,
   addCards as addCardsToStack,
-  changeCopies as changeCopiesOfCardInStack
+  changeCardCopies as changeCopiesOfCardInStack
 } from "/src/action/stack.action";
 
 import {

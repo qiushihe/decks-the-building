@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
-import { Edit, Trash2, Save } from "react-feather";
+import { Edit, Trash2, Save, PlusCircle } from "react-feather";
 
 import Arrange from "/src/component/arrange";
 
@@ -16,34 +16,48 @@ const IconStyle = css`
   }
 `;
 
-const RenameLandIcon = styled(Edit)`
+const RenameWorkspaceIcon = styled(Edit)`
   ${IconStyle}
 `;
 
-const DeleteLandIcon = styled(Trash2)`
+const DeleteWorkspaceIcon = styled(Trash2)`
   ${IconStyle}
 `;
 
-const SaveIcon = styled(Save)`
+const SaveWorkspaceIcon = styled(Save)`
+  ${IconStyle}
+`;
+
+const CreateWorkspaceIcon = styled(PlusCircle)`
   ${IconStyle}
 `;
 
 class WorkspaceActions extends React.PureComponent {
   render() {
-    const { className, showRenameModal, save } = this.props;
+    const {
+      className,
+      renameWorkspace,
+      saveWorkspace,
+      createWorkspace,
+      removeWorkspace
+    } = this.props;
     return (
       <div className={className}>
         <Arrange>
           <Arrange.Fit>
-            <RenameLandIcon onClick={showRenameModal} />
+            <RenameWorkspaceIcon onClick={renameWorkspace} />
           </Arrange.Fit>
           <Arrange.Fit>&nbsp;</Arrange.Fit>
           <Arrange.Fit>
-            <DeleteLandIcon />
+            <DeleteWorkspaceIcon onClick={removeWorkspace} />
           </Arrange.Fit>
           <Arrange.Fit>&nbsp;</Arrange.Fit>
           <Arrange.Fit>
-            <SaveIcon onClick={save} />
+            <SaveWorkspaceIcon onClick={saveWorkspace} />
+          </Arrange.Fit>
+          <Arrange.Fit>&nbsp;</Arrange.Fit>
+          <Arrange.Fit>
+            <CreateWorkspaceIcon onClick={createWorkspace} />
           </Arrange.Fit>
         </Arrange>
       </div>
@@ -53,14 +67,18 @@ class WorkspaceActions extends React.PureComponent {
 
 WorkspaceActions.propTypes = {
   className: PropTypes.string,
-  showRenameModal: PropTypes.func,
-  save: PropTypes.func
+  renameWorkspace: PropTypes.func,
+  saveWorkspace: PropTypes.func,
+  createWorkspace: PropTypes.func,
+  removeWorkspace: PropTypes.func
 };
 
 WorkspaceActions.defaultProps = {
   className: "",
-  showRenameModal: () => {},
-  save: () => {}
+  renameWorkspace: () => {},
+  saveWorkspace: () => {},
+  createWorkspace: () => {},
+  removeWorkspace: () => {}
 };
 
 export default WorkspaceActions;

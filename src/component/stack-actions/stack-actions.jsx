@@ -42,8 +42,8 @@ class StackActions extends React.PureComponent {
     const {
       className,
       showAddCardsToStackModal,
-      showRenameModal,
-      addStack,
+      renameStack,
+      createStack,
       removeStack
     } = this.props;
 
@@ -51,7 +51,7 @@ class StackActions extends React.PureComponent {
       <div className={className}>
         <Arrange>
           <Arrange.Fit>
-            <RenameStackIcon onClick={showRenameModal} />
+            <RenameStackIcon onClick={renameStack} />
           </Arrange.Fit>
           <Arrange.Fit>&nbsp;</Arrange.Fit>
           <Arrange.Fit>
@@ -67,7 +67,7 @@ class StackActions extends React.PureComponent {
           </Arrange.Fit>
           <Arrange.Fit>&nbsp;</Arrange.Fit>
           <Arrange.Fit>
-            <CreateStackIcon onClick={addStack} />
+            <CreateStackIcon onClick={createStack} />
           </Arrange.Fit>
         </Arrange>
       </div>
@@ -78,16 +78,16 @@ class StackActions extends React.PureComponent {
 StackActions.propTypes = {
   className: PropTypes.string,
   showAddCardsToStackModal: PropTypes.func,
-  showRenameModal: PropTypes.func,
-  addStack: PropTypes.func,
+  renameStack: PropTypes.func,
+  createStack: PropTypes.func,
   removeStack: PropTypes.func
 };
 
 StackActions.defaultProps = {
   className: "",
   showAddCardsToStackModal: () => {},
-  showRenameModal: () => {},
-  addStack: () => {},
+  renameStack: () => {},
+  createStack: () => {},
   removeStack: () => {}
 };
 

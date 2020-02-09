@@ -36,7 +36,7 @@ export const moveCard = createPromisedAction(
   invoke
 );
 
-export const changeCopies = createPromisedAction(
+export const changeCardCopies = createPromisedAction(
   CHANGE_COPIES,
   ["id", "cardIndex", "change"],
   invoke

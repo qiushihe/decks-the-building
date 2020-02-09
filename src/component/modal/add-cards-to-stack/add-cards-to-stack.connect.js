@@ -14,7 +14,7 @@ import { add as addCards } from "/src/action/card.action";
 
 import {
   addCards as addCardsToStack,
-  changeCopies as changeCardCopies
+  changeCardCopies as changeCardCopiesInStack
 } from "/src/action/stack.action";
 
 import AddCardsToStack from "./add-cards-to-stack";
@@ -33,9 +33,9 @@ export default connect(
     addCards: ({ names }) => dispatch(addCards({ names })),
     addCardsToStack: ({ id, cardIds }) =>
       dispatch(addCardsToStack({ id, cardIds })),
-    changeCardCopies: ({ id, cardIndex, change }) =>
+    changeCardCopiesInStack: ({ id, cardIndex, change }) =>
       dispatch(
-        changeCardCopies({
+        changeCardCopiesInStack({
           id,
           cardIndex,
           change
@@ -84,7 +84,7 @@ export default connect(
                   ),
                   map(({ cardIndex, change }) =>
                     change > 0
-                      ? dispatchProps.changeCardCopies({
+                      ? dispatchProps.changeCardCopiesInStack({
                           id: ownProps.stackId,
                           cardIndex,
                           change
