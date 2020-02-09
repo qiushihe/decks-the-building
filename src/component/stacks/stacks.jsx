@@ -6,6 +6,8 @@ import map from "lodash/fp/map";
 
 import Stack from "/src/component/stack";
 
+const uncappedMap = map.convert({ cap: false });
+
 const Base = styled(Container)`
   display: flex;
   flex-direction: row;
@@ -34,8 +36,13 @@ class Stacks extends React.PureComponent {
           }
         }}
       >
-        {map(stackId => (
-          <StyledStack key={stackId} laneId={laneId} stackId={stackId} />
+        {uncappedMap((stackId, index) => (
+          <StyledStack
+            key={stackId}
+            laneId={laneId}
+            stackId={stackId}
+            stackIndex={index}
+          />
         ))(stackIds)}
       </Base>
     );

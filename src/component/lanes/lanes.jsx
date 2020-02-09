@@ -6,6 +6,8 @@ import map from "lodash/fp/map";
 
 import Lane from "/src/component/lane";
 
+const uncappedMap = map.convert({ cap: false });
+
 const Base = styled.div`
   overflow: auto;
 `;
@@ -29,8 +31,13 @@ class Lanes extends React.PureComponent {
             }
           }}
         >
-          {map(laneId => (
-            <Lane key={laneId} workspaceId={workspaceId} laneId={laneId} />
+          {uncappedMap((laneId, index) => (
+            <Lane
+              key={laneId}
+              workspaceId={workspaceId}
+              laneId={laneId}
+              laneIndex={index}
+            />
           ))(laneIds)}
         </Container>
       </Base>

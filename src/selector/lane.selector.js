@@ -2,6 +2,7 @@ import { createSelector } from "reselect";
 import flow from "lodash/fp/flow";
 import map from "lodash/fp/map";
 import get from "lodash/fp/get";
+import size from "lodash/fp/size";
 
 import { fromProps } from "/src/util/selector.util";
 
@@ -19,3 +20,5 @@ export const laneStackIds = createSelector(
   landById,
   flow([get("stacks"), map(get("id"))])
 );
+
+export const laneStacksCount = createSelector(laneStackIds, size);

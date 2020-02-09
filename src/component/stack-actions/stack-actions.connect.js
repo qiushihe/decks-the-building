@@ -1,8 +1,11 @@
+import Promise from "bluebird";
 import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
 import uuidV4 from "uuid/v4";
 
 import { ADD_CARDS_TO_STACK } from "/src/enum/modal.enum";
 import { show as showModal } from "/src/action/modal.action";
+import { laneStacksCount } from "/src/selector/lane.selector";
 
 import {
   create as createStackAction,
@@ -11,21 +14,35 @@ import {
 
 import {
   addStacks as addStacksToLaneAction,
-  removeStacks as removeStacksFromLaneAction
+  removeStacks as removeStacksFromLaneAction,
+  moveStack
 } from "/src/action/lane.action";
 
 import StackActions from "./stack-actions";
 
 export default connect(
-  null,
+  createStructuredSelector({
+    stacksCount: laneStacksCount
+  }),
   dispatch => ({
     showModal: ({ name, props }) => dispatch(showModal({ name, props })),
-    addStack: ({ id }) =>
-      dispatch(
-        createStackAction({ id: uuidV4(), label: "Untitled" })
-      ).then(({ payload: { id: stackId } }) =>
-        dispatch(addStacksToLaneAction({ id, stackIds: [stackId] }))
-      ),
+    addStack: ({ id, fromIndex, toIndex }) =>
+      dispatch(createStackAction({ id: uuidV4(), label: "Untitled" }))
+        .then(({ payload: { id: stackId } }) =>
+          dispatch(addStacksToLaneAction({ id, stackIds: [stackId] }))
+        )
+        .then(() =>
+          fromIndex !== toIndex
+            ? dispatch(
+                moveStack({
+                  fromId: id,
+                  toId: id,
+                  fromStackIndex: fromIndex,
+                  toStackIndex: toIndex
+                })
+              )
+            : Promise.resolve()
+        ),
     removeStacks: ({ id, stackIds }) =>
       dispatch(removeStacksFromLaneAction({ id, stackIds })).then(() =>
         dispatch(removeStackAction({ ids: stackIds }))
@@ -42,7 +59,9 @@ export default connect(
       }),
     addStack: () =>
       dispatchProps.addStack({
-        id: ownProps.laneId
+        id: ownProps.laneId,
+        fromIndex: stateProps.stacksCount,
+        toIndex: ownProps.stackIndex + 1
       }),
     removeStack: () =>
       dispatchProps.removeStacks({

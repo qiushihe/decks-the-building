@@ -47,7 +47,7 @@ const LaneIcon = styled(Trello)`
 
 class Lane extends React.PureComponent {
   render() {
-    const { workspaceId, laneId, label } = this.props;
+    const { workspaceId, laneId, laneIndex, label } = this.props;
     return (
       <Base>
         <Content>
@@ -59,7 +59,11 @@ class Lane extends React.PureComponent {
             <Arrange.Fill>{label}</Arrange.Fill>
             <Arrange.Fit>&nbsp;</Arrange.Fit>
             <Arrange.Fit>
-              <StyledLaneActions workspaceId={workspaceId} laneId={laneId} />
+              <StyledLaneActions
+                workspaceId={workspaceId}
+                laneId={laneId}
+                laneIndex={laneIndex}
+              />
             </Arrange.Fit>
             <Arrange.Fit>&nbsp;&nbsp;&nbsp;</Arrange.Fit>
           </Arrange>
@@ -73,12 +77,14 @@ class Lane extends React.PureComponent {
 Lane.propTypes = {
   workspaceId: PropTypes.string,
   laneId: PropTypes.string,
+  laneIndex: PropTypes.number,
   label: PropTypes.string
 };
 
 Lane.defaultProps = {
   workspaceId: "",
   laneId: "",
+  laneIndex: 0,
   label: "Lane"
 };
 

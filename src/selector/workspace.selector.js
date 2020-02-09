@@ -4,6 +4,7 @@ import map from "lodash/fp/map";
 import get from "lodash/fp/get";
 import isEmpty from "lodash/fp/isEmpty";
 import negate from "lodash/fp/negate";
+import size from "lodash/fp/size";
 
 import { fromProps, withProps } from "/src/util/selector.util";
 
@@ -33,6 +34,8 @@ export const workspaceLaneIds = createSelector(
   workspaceById,
   flow([get("lanes"), map(get("id"))])
 );
+
+export const workspaceLanesCount = createSelector(workspaceLaneIds, size);
 
 const withActiveWorkspaceId = withProps({ workspaceId: activeWorkspaceId });
 
