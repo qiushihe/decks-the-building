@@ -24,6 +24,7 @@ import {
 } from "/src/action/lane.action";
 
 import {
+  create as createWorkspace,
   restore as restoreWorkspace,
   activate as activateWorkspace,
   addLanes as addLanesToWorkspace
@@ -106,7 +107,9 @@ export default ({ getState, dispatch }) => next => action => {
     return restoreLanesPromise
       .then(laneIds =>
         dispatch(restoreWorkspace({ id, label, laneIds })).then(() =>
-          dispatch(addLanesToWorkspace({ id, laneIds }))
+          isEmpty(laneIds)
+            ? Promise.resolve()
+            : dispatch(addLanesToWorkspace({ id, laneIds }))
         )
       )
       .then(() => id);
@@ -131,14 +134,27 @@ export default ({ getState, dispatch }) => next => action => {
         )
         .then(workspaces =>
           isEmpty(workspaces)
-            ? map(label => ({
-                id: uuidV4(),
-                label,
-                lanes: []
-              }))(["Untitled"])
-            : workspaces
+            ? {
+                isRestore: false,
+                workspaces: map(label => ({
+                  id: uuidV4(),
+                  label,
+                  lanes: []
+                }))(["Untitled"])
+              }
+            : { isRestore: true, workspaces }
         )
-        .then(flow([map(restoreWorkspaceData), Promise.all]))
+        .then(
+          flow([
+            ({ isRestore, workspaces }) =>
+              isRestore
+                ? map(restoreWorkspaceData)(workspaces)
+                : map(({ id, label }) =>
+                    dispatch(createWorkspace({ id, label })).then(constant(id))
+                  )(workspaces),
+            Promise.all
+          ])
+        )
         .then(
           flow([
             first,
