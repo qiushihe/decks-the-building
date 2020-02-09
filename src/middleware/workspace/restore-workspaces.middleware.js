@@ -13,18 +13,18 @@ import { READY } from "/src/action/app.action";
 import { add as addCard } from "/src/action/card.action";
 
 import {
-  create as createLane,
-  addStacks as addStacksToLane
-} from "/src/action/lane.action";
-
-import {
-  create as createStack,
+  restore as restoreStack,
   addCards as addCardsToStack,
   changeCopies as changeCopiesOfCardInStack
 } from "/src/action/stack.action";
 
 import {
-  create as createWorkspace,
+  restore as restoreLane,
+  addStacks as addStacksToLane
+} from "/src/action/lane.action";
+
+import {
+  restore as restoreWorkspace,
   activate as activateWorkspace,
   addLanes as addLanesToWorkspace
 } from "/src/action/workspace.action";
@@ -34,7 +34,7 @@ const uncappedReduce = reduce.convert({ cap: false });
 export default ({ getState, dispatch }) => next => action => {
   const { type: actionType } = action;
 
-  const restoreStack = ({ id, label, cards }) => {
+  const restoreStackData = ({ id, label, cards }) => {
     const restoreCardsPromise = flow([
       map(get("name")),
       names =>
@@ -59,7 +59,7 @@ export default ({ getState, dispatch }) => next => action => {
     return restoreCardsPromise
       .then(flow([get("payload.cards"), map(get("id"))]))
       .then(cardIds =>
-        dispatch(createStack({ id, label, cardIds })).then(() =>
+        dispatch(restoreStack({ id, label, cardIds })).then(() =>
           isEmpty(cardIds)
             ? Promise.resolve()
             : dispatch(addCardsToStack({ id, cardIds }))
@@ -84,24 +84,28 @@ export default ({ getState, dispatch }) => next => action => {
       .then(constant(id));
   };
 
-  const restoreLane = ({ id, label, stacks }) => {
-    const restoreStacksPromise = flow([map(restoreStack), Promise.all])(stacks);
+  const restoreLaneData = ({ id, label, stacks }) => {
+    const restoreStacksPromise = flow([map(restoreStackData), Promise.all])(
+      stacks
+    );
 
     return restoreStacksPromise
       .then(stackIds =>
-        dispatch(createLane({ id, label, stackIds })).then(() =>
+        dispatch(restoreLane({ id, label, stackIds })).then(() =>
           dispatch(addStacksToLane({ id, stackIds }))
         )
       )
       .then(constant(id));
   };
 
-  const restoreWorkspace = ({ id, label, lanes }) => {
-    const restoreLanesPromise = flow([map(restoreLane), Promise.all])(lanes);
+  const restoreWorkspaceData = ({ id, label, lanes }) => {
+    const restoreLanesPromise = flow([map(restoreLaneData), Promise.all])(
+      lanes
+    );
 
     return restoreLanesPromise
       .then(laneIds =>
-        dispatch(createWorkspace({ id, label, laneIds })).then(() =>
+        dispatch(restoreWorkspace({ id, label, laneIds })).then(() =>
           dispatch(addLanesToWorkspace({ id, laneIds }))
         )
       )
@@ -134,7 +138,7 @@ export default ({ getState, dispatch }) => next => action => {
               }))(["Untitled"])
             : workspaces
         )
-        .then(flow([map(restoreWorkspace), Promise.all]))
+        .then(flow([map(restoreWorkspaceData), Promise.all]))
         .then(
           flow([
             first,

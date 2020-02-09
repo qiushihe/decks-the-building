@@ -10,7 +10,7 @@ export default ({ dispatch }) => next => action => {
   const { type: actionType } = action;
 
   return Promise.resolve(next(action)).then(() => {
-    if (actionType === CREATE && false) {
+    if (actionType === CREATE) {
       const {
         payload: { id: workspaceId }
       } = action;
@@ -23,7 +23,7 @@ export default ({ dispatch }) => next => action => {
           });
         }),
         Promise.all
-      ])(["Untitled", "Untitled2"]);
+      ])(["Untitled"]);
     }
   });
 };

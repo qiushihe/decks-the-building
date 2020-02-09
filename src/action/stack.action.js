@@ -1,22 +1,17 @@
 import { createPromisedAction } from "/src/util/action.util";
-import { invoke, invokeWith } from "/src/util/function.util";
+import { invoke } from "/src/util/function.util";
 
 export const CREATE = "STACK/CREATE";
+export const RESTORE = "STACK/RESTORE";
 export const REMOVE = "STACK/REMOVE";
 export const ADD_CARDS = "STACK/ADD_CARDS";
 export const TOGGLE_CARDS = "STACK/TOGGLE_CARDS";
 export const MOVE_CARD = "STACK/MOVE_CARD";
 export const CHANGE_COPIES = "STACK/CHANGE_COPIES";
 
-export const create = createPromisedAction(
-  CREATE,
-  ["id", "label", "cardIds"],
-  invokeWith(({ id, label, cardIds }) => ({
-    id,
-    label,
-    cardIds: cardIds || []
-  }))
-);
+export const create = createPromisedAction(CREATE, ["id", "label"], invoke);
+
+export const restore = createPromisedAction(RESTORE, ["id", "label"], invoke);
 
 export const remove = createPromisedAction(REMOVE, ["ids"], invoke);
 
