@@ -21,10 +21,15 @@ export const stackCardIds = createSelector(
   flow([get("cards"), map(get("id"))])
 );
 
+// Note: This is NOT supposed to be unique, and it's
+// supposed to count just the number of entries in the
+// stack's `cards` array.
+export const stackCardEntries = createSelector(stackById, get("cards"));
+
 // Note: This is NOT supposed to be unique card count,
-//       and it's supposed to count just the number of
-//       entries in the stack's `cards` array.
-export const stackCardEntriesCount = createSelector(stackCardIds, size);
+// and it's supposed to count just the number of entries
+// in the stack's `cards` array.
+export const stackCardEntriesCount = createSelector(stackCardEntries, size);
 
 export const stackCardByCardIndex = createSelector(
   fromProps(get("cardIndex")),

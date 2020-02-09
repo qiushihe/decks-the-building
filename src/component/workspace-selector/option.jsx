@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 class Option extends React.PureComponent {
   render() {
     const { workspaceId, label } = this.props;
+
     return <option value={workspaceId}>{label}</option>;
   }
 }

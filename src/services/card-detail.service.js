@@ -13,7 +13,7 @@ class CardDetailService {
     this.scryfall = getScryfallClient();
   }
 
-  getDetailByCardId(getState, cardId) {
+  retrieveDetailByCardId(getState, cardId) {
     return this.localForge
       .fetchCardById(cardId)
       .catch(() =>

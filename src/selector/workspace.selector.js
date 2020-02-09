@@ -2,8 +2,6 @@ import { createSelector } from "reselect";
 import flow from "lodash/fp/flow";
 import map from "lodash/fp/map";
 import get from "lodash/fp/get";
-import isEmpty from "lodash/fp/isEmpty";
-import negate from "lodash/fp/negate";
 import size from "lodash/fp/size";
 
 import { fromProps, withProps } from "/src/util/selector.util";
@@ -14,8 +12,6 @@ export const allWorkspaceIds = createSelector(
   workspaceState,
   flow([get("allWorkspaces"), map(get("id"))])
 );
-
-export const hasWorkspaces = createSelector(allWorkspaceIds, negate(isEmpty));
 
 export const activeWorkspaceId = createSelector(
   workspaceState,

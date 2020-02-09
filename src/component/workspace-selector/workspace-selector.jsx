@@ -9,15 +9,16 @@ const Base = styled.div``;
 
 class WorkspaceSelector extends React.PureComponent {
   render() {
-    const { workspaceIds } = this.props;
+    const { workspaceIds, workspaceId, activate } = this.props;
 
     return (
       <Base>
         Workspace:
-        <select>
-          {map(workspaceId => (
-            <Option key={workspaceId} workspaceId={workspaceId} />
-          ))(workspaceIds)}
+        <select
+          value={workspaceId || ""}
+          onChange={evt => activate({ id: evt.target.value })}
+        >
+          {map(id => <Option key={id} workspaceId={id} />)(workspaceIds)}
         </select>
       </Base>
     );
@@ -25,11 +26,15 @@ class WorkspaceSelector extends React.PureComponent {
 }
 
 WorkspaceSelector.propTypes = {
-  workspaceIds: PropTypes.array
+  workspaceIds: PropTypes.array,
+  workspaceId: PropTypes.string,
+  activate: PropTypes.func
 };
 
 WorkspaceSelector.defaultProps = {
-  workspaceIds: []
+  workspaceIds: [],
+  workspaceId: "",
+  activate: () => {}
 };
 
 export default WorkspaceSelector;

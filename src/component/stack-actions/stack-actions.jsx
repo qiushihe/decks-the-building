@@ -47,27 +47,29 @@ class StackActions extends React.PureComponent {
     } = this.props;
 
     return (
-      <Arrange className={className}>
-        <Arrange.Fit>
-          <RenameStackIcon />
-        </Arrange.Fit>
-        <Arrange.Fit>&nbsp;</Arrange.Fit>
-        <Arrange.Fit>
-          <AddCardIcon onClick={showAddCardsToStackModal} />
-        </Arrange.Fit>
-        <Arrange.Fit>&nbsp;</Arrange.Fit>
-        <Arrange.Fit>
-          <TidyStackIcon />
-        </Arrange.Fit>
-        <Arrange.Fit>&nbsp;</Arrange.Fit>
-        <Arrange.Fit>
-          <DeleteStackIcon onClick={removeStack} />
-        </Arrange.Fit>
-        <Arrange.Fit>&nbsp;</Arrange.Fit>
-        <Arrange.Fit>
-          <CreateStackIcon onClick={addStack} />
-        </Arrange.Fit>
-      </Arrange>
+      <div className={className}>
+        <Arrange>
+          <Arrange.Fit>
+            <RenameStackIcon />
+          </Arrange.Fit>
+          <Arrange.Fit>&nbsp;</Arrange.Fit>
+          <Arrange.Fit>
+            <AddCardIcon onClick={showAddCardsToStackModal} />
+          </Arrange.Fit>
+          <Arrange.Fit>&nbsp;</Arrange.Fit>
+          <Arrange.Fit>
+            <TidyStackIcon />
+          </Arrange.Fit>
+          <Arrange.Fit>&nbsp;</Arrange.Fit>
+          <Arrange.Fit>
+            <DeleteStackIcon onClick={removeStack} />
+          </Arrange.Fit>
+          <Arrange.Fit>&nbsp;</Arrange.Fit>
+          <Arrange.Fit>
+            <CreateStackIcon onClick={addStack} />
+          </Arrange.Fit>
+        </Arrange>
+      </div>
     );
   }
 }

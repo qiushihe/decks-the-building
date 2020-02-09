@@ -1,3 +1,4 @@
-import createDefaultWorkspaces from "./create-default-workspaces.middleware";
+import restoreWorkspaces from "./restore-workspaces.middleware";
+import saveWorkspaces from "./save-workspace.middleware";
 
-export default [createDefaultWorkspaces];
+export default [restoreWorkspaces, saveWorkspaces];

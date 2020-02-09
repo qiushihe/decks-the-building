@@ -4,6 +4,10 @@ import flow from "lodash/fp/flow";
 import trim from "lodash/fp/trim";
 import split from "lodash/fp/split";
 import size from "lodash/fp/size";
+import get from "lodash/fp/get";
+import map from "lodash/fp/map";
+import compact from "lodash/fp/compact";
+import uniq from "lodash/fp/uniq";
 
 class S3Client {
   constructor() {
@@ -32,6 +36,54 @@ class S3Client {
   }
 
   storeCardById(id, data) {
+    return this.storeById("cards", id, data);
+  }
+
+  fetchCardById(id) {
+    return this.fetchById("cards", id);
+  }
+
+  storeWorkspaceById(id, data) {
+    return this.storeById("workspaces", id, data);
+  }
+
+  fetchWorkspaceById(id) {
+    return this.fetchById("workspaces", id);
+  }
+
+  fetchAllWorkspaceIds() {
+    if (this.s3 === null) {
+      return Promise.reject(new Error("S3 client not logged in"));
+    }
+
+    return new Promise((resolve, reject) => {
+      this.s3.listObjects(
+        {
+          Bucket: this.bucketName,
+          Prefix: "workspaces/"
+        },
+        (err, data) => {
+          if (err) {
+            reject(err);
+          } else {
+            flow([
+              get("Contents"),
+              map(get("Key")),
+              map(key => {
+                const matchedKey = key.match(/^workspaces\/([^/.]+)\..*$/);
+                return matchedKey ? matchedKey[1] : null;
+              }),
+              compact,
+              uniq,
+              resolve
+            ])(data);
+          }
+        }
+      );
+    });
+  }
+
+  storeById(subDirectory, id, data) {
     if (this.s3 === null) {
       return Promise.reject(new Error("S3 client not logged in"));
     }
@@ -40,7 +92,7 @@ class S3Client {
       this.s3.upload(
         {
           Bucket: this.bucketName,
-          Key: `cards/${id}.json`,
+          Key: `${subDirectory}/${id}.json`,
           Body: JSON.stringify(data, null, 2),
           ContentType: "text/plain"
         },
@@ -55,7 +107,7 @@ class S3Client {
     });
   }
 
-  fetchCardById(id) {
+  fetchById(subDirectory, id) {
     if (this.s3 === null) {
       return Promise.reject(new Error("S3 client not logged in"));
     }
@@ -64,7 +116,7 @@ class S3Client {
       this.s3.getObject(
         {
           Bucket: this.bucketName,
-          Key: `cards/${id}.json`,
+          Key: `${subDirectory}/${id}.json`,
           ResponseContentType: "text/plain",
           ResponseContentDisposition: "inline"
         },

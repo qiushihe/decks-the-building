@@ -14,6 +14,16 @@ LocalForage.config({
   driver: [LocalForage.INDEXEDDB, LocalForage.WEBSQL, LocalForage.LOCALSTORAGE]
 });
 
+const forALlRecords = ({ storageEngine } = {}) => {
+  const engine = storageEngine || LocalForage;
+
+  return {
+    iterate: (iteratorCallback, successCallback) => {
+      return engine.iterate(iteratorCallback, successCallback);
+    }
+  };
+};
+
 const getRecord = (model, id, { storageEngine } = {}) => {
   const engine = storageEngine || LocalForage;
 
@@ -74,16 +84,46 @@ class LocalForgeClient {
   }
 
   storeCardById(id, data) {
-    return getRecord("Card", id).setAttr("data", JSON.stringify(data));
+    return this.storeById("Card", id, data);
   }
 
   fetchCardById(id) {
-    const record = getRecord("Card", id);
+    return this.fetchById("Card", id);
+  }
+
+  storeWorkspaceById(id, data) {
+    return this.storeById("Workspace", id, data);
+  }
+
+  fetchWorkspaceById(id) {
+    return this.fetchById("Workspace", id);
+  }
+
+  fetchAllWorkspaceIds() {
+    let workspaceIds = [];
+    return forALlRecords()
+      .iterate((value, key) => {
+        const matchedKey = key.match(/^Workspace:([^:]+)$/);
+        if (matchedKey) {
+          workspaceIds = [...workspaceIds, matchedKey[1]];
+        }
+      })
+      .then(() => {
+        return workspaceIds;
+      });
+  }
+
+  storeById(modelName, id, data) {
+    return getRecord(modelName, id).setAttr("data", JSON.stringify(data));
+  }
+
+  fetchById(modelName, id) {
+    const record = getRecord(modelName, id);
     return record.exists().then(recordExists => {
       if (recordExists) {
         return record.getAttr("data").then(data => JSON.parse(`${data}`));
       } else {
-        throw new Error(`Unable to find card with ID: ${id}`);
+        throw new Error(`Unable to find ${modelName} with ID: ${id}`);
       }
     });
   }

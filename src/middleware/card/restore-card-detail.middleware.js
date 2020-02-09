@@ -14,7 +14,7 @@ export default ({ getState, dispatch }) => {
   const restoreCardsByIds = flow([
     map(cardId =>
       getCardDetailService()
-        .getDetailByCardId(getState, cardId)
+        .retrieveDetailByCardId(getState, cardId)
         .then(cardDetail => dispatch(restore({ id: cardId, ...cardDetail })))
     ),
     Promise.all

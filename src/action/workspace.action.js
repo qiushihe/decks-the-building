@@ -1,15 +1,26 @@
 import { createPromisedAction } from "/src/util/action.util";
-import { invoke } from "/src/util/function.util";
+import { invoke, invokeWith } from "/src/util/function.util";
 
 export const CREATE = "WORKSPACE/CREATE";
 export const ACTIVATE = "WORKSPACE/ACTIVATE";
+export const SAVE = "WORKSPACE/SAVE";
 export const MOVE_LANE = "WORKSPACE/MOVE_LANE";
 export const ADD_LANES = "WORKSPACE/ADD_LANES";
 export const REMOVE_LANES = "WORKSPACE/REMOVE_LANES";
 
-export const create = createPromisedAction(CREATE, ["id", "label"], invoke);
+export const create = createPromisedAction(
+  CREATE,
+  ["id", "label", "laneIds"],
+  invokeWith(({ id, label, laneIds }) => ({
+    id,
+    label,
+    laneIds: laneIds || []
+  }))
+);
 
 export const activate = createPromisedAction(ACTIVATE, ["id"], invoke);
+
+export const save = createPromisedAction(SAVE, ["id"], invoke);
 
 export const moveLane = createPromisedAction(
   MOVE_LANE,

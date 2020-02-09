@@ -10,7 +10,7 @@ export default ({ dispatch }) => next => action => {
   const { type: actionType } = action;
 
   return Promise.resolve(next(action)).then(() => {
-    if (actionType === CREATE) {
+    if (actionType === CREATE && false) {
       const {
         payload: { id: workspaceId }
       } = action;
