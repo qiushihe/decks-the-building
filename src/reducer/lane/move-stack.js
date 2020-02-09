@@ -19,10 +19,7 @@ export default (
           stacks: flow([
             getOr([], "stacks"),
             removeItem(fromStackIndex),
-            addItem(
-              get(`stacks.${fromStackIndex}`)(lane),
-              toStackIndex
-            )
+            addItem(get(`stacks.${fromStackIndex}`)(lane), toStackIndex)
           ])(lane)
         }
       }
@@ -49,10 +46,9 @@ export default (
         },
         [toId]: {
           ...toLane,
-          stacks: flow([
-            getOr([], "stacks"),
-            addItem(stack, toStackIndex)
-          ])(toLane)
+          stacks: flow([getOr([], "stacks"), addItem(stack, toStackIndex)])(
+            toLane
+          )
         }
       }
     };

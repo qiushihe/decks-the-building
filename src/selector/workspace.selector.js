@@ -9,10 +9,12 @@ import { fromProps, withProps } from "/src/util/selector.util";
 
 import { workspace as workspaceState } from "./root.selector";
 
-export const hasWorkspaces = createSelector(
+export const allWorkspaceIds = createSelector(
   workspaceState,
-  flow([get("allWorkspaces"), negate(isEmpty)])
+  flow([get("allWorkspaces"), map(get("id"))])
 );
+
+export const hasWorkspaces = createSelector(allWorkspaceIds, negate(isEmpty));
 
 export const activeWorkspaceId = createSelector(
   workspaceState,
@@ -24,6 +26,8 @@ export const workspaceById = createSelector(
   workspaceState,
   (workspaceId, state) => get(`allWorkspaces.${workspaceId}`)(state)
 );
+
+export const workspaceLabel = createSelector(workspaceById, get("label"));
 
 export const workspaceLaneIds = createSelector(
   workspaceById,

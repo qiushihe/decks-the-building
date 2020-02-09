@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import S3Login from "/src/component/s3-login";
+import WorkspaceSelector from "/src/component/workspace-selector";
 import Lanes from "/src/component/lanes";
 
 class Application extends React.PureComponent {
@@ -14,6 +15,7 @@ class Application extends React.PureComponent {
     const { workspaceId } = this.props;
     return (
       <React.Fragment>
+        <WorkspaceSelector />
         <S3Login />
         <Lanes workspaceId={workspaceId} />
       </React.Fragment>
