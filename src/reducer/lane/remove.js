@@ -6,15 +6,15 @@ const uncappedReduce = reduce.convert({ cap: false });
 export default (state = {}, { ids } = {}) => {
   return {
     ...state,
-    allStacks: uncappedReduce(
-      (result, stack, id) =>
+    allLanes: uncappedReduce(
+      (result, lane, id) =>
         includes(id)(ids)
           ? result
           : {
               ...result,
-              [id]: stack
+              [id]: lane
             },
       {}
-    )(state.allStacks)
+    )(state.allLanes)
   };
 };

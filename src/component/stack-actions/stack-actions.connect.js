@@ -5,14 +5,14 @@ import { ADD_CARDS_TO_STACK } from "/src/enum/modal.enum";
 import { show as showModal } from "/src/action/modal.action";
 
 import {
-  addStacks as addStacksToLaneAction,
-  removeStacks as removeStacksFromLaneAction
-} from "/src/action/lane.action";
-
-import {
   create as createStackAction,
   remove as removeStackAction
 } from "/src/action/stack.action";
+
+import {
+  addStacks as addStacksToLaneAction,
+  removeStacks as removeStacksFromLaneAction
+} from "/src/action/lane.action";
 
 import StackActions from "./stack-actions";
 

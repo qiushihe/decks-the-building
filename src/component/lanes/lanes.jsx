@@ -12,7 +12,7 @@ const Base = styled.div`
 
 class Lanes extends React.PureComponent {
   render() {
-    const { laneIds, moveLane } = this.props;
+    const { workspaceId, laneIds, moveLane } = this.props;
 
     return (
       <Base data-scrollable="true">
@@ -29,7 +29,9 @@ class Lanes extends React.PureComponent {
             }
           }}
         >
-          {map(laneId => <Lane key={laneId} laneId={laneId} />)(laneIds)}
+          {map(laneId => (
+            <Lane key={laneId} workspaceId={workspaceId} laneId={laneId} />
+          ))(laneIds)}
         </Container>
       </Base>
     );
@@ -37,11 +39,13 @@ class Lanes extends React.PureComponent {
 }
 
 Lanes.propTypes = {
+  workspaceId: PropTypes.string,
   laneIds: PropTypes.array,
   moveLane: PropTypes.func
 };
 
 Lanes.defaultProps = {
+  workspaceId: "",
   laneIds: [],
   moveLane: () => {}
 };
