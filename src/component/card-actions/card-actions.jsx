@@ -50,7 +50,7 @@ const RemoveCopyIcon = styled(Minus)`
   ${IconStyle}
 `;
 
-const SplitCopyIcon = styled(Copy)`
+const DuplicateIcon = styled(Copy)`
   ${IconStyle}
 `;
 
@@ -69,18 +69,17 @@ class CardActions extends React.PureComponent {
       cardIndex,
       size,
       collapsed,
-      count,
       toggleCard,
       addCopy,
-      subtractCopy
+      subtractCopy,
+      duplicateCard
     } = this.props;
+
     return (
       <Base className={className}>
-        {count > 1 && (
-          <IconContainer size={size}>
-            <SplitCopyIcon />
-          </IconContainer>
-        )}
+        <IconContainer size={size}>
+          <DuplicateIcon onClick={() => duplicateCard({ cardIndex })} />
+        </IconContainer>
         <IconContainer size={size}>
           <RemoveCopyIcon onClick={() => subtractCopy({ cardIndex })} />
         </IconContainer>
@@ -103,22 +102,22 @@ CardActions.propTypes = {
   className: PropTypes.string,
   cardIndex: PropTypes.number,
   collapsed: PropTypes.bool,
-  count: PropTypes.number,
   size: PropTypes.number,
   toggleCard: PropTypes.func,
   addCopy: PropTypes.func,
-  subtractCopy: PropTypes.func
+  subtractCopy: PropTypes.func,
+  duplicateCard: PropTypes.func
 };
 
 CardActions.defaultProps = {
   className: "",
   cardIndex: 0,
   collapsed: false,
-  count: 0,
   size: 16,
   toggleCard: () => {},
   addCopy: () => {},
-  subtractCopy: () => {}
+  subtractCopy: () => {},
+  duplicateCard: () => {}
 };
 
 export default CardActions;

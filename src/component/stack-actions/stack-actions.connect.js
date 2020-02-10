@@ -7,8 +7,13 @@ import { STACK } from "/src/enum/nameable.enum";
 import { show } from "/src/action/modal.action";
 import { laneStacksCount } from "/src/selector/lane.selector";
 import { stackLabel } from "/src/selector/stack.selector";
-import { create, remove } from "/src/action/stack.action";
 import { addStacks, removeStacks, moveStack } from "/src/action/lane.action";
+
+import {
+  create,
+  remove,
+  combineDuplicateCards
+} from "/src/action/stack.action";
 
 import StackActions from "./stack-actions";
 
@@ -21,6 +26,8 @@ export default connect(
     show: ({ name, props }) => dispatch(show({ name, props })),
     create: ({ id, label }) => dispatch(create({ id, label })),
     remove: ({ ids }) => dispatch(remove({ ids })),
+    combineDuplicateCards: ({ ids }) =>
+      dispatch(combineDuplicateCards({ ids })),
     addStacks: ({ id, stackIds }) => dispatch(addStacks({ id, stackIds })),
     moveStack: ({ fromId, toId, fromStackIndex, toStackIndex }) =>
       dispatch(moveStack({ fromId, toId, fromStackIndex, toStackIndex })),
@@ -30,10 +37,14 @@ export default connect(
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    showAddCardsToStackModal: () =>
+    addCardsToStack: () =>
       dispatchProps.show({
         name: ADD_CARDS_TO_STACK,
         props: { stackId: ownProps.stackId }
+      }),
+    combineDuplicateCards: () =>
+      dispatchProps.combineDuplicateCards({
+        ids: [ownProps.stackId]
       }),
     renameStack: () =>
       dispatchProps.show({

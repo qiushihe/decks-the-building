@@ -27,5 +27,10 @@
     "chai": true,
     "expect": true,
     "sinon": true
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
   }
 }
