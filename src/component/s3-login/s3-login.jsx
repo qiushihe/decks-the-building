@@ -1,16 +1,27 @@
 import React from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
+
+const StyledInput = styled.input`
+  width: 250px;
+
+  &::placeholder {
+    font-size: 12px;
+  }
+`;
 
 class S3Login extends React.PureComponent {
   render() {
     const { value, onChange } = this.props;
     return (
       <div>
-        S3 Login:
-        <input type="password" value={value} onChange={onChange} />
-        <div>
-          Login format: <code>access-key@secret-key@region@bucket</code>
-        </div>
+        S3 Login: &nbsp;
+        <StyledInput
+          type="password"
+          placeholder="access-key@secret-key@region@bucket"
+          value={value}
+          onChange={onChange}
+        />
       </div>
     );
   }

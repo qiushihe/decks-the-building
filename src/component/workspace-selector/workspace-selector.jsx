@@ -13,7 +13,7 @@ class WorkspaceSelector extends React.PureComponent {
 
     return (
       <Base>
-        Workspace:
+        Workspace: &nbsp;
         <select
           value={workspaceId || ""}
           onChange={evt => activate({ id: evt.target.value })}
