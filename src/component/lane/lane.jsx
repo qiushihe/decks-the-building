@@ -55,7 +55,15 @@ const StacksContainer = styled.div`
 
 class Lane extends React.PureComponent {
   render() {
-    const { className, workspaceId, laneId, laneIndex, label } = this.props;
+    const {
+      className,
+      workspaceId,
+      laneId,
+      laneIndex,
+      label,
+      cardsCount
+    } = this.props;
+
     return (
       <Base className={className}>
         <Header>
@@ -64,7 +72,10 @@ class Lane extends React.PureComponent {
               <LaneIcon />
             </Arrange.Fit>
             <Arrange.Fit>&nbsp;</Arrange.Fit>
-            <Arrange.Fill>{label}</Arrange.Fill>
+            <Arrange.Fill>
+              {label}
+              {cardsCount > 0 && ` (${cardsCount})`}
+            </Arrange.Fill>
             <Arrange.Fit>&nbsp;</Arrange.Fit>
             <Arrange.Fit>
               <StyledLaneActions
@@ -89,7 +100,8 @@ Lane.propTypes = {
   workspaceId: PropTypes.string,
   laneId: PropTypes.string,
   laneIndex: PropTypes.number,
-  label: PropTypes.string
+  label: PropTypes.string,
+  cardsCount: PropTypes.number
 };
 
 Lane.defaultProps = {
@@ -97,7 +109,8 @@ Lane.defaultProps = {
   workspaceId: "",
   laneId: "",
   laneIndex: 0,
-  label: "Lane"
+  label: "Lane",
+  cardsCount: 0
 };
 
 export default Lane;

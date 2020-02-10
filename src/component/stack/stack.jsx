@@ -76,7 +76,15 @@ const StackIcon = styled(Layers)`
 
 class Stack extends React.PureComponent {
   render() {
-    const { className, scale, laneId, stackId, stackIndex, label } = this.props;
+    const {
+      className,
+      scale,
+      laneId,
+      stackId,
+      stackIndex,
+      label,
+      cardsCount
+    } = this.props;
 
     return (
       <Base className={className} scale={scale}>
@@ -87,7 +95,10 @@ class Stack extends React.PureComponent {
                 <StackIcon />
               </Arrange.Fit>
               <Arrange.Fit>&nbsp;</Arrange.Fit>
-              <Arrange.Fill>{label} </Arrange.Fill>
+              <Arrange.Fill>
+                {label}
+                {cardsCount > 0 && ` (${cardsCount})`}
+              </Arrange.Fill>
               <Arrange.Fit>&nbsp;</Arrange.Fit>
               <Arrange.Fit>
                 <StyledStackActions
@@ -111,7 +122,8 @@ Stack.propTypes = {
   laneId: PropTypes.string,
   stackId: PropTypes.string,
   stackIndex: PropTypes.number,
-  label: PropTypes.string
+  label: PropTypes.string,
+  cardsCount: PropTypes.number
 };
 
 Stack.defaultProps = {
@@ -120,7 +132,8 @@ Stack.defaultProps = {
   laneId: "",
   stackId: "",
   stackIndex: 0,
-  label: "Stack"
+  label: "Stack",
+  cardsCount: 0
 };
 
 export default Stack;

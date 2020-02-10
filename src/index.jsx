@@ -8,7 +8,7 @@ import ModalProvider from "/src/provider/modal.provider";
 import createStore from "/src/store/create";
 import Application from "./component/application";
 
-const store = createStore({}, { history });
+const store = createStore({});
 
 const withProvider = (Provider, props = {}) => children => (
   <Provider {...props}>{children}</Provider>
