@@ -49,9 +49,8 @@ class Lanes extends React.PureComponent {
           }}
         >
           {uncappedMap((laneId, index) => (
-            <StyledDraggable>
+            <StyledDraggable key={`${index}-${laneId}`}>
               <StyledLane
-                key={laneId}
                 workspaceId={workspaceId}
                 laneId={laneId}
                 laneIndex={index}

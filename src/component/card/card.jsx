@@ -84,7 +84,6 @@ const Content = styled(props => {
 
 const Base = styled.div`
   overflow: visible !important;
-  padding: 1px 0;
 `;
 
 const CardImage = styled(props => {

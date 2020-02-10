@@ -20,8 +20,22 @@ const ContainerBase = styled.div`
   box-shadow: 0 3px 6px -3px rgba(0, 0, 0, 0.2);
 `;
 
+const StyledCard = styled(Card)``;
+
 const StyledDraggable = styled(Draggable)`
   overflow: visible !important;
+
+  ${StyledCard} {
+    padding: 2px 0;
+  }
+
+  &:first-child ${StyledCard} {
+    padding-top: 0;
+  }
+
+  &:last-child ${StyledCard} {
+    padding-bottom: 0;
+  }
 `;
 
 class Cards extends React.PureComponent {
@@ -46,9 +60,8 @@ class Cards extends React.PureComponent {
         render={ref => (
           <ContainerBase ref={ref}>
             {uncappedMap((cardId, index) => (
-              <StyledDraggable>
-                <Card
-                  key={`${index}-${cardId}`}
+              <StyledDraggable key={`${index}-${cardId}`}>
+                <StyledCard
                   stackId={stackId}
                   cardId={cardId}
                   cardIndex={index}

@@ -59,9 +59,8 @@ class Stacks extends React.PureComponent {
         render={ref => (
           <ContainerBase ref={ref}>
             {uncappedMap((stackId, index) => (
-              <StyledDraggable>
+              <StyledDraggable key={`${index}-${stackId}`}>
                 <StyledStack
-                  key={stackId}
                   laneId={laneId}
                   stackId={stackId}
                   stackIndex={index}
