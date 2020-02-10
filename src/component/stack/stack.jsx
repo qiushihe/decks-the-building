@@ -1,37 +1,45 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
-import { Draggable } from "react-smooth-dnd";
 import flow from "lodash/fp/flow";
 import get from "lodash/fp/get";
 import multiply from "lodash/fp/multiply";
+import add from "lodash/fp/add";
 import omit from "lodash/fp/omit";
 
 import { Layers } from "react-feather";
 
-import { CARD_DEFAULT_SCALE, CARD_WIDTH } from "/src/config";
+import {
+  CARD_DEFAULT_SCALE,
+  CARD_WIDTH,
+  STACK_CONTENT_SPACING,
+  STACK_CARDS_SPACING
+} from "/src/config";
 import Arrange from "/src/component/arrange";
 import StackActions from "/src/component/stack-actions";
 import Cards from "/src/component/cards";
 
 const StyledStackActions = styled(StackActions)``;
 
-const Content = styled(props => {
+const Base = styled(props => {
   const componentProps = omit(["scale"])(props);
   return <div {...componentProps} />;
 })`
-  min-width: ${flow([get("scale"), multiply(CARD_WIDTH)])}px;
-  margin: 0 8px;
-`;
-
-const Base = styled(Draggable)`
-  &:first-child ${Content} {
-    margin-left: 0;
-  }
-
-  &:last-child ${Content} {
-    margin-right: 0;
-  }
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: ${flow([
+    get("scale"),
+    multiply(CARD_WIDTH),
+    add(
+      flow([add(STACK_CONTENT_SPACING), add(STACK_CARDS_SPACING), multiply(2)])(
+        0
+      )
+    )
+  ])}px;
+  border-radius: 10px;
+  background-color: #f4f6f9;
+  box-shadow: 0 1px 2px -1px #00000069;
 
   ${StyledStackActions} {
     opacity: 0;
@@ -40,6 +48,21 @@ const Base = styled(Draggable)`
   &:hover ${StyledStackActions} {
     opacity: 1;
   }
+`;
+
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  margin: ${STACK_CONTENT_SPACING}px;
+`;
+
+const Header = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 auto;
+  padding: 0 6px;
+  margin: 6px 0 12px 0;
 `;
 
 const IconStyle = css`
@@ -56,24 +79,25 @@ class Stack extends React.PureComponent {
     const { className, scale, laneId, stackId, stackIndex, label } = this.props;
 
     return (
-      <Base className={className}>
-        <Content scale={scale}>
-          <Arrange>
-            <Arrange.Fit>
-              <StackIcon />
-            </Arrange.Fit>
-            <Arrange.Fit>&nbsp;</Arrange.Fit>
-            <Arrange.Fill>{label} </Arrange.Fill>
-            <Arrange.Fit>&nbsp;</Arrange.Fit>
-            <Arrange.Fit>
-              <StyledStackActions
-                laneId={laneId}
-                stackId={stackId}
-                stackIndex={stackIndex}
-              />
-            </Arrange.Fit>
-            <Arrange.Fit>&nbsp;&nbsp;&nbsp;</Arrange.Fit>
-          </Arrange>
+      <Base className={className} scale={scale}>
+        <Content>
+          <Header>
+            <Arrange>
+              <Arrange.Fit>
+                <StackIcon />
+              </Arrange.Fit>
+              <Arrange.Fit>&nbsp;</Arrange.Fit>
+              <Arrange.Fill>{label} </Arrange.Fill>
+              <Arrange.Fit>&nbsp;</Arrange.Fit>
+              <Arrange.Fit>
+                <StyledStackActions
+                  laneId={laneId}
+                  stackId={stackId}
+                  stackIndex={stackIndex}
+                />
+              </Arrange.Fit>
+            </Arrange>
+          </Header>
           <Cards stackId={stackId} />
         </Content>
       </Base>

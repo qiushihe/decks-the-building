@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Draggable } from "react-smooth-dnd";
 import omit from "lodash/fp/omit";
 import flow from "lodash/fp/flow";
 import get from "lodash/fp/get";
@@ -72,6 +71,7 @@ const Content = styled(props => {
     [stubTrue, flow([get("scale"), multiply(CARD_HEIGHT)])]
   ])}px;
   overflow: hidden !important;
+  box-shadow: 0 3px 6px -3px rgba(0, 0, 0, 0.69);
 
   ${StyledCardActions} {
     opacity: 0;
@@ -82,7 +82,7 @@ const Content = styled(props => {
   }
 `;
 
-const Base = styled(Draggable)`
+const Base = styled.div`
   overflow: visible !important;
   padding: 1px 0;
 `;

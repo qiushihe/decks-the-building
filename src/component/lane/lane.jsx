@@ -1,33 +1,20 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
-import { Draggable } from "react-smooth-dnd";
-import omit from "lodash/fp/omit";
 import { Trello } from "react-feather";
 
 import Arrange from "/src/component/arrange";
 import LaneActions from "/src/component/lane-actions";
 import Stacks from "/src/component/stacks";
 
-const Content = styled.div`
-  margin: 6px 0;
-  overflow: auto;
-  min-width: 0;
-`;
-
 const StyledLaneActions = styled(LaneActions)``;
 
-const Base = styled(props => {
-  const componentProps = omit([])(props);
-  return <Draggable {...componentProps} />;
-})`
-  &:first-child ${Content} {
-    margin-top: 0;
-  }
-
-  &:last-child ${Content} {
-    margin-bottom: 0;
-  }
+const Base = styled.div`
+  overflow: auto;
+  min-width: 0;
+  background-color: #ebeef2;
+  padding: 12px 6px;
+  box-shadow: 0 0 0 1px #00000026;
 
   ${StyledLaneActions} {
     opacity: 0;
@@ -36,6 +23,13 @@ const Base = styled(props => {
   &:hover ${StyledLaneActions} {
     opacity: 1;
   }
+`;
+
+const Header = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 auto;
+  padding: 0 6px 0 16px;
 `;
 
 const IconStyle = css`
@@ -47,12 +41,19 @@ const LaneIcon = styled(Trello)`
   ${IconStyle}
 `;
 
+const Divider = styled.div`
+  background: #cccccc;
+  width: 100%;
+  height: 1px;
+  margin: 12px 0;
+`;
+
 class Lane extends React.PureComponent {
   render() {
-    const { workspaceId, laneId, laneIndex, label } = this.props;
+    const { className, workspaceId, laneId, laneIndex, label } = this.props;
     return (
-      <Base>
-        <Content>
+      <Base className={className}>
+        <Header>
           <Arrange>
             <Arrange.Fit>
               <LaneIcon />
@@ -67,16 +68,17 @@ class Lane extends React.PureComponent {
                 laneIndex={laneIndex}
               />
             </Arrange.Fit>
-            <Arrange.Fit>&nbsp;&nbsp;&nbsp;</Arrange.Fit>
           </Arrange>
-          <Stacks laneId={laneId} />
-        </Content>
+        </Header>
+        <Divider />
+        <Stacks laneId={laneId} />
       </Base>
     );
   }
 }
 
 Lane.propTypes = {
+  className: PropTypes.string,
   workspaceId: PropTypes.string,
   laneId: PropTypes.string,
   laneIndex: PropTypes.number,
@@ -84,6 +86,7 @@ Lane.propTypes = {
 };
 
 Lane.defaultProps = {
+  className: "",
   workspaceId: "",
   laneId: "",
   laneIndex: 0,

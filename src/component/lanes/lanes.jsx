@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Container } from "react-smooth-dnd";
+import { Container, Draggable } from "react-smooth-dnd";
 import map from "lodash/fp/map";
 
 import Lane from "/src/component/lane";
@@ -12,6 +12,22 @@ const Base = styled.div`
   overflow: auto;
 `;
 
+const StyledLane = styled(Lane)``;
+
+const StyledDraggable = styled(Draggable)`
+  ${StyledLane} {
+    margin: 3px 0;
+  }
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
 class Lanes extends React.PureComponent {
   render() {
     const { workspaceId, laneIds, moveLane } = this.props;
@@ -20,6 +36,7 @@ class Lanes extends React.PureComponent {
       <Base data-scrollable="true">
         <Container
           groupName="lane"
+          lockAxis="y"
           getChildPayload={index => ({ laneIndex: index })}
           shouldAcceptDrop={({ groupName }) => groupName === "lane"}
           onDrop={({ addedIndex, payload }) => {
@@ -32,12 +49,14 @@ class Lanes extends React.PureComponent {
           }}
         >
           {uncappedMap((laneId, index) => (
-            <Lane
-              key={laneId}
-              workspaceId={workspaceId}
-              laneId={laneId}
-              laneIndex={index}
-            />
+            <StyledDraggable>
+              <StyledLane
+                key={laneId}
+                workspaceId={workspaceId}
+                laneId={laneId}
+                laneIndex={index}
+              />
+            </StyledDraggable>
           ))(laneIds)}
         </Container>
       </Base>

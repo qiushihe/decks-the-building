@@ -1,23 +1,34 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Container } from "react-smooth-dnd";
+import { Container, Draggable } from "react-smooth-dnd";
 import map from "lodash/fp/map";
 
+import { STACK_CARDS_SPACING } from "/src/config";
 import Card from "/src/component/card";
 
 const uncappedMap = map.convert({ cap: false });
 
-const Base = styled(Container)`
+const ContainerBase = styled.div`
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 100px !important;
+  padding: ${STACK_CARDS_SPACING}px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 3px 6px -3px rgba(0, 0, 0, 0.2);
+`;
+
+const StyledDraggable = styled(Draggable)`
+  overflow: visible !important;
 `;
 
 class Cards extends React.PureComponent {
   render() {
     const { className, stackId, cardIds, moveCard } = this.props;
     return (
-      <Base
+      <Container
         className={className}
         groupName="card"
         getChildPayload={index => ({ stackId, cardIndex: index })}
@@ -32,16 +43,21 @@ class Cards extends React.PureComponent {
             });
           }
         }}
-      >
-        {uncappedMap((cardId, index) => (
-          <Card
-            key={`${index}-${cardId}`}
-            stackId={stackId}
-            cardId={cardId}
-            cardIndex={index}
-          />
-        ))(cardIds)}
-      </Base>
+        render={ref => (
+          <ContainerBase ref={ref}>
+            {uncappedMap((cardId, index) => (
+              <StyledDraggable>
+                <Card
+                  key={`${index}-${cardId}`}
+                  stackId={stackId}
+                  cardId={cardId}
+                  cardIndex={index}
+                />
+              </StyledDraggable>
+            ))(cardIds)}
+          </ContainerBase>
+        )}
+      />
     );
   }
 }
