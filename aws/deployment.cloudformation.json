@@ -1,0 +1,187 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {},
+  "Resources": {
+    "LambdaFnRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": ["sts:AssumeRole"],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": ["lambda.amazonaws.com"]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"],
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Sub": [
+                      "arn:aws:logs:${Region}:${AccountId}:log-group:/aws/lambda/${FunctionName}:*", {
+                        "Region": { "Ref": "AWS::Region" },
+                        "AccountId": { "Ref": "AWS::AccountId" },
+                        "FunctionName": {
+                          "Fn::Sub": [
+                            "${Stack}-lambda-function", {
+                              "Stack": { "Ref": "AWS::StackName" }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Version": "2012-10-17"
+            },
+            "PolicyName": {
+              "Fn::Sub": [
+                "${Stack}-lambda-policy", {
+                  "Stack": { "Ref": "AWS::StackName" }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "LambdaFn": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "ZipFile": "exports.handler=function(b,a){a.succeed(\"<h1>It CloudFormation!</h1>\")};"
+        },
+        "FunctionName": {
+          "Fn::Sub": [
+            "${Stack}-lambda-function", {
+              "Stack": { "Ref": "AWS::StackName" }
+            }
+          ]
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": ["LambdaFnRole", "Arn"]
+        },
+        "Runtime": "nodejs12.x"
+      }
+    },
+    "LambdaFnLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Sub": [
+            "/aws/lambda/${FunctionName}", {
+              "FunctionName": {
+                "Fn::Sub": [
+                  "${Stack}-lambda-function", {
+                    "Stack": { "Ref": "AWS::StackName" }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "RetentionInDays": 90
+      }
+    },
+    "ApiGateway": {
+      "Type": "AWS::ApiGateway::RestApi",
+      "Properties": {
+        "EndpointConfiguration": {
+          "Types": ["REGIONAL"]
+        },
+        "Name": {
+          "Fn::Sub": [
+            "${Stack}-gateway", {
+              "Stack": { "Ref": "AWS::StackName" }
+            }
+          ]
+        }
+      }
+    },
+    "ApiGatewayMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "GET",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "text/html": "$input.path('$')"
+              },
+              "StatusCode": "200"
+            }
+          ],
+          "Type": "AWS",
+          "Uri": {
+            "Fn::Sub": [
+              "arn:aws:apigateway:${Region}:lambda:path/2015-03-31/functions/${FunctionArn}/invocations", {
+                "Region": { "Ref": "AWS::Region" },
+                "FunctionArn": { "Fn::GetAtt": ["LambdaFn", "Arn"] }
+              }
+            ]
+          }
+        },
+        "MethodResponses": [
+          {
+            "ResponseModels": {
+              "text/html": "Empty"
+            },
+            "StatusCode": "200"
+          }
+        ],
+        "ResourceId": { "Fn::GetAtt": ["ApiGateway", "RootResourceId"] },
+        "RestApiId": { "Ref": "ApiGateway" }
+      }
+    },
+    "ApiGatewayDeployment": {
+      "DependsOn": "ApiGatewayMethod",
+      "Type": "AWS::ApiGateway::Deployment",
+      "Properties": {
+        "RestApiId": { "Ref": "ApiGateway" },
+        "StageName": "stage-name"
+      }
+    },
+    "ApiGatewayLambdaPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": { "Fn::GetAtt": ["LambdaFn", "Arn"] },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": [
+            "arn:aws:execute-api:${Region}:${AccountId}:${Gateway}/*/${Method}/*", {
+              "Region": { "Ref": "AWS::Region" },
+              "AccountId": { "Ref": "AWS::AccountId" },
+              "Gateway": { "Ref": "ApiGateway" },
+              "Method": "GET"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "AWSRegion": {
+      "Description": "AWS region",
+      "Value": {
+        "Fn::Sub": [
+          "${Value}", {
+            "Value": { "Ref" : "AWS::Region" }
+          }
+        ]
+      }
+    }
+  }
+}

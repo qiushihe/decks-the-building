@@ -1,0 +1,56 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "StorageBucketNameParameter": {
+      "Description": "Name of the S3 bucket to store runtime cache data",
+      "Type": "String",
+      "Default": "decks-the-building-data"
+    }
+  },
+  "Resources": {
+    "StorageBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "Private",
+        "BucketName": {
+          "Fn::Sub": [
+            "${Stack}-${Name}", {
+              "Stack": { "Ref": "AWS::StackName" },
+              "Name": { "Ref": "StorageBucketNameParameter" }
+            }
+          ]
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        },
+        "CorsConfiguration": {
+          "CorsRules": [{
+            "AllowedHeaders": ["*"],
+            "AllowedMethods": ["GET", "PUT", "POST", "DELETE", "HEAD"],
+            "AllowedOrigins": ["*"],
+            "ExposedHeaders": ["ETag"]
+          }]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "AWSRegion": {
+      "Description": "AWS region",
+      "Value": {
+        "Fn::Sub": [
+          "${Value}", {
+            "Value": { "Ref" : "AWS::Region" }
+          }
+        ]
+      }
+    },
+    "StorageBucketName": {
+      "Description": "Runtime cache storage bucket name",
+      "Value": { "Ref": "StorageBucket" }
+    }
+  }
+}
