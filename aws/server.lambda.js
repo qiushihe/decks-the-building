@@ -5,5 +5,12 @@
 //       * https://medium.com/hackernoon/serverless-password-protecting-a-static-website-in-an-aws-s3-bucket-bfaaa01b8666
 
 exports.handler = (evt, ctx) => {
-  ctx.succeed("<h1>It CloudFormation!</h1>");
+  ctx.succeed({
+    statusCode: 200,
+    headers: { "Content-Type": "text/html" },
+    body:
+      "<h1>It CloudFormation!</h1><pre>" +
+      JSON.stringify(evt, null, 2) +
+      "</pre>"
+  });
 };

@@ -1,6 +1,12 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Parameters": {},
+  "Parameters": {
+    "ApiGatewayDeploymentStageNameParameter": {
+      "Description": "Name of the API Gateway Deployment Stage. This would appear as the path on the URL of the deployment.",
+      "Type": "String",
+      "Default": "decks-the-building"
+    }
+  },
   "Resources": {
     "LambdaFnRole": {
       "Type": "AWS::IAM::Role",
@@ -58,7 +64,7 @@
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
-          "ZipFile": "exports.handler=function(b,a){a.succeed(\"<h1>It CloudFormation!</h1>\")};"
+          "ZipFile": "exports.handler=function(a,b){b.succeed({statusCode:200,headers:{\"Content-Type\":\"text/html\"},body:\"<h1>It CloudFormation!</h1><pre>\"+JSON.stringify(a,null,2)+\"</pre>\"})};"
         },
         "FunctionName": {
           "Fn::Sub": [
@@ -115,15 +121,7 @@
         "HttpMethod": "GET",
         "Integration": {
           "IntegrationHttpMethod": "POST",
-          "IntegrationResponses": [
-            {
-              "ResponseTemplates": {
-                "text/html": "$input.path('$')"
-              },
-              "StatusCode": "200"
-            }
-          ],
-          "Type": "AWS",
+          "Type": "AWS_PROXY",
           "Uri": {
             "Fn::Sub": [
               "arn:aws:apigateway:${Region}:lambda:path/2015-03-31/functions/${FunctionArn}/invocations", {
@@ -150,7 +148,7 @@
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": { "Ref": "ApiGateway" },
-        "StageName": "stage-name"
+        "StageName": { "Ref": "ApiGatewayDeploymentStageNameParameter" }
       }
     },
     "ApiGatewayLambdaPermission": {
@@ -179,6 +177,18 @@
         "Fn::Sub": [
           "${Value}", {
             "Value": { "Ref" : "AWS::Region" }
+          }
+        ]
+      }
+    },
+    "ApiGatewayDeploymentUrl": {
+      "Description": "API Gateway Deployment URL",
+      "Value": {
+        "Fn::Sub": [
+          "https://${Gateway}.execute-api.${Region}.amazonaws.com/${StageName}", {
+            "Gateway": { "Ref": "ApiGateway" },
+            "Region": { "Ref": "AWS::Region" },
+            "StageName": { "Ref": "ApiGatewayDeploymentStageNameParameter" }
           }
         ]
       }
