@@ -174,14 +174,6 @@
             ]
           }
         },
-        "MethodResponses": [
-          {
-            "ResponseModels": {
-              "text/html": "Empty"
-            },
-            "StatusCode": "200"
-          }
-        ],
         "ResourceId": { "Fn::GetAtt": ["ApiGateway", "RootResourceId"] },
         "RestApiId": { "Ref": "ApiGateway" }
       }
