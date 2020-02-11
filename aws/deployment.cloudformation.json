@@ -8,6 +8,44 @@
     }
   },
   "Resources": {
+    "GetRandomIdFnRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": ["sts:AssumeRole"],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": ["lambda.amazonaws.com"]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      }
+    },
+    "GetRandomIdFn": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "ZipFile": "var https=require(\"https\"),url=require(\"url\"),newId=function(b,c){var d=\"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_\".split(\"\"),a=[];c=c||d.length;b=b||22;var e;for(e=0;e<b;e++)a[e]=d[0|Math.random()*c];return a.join(\"\")};\nexports.handler=function(b,c){var d=JSON.stringify({Status:\"SUCCESS\",PhysicalResourceId:c.logStreamName,StackId:b.StackId,RequestId:b.RequestId,LogicalResourceId:b.LogicalResourceId,Data:{Value:newId(10,62)}}),a=url.parse(b.ResponseURL);a=https.request({hostname:a.hostname,port:443,path:a.path,method:\"PUT\",headers:{\"content-length\":d.length}},function(){return c.done()});a.on(\"error\",function(){return c.done()});a.write(d);a.end()};"
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": ["GetRandomIdFnRole", "Arn"]
+        },
+        "Runtime": "nodejs12.x"
+      }
+    },
+    "RandomId": {
+      "Type": "Custom::RandomId",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt" : ["GetRandomIdFn", "Arn"]
+        }
+      }
+    },
     "LambdaFnRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -37,8 +75,9 @@
                         "AccountId": { "Ref": "AWS::AccountId" },
                         "FunctionName": {
                           "Fn::Sub": [
-                            "${Stack}-lambda-function", {
-                              "Stack": { "Ref": "AWS::StackName" }
+                            "${Prefix}-lambda-function-${Suffix}", {
+                              "Prefix": { "Ref": "AWS::StackName" },
+                              "Suffix": { "Fn::GetAtt": ["RandomId", "Value"] }
                             }
                           ]
                         }
@@ -51,8 +90,9 @@
             },
             "PolicyName": {
               "Fn::Sub": [
-                "${Stack}-lambda-policy", {
-                  "Stack": { "Ref": "AWS::StackName" }
+                "${Prefix}-lambda-policy-${Suffix}", {
+                  "Prefix": { "Ref": "AWS::StackName" },
+                  "Suffix": { "Fn::GetAtt": ["RandomId", "Value"] }
                 }
               ]
             }
@@ -68,8 +108,9 @@
         },
         "FunctionName": {
           "Fn::Sub": [
-            "${Stack}-lambda-function", {
-              "Stack": { "Ref": "AWS::StackName" }
+            "${Prefix}-lambda-function-${Suffix}", {
+              "Prefix": { "Ref": "AWS::StackName" },
+              "Suffix": { "Fn::GetAtt": ["RandomId", "Value"] }
             }
           ]
         },
@@ -88,8 +129,9 @@
             "/aws/lambda/${FunctionName}", {
               "FunctionName": {
                 "Fn::Sub": [
-                  "${Stack}-lambda-function", {
-                    "Stack": { "Ref": "AWS::StackName" }
+                  "${Prefix}-lambda-function-${Suffix}", {
+                    "Prefix": { "Ref": "AWS::StackName" },
+                    "Suffix": { "Fn::GetAtt": ["RandomId", "Value"] }
                   }
                 ]
               }
@@ -107,8 +149,9 @@
         },
         "Name": {
           "Fn::Sub": [
-            "${Stack}-gateway", {
-              "Stack": { "Ref": "AWS::StackName" }
+            "${Prefix}-gateway-${Suffix}", {
+              "Prefix": { "Ref": "AWS::StackName" },
+              "Suffix": { "Fn::GetAtt": ["RandomId", "Value"] }
             }
           ]
         }
