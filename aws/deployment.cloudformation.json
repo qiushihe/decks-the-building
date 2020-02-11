@@ -118,7 +118,7 @@
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "AuthorizationType": "NONE",
-        "HttpMethod": "GET",
+        "HttpMethod": "ANY",
         "Integration": {
           "IntegrationHttpMethod": "POST",
           "Type": "AWS_PROXY",
@@ -159,11 +159,10 @@
         "Principal": "apigateway.amazonaws.com",
         "SourceArn": {
           "Fn::Sub": [
-            "arn:aws:execute-api:${Region}:${AccountId}:${Gateway}/*/${Method}/*", {
+            "arn:aws:execute-api:${Region}:${AccountId}:${Gateway}/*/*/*", {
               "Region": { "Ref": "AWS::Region" },
               "AccountId": { "Ref": "AWS::AccountId" },
-              "Gateway": { "Ref": "ApiGateway" },
-              "Method": "GET"
+              "Gateway": { "Ref": "ApiGateway" }
             }
           ]
         }
