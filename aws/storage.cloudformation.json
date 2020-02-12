@@ -4,7 +4,8 @@
     "StorageBucketNameParameter": {
       "Description": "Name of the S3 bucket to store runtime cache data",
       "Type": "String",
-      "Default": "decks-the-building-data"
+      "Default": "decks-the-building-data",
+      "AllowedPattern": ".+"
     }
   },
   "Resources": {

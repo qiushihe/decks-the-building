@@ -5,7 +5,7 @@ const url = require("url");
 
 const newId = (len, radix) => {
   const alphabet =
-    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_";
+    "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
   const chars = alphabet.split("");
 
   const newId = [];
@@ -29,7 +29,8 @@ exports.handler = (evt, ctx) => {
     RequestId: evt.RequestId,
     LogicalResourceId: evt.LogicalResourceId,
     Data: {
-      Value: newId(10, 62)
+      AlphanumericValue: newId(10, 62),
+      AlphanumericNoCapValue: newId(10, 36)
     }
   });
 

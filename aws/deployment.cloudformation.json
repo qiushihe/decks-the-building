@@ -1,6 +1,12 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Parameters": {
+    "ArtifactsBucketNameParameter": {
+      "Description": "Name of the S3 bucket to store deployment artifacts",
+      "Type": "String",
+      "Default": "decks-the-building-artifacts",
+      "AllowedPattern": ".+"
+    },
     "ApiGatewayRequiresAuthorizationParameter": {
       "Description": "If API Gateway should require HTTP Basic authorization or not.",
       "Type": "String",
@@ -13,7 +19,8 @@
     "ApiGatewayDeploymentStageNameParameter": {
       "Description": "Name of the API Gateway Deployment Stage. This would appear as the path on the URL of the deployment.",
       "Type": "String",
-      "Default": "decks-the-building"
+      "Default": "decks-the-building",
+      "AllowedPattern": ".+"
     }
   },
   "Conditions": {
@@ -41,7 +48,7 @@
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
-          "ZipFile": "var https=require(\"https\"),url=require(\"url\"),newId=function(b,c){var d=\"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_\".split(\"\"),a=[];c=c||d.length;b=b||22;var e;for(e=0;e<b;e++)a[e]=d[0|Math.random()*c];return a.join(\"\")};\nexports.handler=function(b,c){var d=JSON.stringify({Status:\"SUCCESS\",PhysicalResourceId:c.logStreamName,StackId:b.StackId,RequestId:b.RequestId,LogicalResourceId:b.LogicalResourceId,Data:{Value:newId(10,62)}}),a=url.parse(b.ResponseURL);a=https.request({hostname:a.hostname,port:443,path:a.path,method:\"PUT\",headers:{\"content-length\":d.length}},function(){return c.done()});a.on(\"error\",function(){return c.done()});a.write(d);a.end()};"
+          "ZipFile": "var https=require(\"https\"),url=require(\"url\"),newId=function(b,c){var d=\"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_\".split(\"\"),a=[];c=c||d.length;b=b||22;var e;for(e=0;e<b;e++)a[e]=d[0|Math.random()*c];return a.join(\"\")};\nexports.handler=function(b,c){var d=JSON.stringify({Status:\"SUCCESS\",PhysicalResourceId:c.logStreamName,StackId:b.StackId,RequestId:b.RequestId,LogicalResourceId:b.LogicalResourceId,Data:{AlphanumericValue:newId(10,62),AlphanumericNoCapValue:newId(10,36)}}),a=url.parse(b.ResponseURL);a=https.request({hostname:a.hostname,port:443,path:a.path,method:\"PUT\",headers:{\"content-length\":d.length}},function(){return c.done()});a.on(\"error\",function(){return c.done()});a.write(d);a.end()};"
         },
         "Handler": "index.handler",
         "Role": {
@@ -51,10 +58,39 @@
       }
     },
     "StackSuffix": {
-      "Type": "Custom::RandomId",
+      "Type": "Custom::StackSuffix",
       "Properties": {
         "ServiceToken": {
           "Fn::GetAtt" : ["GetRandomIdFn", "Arn"]
+        }
+      }
+    },
+    "StackS3BucketSuffix": {
+      "Type": "Custom::StackS3BucketSuffix",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt" : ["GetRandomIdFn", "Arn"]
+        }
+      }
+    },
+    "ArtifactsBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "Private",
+        "BucketName": {
+          "Fn::Sub": [
+            "${Stack}-${Name}-${Suffix}", {
+              "Stack": { "Ref": "AWS::StackName" },
+              "Name": { "Ref": "ArtifactsBucketNameParameter" },
+              "Suffix": { "Fn::GetAtt": ["StackS3BucketSuffix", "AlphanumericNoCapValue"] }
+            }
+          ]
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
         }
       }
     },
@@ -86,7 +122,7 @@
                       "Fn::Sub": [
                         "${Prefix}-authorizer-fn-${Suffix}", {
                           "Prefix": { "Ref": "AWS::StackName" },
-                          "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
+                          "Suffix": { "Fn::GetAtt": ["StackSuffix", "AlphanumericValue"] }
                         }
                       ]
                     }
@@ -100,7 +136,7 @@
             "Fn::Sub": [
               "${Prefix}-authorizer-fn-policy-${Suffix}", {
                 "Prefix": { "Ref": "AWS::StackName" },
-                "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
+                "Suffix": { "Fn::GetAtt": ["StackSuffix", "AlphanumericValue"] }
               }
             ]
           }
@@ -118,7 +154,7 @@
           "Fn::Sub": [
             "${Prefix}-authorizer-fn-${Suffix}", {
               "Prefix": { "Ref": "AWS::StackName" },
-              "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
+              "Suffix": { "Fn::GetAtt": ["StackSuffix", "AlphanumericValue"] }
             }
           ]
         },
@@ -140,7 +176,7 @@
                 "Fn::Sub": [
                   "${Prefix}-authorizer-fn-${Suffix}", {
                     "Prefix": { "Ref": "AWS::StackName" },
-                    "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
+                    "Suffix": { "Fn::GetAtt": ["StackSuffix", "AlphanumericValue"] }
                   }
                 ]
               }
@@ -179,7 +215,7 @@
                       "Fn::Sub": [
                         "${Prefix}-s3proxy-fn-${Suffix}", {
                           "Prefix": { "Ref": "AWS::StackName" },
-                          "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
+                          "Suffix": { "Fn::GetAtt": ["StackSuffix", "AlphanumericValue"] }
                         }
                       ]
                     }
@@ -193,7 +229,7 @@
             "Fn::Sub": [
               "${Prefix}-s3proxy-fn-policy-${Suffix}", {
                 "Prefix": { "Ref": "AWS::StackName" },
-                "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
+                "Suffix": { "Fn::GetAtt": ["StackSuffix", "AlphanumericValue"] }
               }
             ]
           }
@@ -204,19 +240,33 @@
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
-          "ZipFile": "exports.handler=function(a,b){b.succeed({statusCode:200,headers:{\"Content-Type\":\"text/html\"},body:\"<h1>It CloudFormation!</h1><pre>\"+JSON.stringify(a,null,2)+\"</pre>\"})};"
+          "ZipFile": "exports.handler=function(a,b){b.succeed({statusCode:200,headers:{\"Content-Type\":\"text/html\"},body:\"<h1>It CloudFormation!</h1><pre>\"+JSON.stringify(process.env,null,2)+\"</pre><pre>\"+JSON.stringify(a,null,2)+\"</pre>\"})};"
         },
         "FunctionName": {
           "Fn::Sub": [
             "${Prefix}-s3proxy-fn-${Suffix}", {
               "Prefix": { "Ref": "AWS::StackName" },
-              "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
+              "Suffix": { "Fn::GetAtt": ["StackSuffix", "AlphanumericValue"] }
             }
           ]
         },
         "Handler": "index.handler",
         "Role": {
           "Fn::GetAtt": ["S3ProxyFnExecutionRole", "Arn"]
+        },
+        "Environment": {
+          "Variables": {
+            "ARTIFACTS_BUCKET_REGION": { "Ref" : "AWS::Region" },
+            "ARTIFACTS_BUCKET_NAME": {
+              "Fn::Sub": [
+                "${Stack}-${Name}-${Suffix}", {
+                  "Stack": { "Ref": "AWS::StackName" },
+                  "Name": { "Ref": "ArtifactsBucketNameParameter" },
+                  "Suffix": { "Fn::GetAtt": ["StackS3BucketSuffix", "AlphanumericNoCapValue"] }
+                }
+              ]
+            }
+          }
         },
         "Runtime": "nodejs12.x"
       }
@@ -231,7 +281,7 @@
                 "Fn::Sub": [
                   "${Prefix}-s3proxy-fn-${Suffix}", {
                     "Prefix": { "Ref": "AWS::StackName" },
-                    "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
+                    "Suffix": { "Fn::GetAtt": ["StackSuffix", "AlphanumericValue"] }
                   }
                 ]
               }
@@ -251,7 +301,7 @@
           "Fn::Sub": [
             "${Prefix}-gateway-${Suffix}", {
               "Prefix": { "Ref": "AWS::StackName" },
-              "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
+              "Suffix": { "Fn::GetAtt": ["StackSuffix", "AlphanumericValue"] }
             }
           ]
         }
@@ -388,7 +438,7 @@
             "Fn::Sub": [
               "${Prefix}-authorizer-policy-${Suffix}", {
                 "Prefix": { "Ref": "AWS::StackName" },
-                "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
+                "Suffix": { "Fn::GetAtt": ["StackSuffix", "AlphanumericValue"] }
               }
             ]
           },
@@ -421,7 +471,7 @@
           "Fn::Sub": [
             "${Prefix}-authorizer-${Suffix}", {
               "Prefix": { "Ref": "AWS::StackName" },
-              "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
+              "Suffix": { "Fn::GetAtt": ["StackSuffix", "AlphanumericValue"] }
             }
           ]
         },
