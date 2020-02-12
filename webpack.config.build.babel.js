@@ -5,6 +5,6 @@ import common from "./webpack.config.common.babel.js";
 export default merge(common, {
   mode: "production",
   output: {
-    publicPath: "/"
+    publicPath: "/decks-the-building/"
   }
 });

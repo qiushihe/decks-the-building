@@ -129,6 +129,42 @@
                   }
                 ]
               }
+            }, {
+              "Action": ["s3:ListBucket"],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Sub": [
+                  "arn:aws:s3:::${BucketName}", {
+                    "BucketName": {
+                      "Fn::Sub": [
+                        "${Stack}-${Name}-${Suffix}", {
+                          "Stack": { "Ref": "AWS::StackName" },
+                          "Name": { "Ref": "ArtifactsBucketNameParameter" },
+                          "Suffix": { "Fn::GetAtt": ["StackS3BucketSuffix", "AlphanumericNoCapValue"] }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }, {
+              "Action": ["s3:GetObject"],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Sub": [
+                  "arn:aws:s3:::${BucketName}/*", {
+                    "BucketName": {
+                      "Fn::Sub": [
+                        "${Stack}-${Name}-${Suffix}", {
+                          "Stack": { "Ref": "AWS::StackName" },
+                          "Name": { "Ref": "ArtifactsBucketNameParameter" },
+                          "Suffix": { "Fn::GetAtt": ["StackS3BucketSuffix", "AlphanumericNoCapValue"] }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
             }],
             "Version": "2012-10-17"
           },
@@ -222,6 +258,42 @@
                   }
                 ]
               }
+            }, {
+              "Action": ["s3:ListBucket"],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Sub": [
+                  "arn:aws:s3:::${BucketName}", {
+                    "BucketName": {
+                      "Fn::Sub": [
+                        "${Stack}-${Name}-${Suffix}", {
+                          "Stack": { "Ref": "AWS::StackName" },
+                          "Name": { "Ref": "ArtifactsBucketNameParameter" },
+                          "Suffix": { "Fn::GetAtt": ["StackS3BucketSuffix", "AlphanumericNoCapValue"] }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }, {
+              "Action": ["s3:GetObject"],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Sub": [
+                  "arn:aws:s3:::${BucketName}/*", {
+                    "BucketName": {
+                      "Fn::Sub": [
+                        "${Stack}-${Name}-${Suffix}", {
+                          "Stack": { "Ref": "AWS::StackName" },
+                          "Name": { "Ref": "ArtifactsBucketNameParameter" },
+                          "Suffix": { "Fn::GetAtt": ["StackS3BucketSuffix", "AlphanumericNoCapValue"] }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
             }],
             "Version": "2012-10-17"
           },
@@ -240,7 +312,7 @@
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
-          "ZipFile": "exports.handler=function(a,b){b.succeed({statusCode:200,headers:{\"Content-Type\":\"text/html\"},body:\"<h1>It CloudFormation!</h1><pre>\"+JSON.stringify(process.env,null,2)+\"</pre><pre>\"+JSON.stringify(a,null,2)+\"</pre>\"})};"
+          "ZipFile": "var AWS=require(\"aws-sdk\"),s3=new AWS.S3;exports.handler=function(a,c){s3.getObject({Bucket:process.env.ARTIFACTS_BUCKET_NAME,Key:a.requestContext.path.replace(new RegExp(\"^/\"+a.requestContext.stage),\"\").replace(/^\\//,\"\")},function(a,b){a?c.succeed({statusCode:500,headers:{\"Content-Type\":\"text/html\"},body:\"<h1>Oh Nose! Shit didn't work!</h1><pre>Error: \"+JSON.stringify(a)+\"</pre>\"}):c.succeed({statusCode:200,headers:{\"Content-Type\":b.ContentType,\"Content-Length\":b.ContentLength},body:b.Body.toString()})})};"
         },
         "FunctionName": {
           "Fn::Sub": [
