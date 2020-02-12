@@ -1,26 +1,38 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Parameters": {
+    "ApiGatewayRequiresAuthorizationParameter": {
+      "Description": "If API Gateway should require HTTP Basic authorization or not.",
+      "Type": "String",
+      "Default": "false",
+      "AllowedValues": [
+        "true",
+        "false"
+      ]
+    },
     "ApiGatewayDeploymentStageNameParameter": {
       "Description": "Name of the API Gateway Deployment Stage. This would appear as the path on the URL of the deployment.",
       "Type": "String",
       "Default": "decks-the-building"
     }
   },
+  "Conditions": {
+    "ApiGatewayWithAuthorization": {
+      "Fn::Equals" : [{ "Ref" : "ApiGatewayRequiresAuthorizationParameter" }, "true"]
+    }
+  },
   "Resources": {
-    "GetRandomIdFnRole": {
+    "GetRandomIdFnExecutionRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": ["sts:AssumeRole"],
-              "Effect": "Allow",
-              "Principal": {
-                "Service": ["lambda.amazonaws.com"]
-              }
+          "Statement": [{
+            "Action": ["sts:AssumeRole"],
+            "Effect": "Allow",
+            "Principal": {
+              "Service": ["lambda.amazonaws.com"]
             }
-          ],
+          }],
           "Version": "2012-10-17"
         }
       }
@@ -33,12 +45,12 @@
         },
         "Handler": "index.handler",
         "Role": {
-          "Fn::GetAtt": ["GetRandomIdFnRole", "Arn"]
+          "Fn::GetAtt": ["GetRandomIdFnExecutionRole", "Arn"]
         },
         "Runtime": "nodejs12.x"
       }
     },
-    "RandomId": {
+    "StackSuffix": {
       "Type": "Custom::RandomId",
       "Properties": {
         "ServiceToken": {
@@ -46,7 +58,99 @@
         }
       }
     },
-    "LambdaFnRole": {
+    "AuthorizerFnExecutionRole": {
+      "Condition": "ApiGatewayWithAuthorization",
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [{
+            "Action": ["sts:AssumeRole"],
+            "Effect": "Allow",
+            "Principal": {
+              "Service": ["lambda.amazonaws.com"]
+            }
+          }],
+          "Version": "2012-10-17"
+        },
+        "Policies": [{
+          "PolicyDocument": {
+            "Statement": [{
+              "Action": ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Sub": [
+                  "arn:aws:logs:${Region}:${AccountId}:log-group:/aws/lambda/${FunctionName}:*", {
+                    "Region": { "Ref": "AWS::Region" },
+                    "AccountId": { "Ref": "AWS::AccountId" },
+                    "FunctionName": {
+                      "Fn::Sub": [
+                        "${Prefix}-authorizer-fn-${Suffix}", {
+                          "Prefix": { "Ref": "AWS::StackName" },
+                          "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }],
+            "Version": "2012-10-17"
+          },
+          "PolicyName": {
+            "Fn::Sub": [
+              "${Prefix}-authorizer-fn-policy-${Suffix}", {
+                "Prefix": { "Ref": "AWS::StackName" },
+                "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
+              }
+            ]
+          }
+        }]
+      }
+    },
+    "AuthorizerFn": {
+      "Condition": "ApiGatewayWithAuthorization",
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "ZipFile": "var buildPolicy=function(d,a){var b=d.methodArn.split(\":\"),c=b[5].split(\"/\");return{principalId:a,policyDocument:{Version:\"2012-10-17\",Statement:[{Action:\"execute-api:Invoke\",Effect:\"Allow\",Resource:[\"arn:aws:execute-api:\"+b[3]+\":\"+b[4]+\":\"+c[0]+\"/\"+c[1]+\"/*/*\"]}]}}};\nexports.handler=function(d,a,b){a=d.headers.authorization||d.headers.Authorization;if(!a)return b(\"Unauthorized\");a=a.split(\" \")[1];var c=(new Buffer(a,\"base64\")).toString().split(\":\");a=c[0];c=c[1];if(\"admin\"!==a||\"secret\"!==c)return b(\"Unauthorized\");b(null,buildPolicy(d,a))};"
+        },
+        "FunctionName": {
+          "Fn::Sub": [
+            "${Prefix}-authorizer-fn-${Suffix}", {
+              "Prefix": { "Ref": "AWS::StackName" },
+              "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
+            }
+          ]
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": ["AuthorizerFnExecutionRole", "Arn"]
+        },
+        "Runtime": "nodejs12.x"
+      }
+    },
+    "AuthorizerLogGroup": {
+      "Condition": "ApiGatewayWithAuthorization",
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Sub": [
+            "/aws/lambda/${FunctionName}", {
+              "FunctionName": {
+                "Fn::Sub": [
+                  "${Prefix}-authorizer-fn-${Suffix}", {
+                    "Prefix": { "Ref": "AWS::StackName" },
+                    "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "RetentionInDays": 90
+      }
+    },
+    "S3ProxyFnExecutionRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -61,87 +165,42 @@
           ],
           "Version": "2012-10-17"
         },
-        "Policies": [
-          {
-            "PolicyDocument": {
-              "Statement": [
-                {
-                  "Action": ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"],
-                  "Effect": "Allow",
-                  "Resource": {
-                    "Fn::Sub": [
-                      "arn:aws:logs:${Region}:${AccountId}:log-group:/aws/lambda/${FunctionName}:*", {
-                        "Region": { "Ref": "AWS::Region" },
-                        "AccountId": { "Ref": "AWS::AccountId" },
-                        "FunctionName": {
-                          "Fn::Sub": [
-                            "${Prefix}-authorizer-function-${Suffix}", {
-                              "Prefix": { "Ref": "AWS::StackName" },
-                              "Suffix": { "Fn::GetAtt": ["RandomId", "Value"] }
-                            }
-                          ]
+        "Policies": [{
+          "PolicyDocument": {
+            "Statement": [{
+              "Action": ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Sub": [
+                  "arn:aws:logs:${Region}:${AccountId}:log-group:/aws/lambda/${FunctionName}:*", {
+                    "Region": { "Ref": "AWS::Region" },
+                    "AccountId": { "Ref": "AWS::AccountId" },
+                    "FunctionName": {
+                      "Fn::Sub": [
+                        "${Prefix}-s3proxy-fn-${Suffix}", {
+                          "Prefix": { "Ref": "AWS::StackName" },
+                          "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
                         }
-                      }
-                    ]
+                      ]
+                    }
                   }
-                },
-                {
-                  "Action": ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"],
-                  "Effect": "Allow",
-                  "Resource": {
-                    "Fn::Sub": [
-                      "arn:aws:logs:${Region}:${AccountId}:log-group:/aws/lambda/${FunctionName}:*", {
-                        "Region": { "Ref": "AWS::Region" },
-                        "AccountId": { "Ref": "AWS::AccountId" },
-                        "FunctionName": {
-                          "Fn::Sub": [
-                            "${Prefix}-lambda-function-${Suffix}", {
-                              "Prefix": { "Ref": "AWS::StackName" },
-                              "Suffix": { "Fn::GetAtt": ["RandomId", "Value"] }
-                            }
-                          ]
-                        }
-                      }
-                    ]
-                  }
-                }
-              ],
-              "Version": "2012-10-17"
-            },
-            "PolicyName": {
-              "Fn::Sub": [
-                "${Prefix}-lambda-policy-${Suffix}", {
-                  "Prefix": { "Ref": "AWS::StackName" },
-                  "Suffix": { "Fn::GetAtt": ["RandomId", "Value"] }
-                }
-              ]
-            }
+                ]
+              }
+            }],
+            "Version": "2012-10-17"
+          },
+          "PolicyName": {
+            "Fn::Sub": [
+              "${Prefix}-s3proxy-fn-policy-${Suffix}", {
+                "Prefix": { "Ref": "AWS::StackName" },
+                "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
+              }
+            ]
           }
-        ]
+        }]
       }
     },
-    "AuthorizerFn": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "Code": {
-          "ZipFile": "exports.handler=function(d,a,b){a=d.headers.authorization||d.headers.Authorization;if(!a)return b(\"Unauthorized\");a=a.split(\" \")[1];var c=(new Buffer(a,\"base64\")).toString().split(\":\");a=c[0];c=c[1];if(\"admin\"!==a||\"secret\"!==c)return b(\"Unauthorized\");b(null,buildAllowAllPolicy(d,a))};\nfunction buildAllowAllPolicy(d,a){var b=d.methodArn.split(\":\"),c=b[5].split(\"/\");return{principalId:a,policyDocument:{Version:\"2012-10-17\",Statement:[{Action:\"execute-api:Invoke\",Effect:\"Allow\",Resource:[\"arn:aws:execute-api:\"+b[3]+\":\"+b[4]+\":\"+c[0]+\"/\"+c[1]+\"/*/*\"]}]}}};"
-        },
-        "FunctionName": {
-          "Fn::Sub": [
-            "${Prefix}-authorizer-function-${Suffix}", {
-              "Prefix": { "Ref": "AWS::StackName" },
-              "Suffix": { "Fn::GetAtt": ["RandomId", "Value"] }
-            }
-          ]
-        },
-        "Handler": "index.handler",
-        "Role": {
-          "Fn::GetAtt": ["LambdaFnRole", "Arn"]
-        },
-        "Runtime": "nodejs12.x"
-      }
-    },
-    "LambdaFn": {
+    "S3ProxyFn": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
@@ -149,20 +208,20 @@
         },
         "FunctionName": {
           "Fn::Sub": [
-            "${Prefix}-lambda-function-${Suffix}", {
+            "${Prefix}-s3proxy-fn-${Suffix}", {
               "Prefix": { "Ref": "AWS::StackName" },
-              "Suffix": { "Fn::GetAtt": ["RandomId", "Value"] }
+              "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
             }
           ]
         },
         "Handler": "index.handler",
         "Role": {
-          "Fn::GetAtt": ["LambdaFnRole", "Arn"]
+          "Fn::GetAtt": ["S3ProxyFnExecutionRole", "Arn"]
         },
         "Runtime": "nodejs12.x"
       }
     },
-    "AuthorizerLogGroup": {
+    "S3ProxyFnLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
         "LogGroupName": {
@@ -170,29 +229,9 @@
             "/aws/lambda/${FunctionName}", {
               "FunctionName": {
                 "Fn::Sub": [
-                  "${Prefix}-authorizer-function-${Suffix}", {
+                  "${Prefix}-s3proxy-fn-${Suffix}", {
                     "Prefix": { "Ref": "AWS::StackName" },
-                    "Suffix": { "Fn::GetAtt": ["RandomId", "Value"] }
-                  }
-                ]
-              }
-            }
-          ]
-        },
-        "RetentionInDays": 90
-      }
-    },
-    "LambdaFnLogGroup": {
-      "Type": "AWS::Logs::LogGroup",
-      "Properties": {
-        "LogGroupName": {
-          "Fn::Sub": [
-            "/aws/lambda/${FunctionName}", {
-              "FunctionName": {
-                "Fn::Sub": [
-                  "${Prefix}-lambda-function-${Suffix}", {
-                    "Prefix": { "Ref": "AWS::StackName" },
-                    "Suffix": { "Fn::GetAtt": ["RandomId", "Value"] }
+                    "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
                   }
                 ]
               }
@@ -212,7 +251,7 @@
           "Fn::Sub": [
             "${Prefix}-gateway-${Suffix}", {
               "Prefix": { "Ref": "AWS::StackName" },
-              "Suffix": { "Fn::GetAtt": ["RandomId", "Value"] }
+              "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
             }
           ]
         }
@@ -221,8 +260,16 @@
     "ApiGatewayRootMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
-        "AuthorizationType": "CUSTOM",
-        "AuthorizerId": { "Ref": "ApiGatewayAuthroizer" },
+        "AuthorizationType": {
+          "Fn::If": ["ApiGatewayWithAuthorization", "CUSTOM", "NONE"]
+        },
+        "AuthorizerId": {
+          "Fn::If": [
+            "ApiGatewayWithAuthorization",
+            { "Ref": "ApiGatewayAuthroizer" },
+            { "Ref" : "AWS::NoValue" }
+          ]
+        },
         "HttpMethod": "ANY",
         "Integration": {
           "IntegrationHttpMethod": "POST",
@@ -231,7 +278,7 @@
             "Fn::Sub": [
               "arn:aws:apigateway:${Region}:lambda:path/2015-03-31/functions/${FunctionArn}/invocations", {
                 "Region": { "Ref": "AWS::Region" },
-                "FunctionArn": { "Fn::GetAtt": ["LambdaFn", "Arn"] }
+                "FunctionArn": { "Fn::GetAtt": ["S3ProxyFn", "Arn"] }
               }
             ]
           }
@@ -251,8 +298,16 @@
     "ApiGatewayRootProxyMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
-        "AuthorizationType": "CUSTOM",
-        "AuthorizerId": { "Ref": "ApiGatewayAuthroizer" },
+        "AuthorizationType": {
+          "Fn::If": ["ApiGatewayWithAuthorization", "CUSTOM", "NONE"]
+        },
+        "AuthorizerId": {
+          "Fn::If": [
+            "ApiGatewayWithAuthorization",
+            { "Ref": "ApiGatewayAuthroizer" },
+            { "Ref" : "AWS::NoValue" }
+          ]
+        },
         "RequestParameters": {
           "method.request.path.proxy": true
         },
@@ -268,7 +323,7 @@
             "Fn::Sub": [
               "arn:aws:apigateway:${Region}:lambda:path/2015-03-31/functions/${FunctionArn}/invocations", {
                 "Region": { "Ref": "AWS::Region" },
-                "FunctionArn": { "Fn::GetAtt": ["LambdaFn", "Arn"] }
+                "FunctionArn": { "Fn::GetAtt": ["S3ProxyFn", "Arn"] }
               }
             ]
           }
@@ -289,7 +344,7 @@
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "Action": "lambda:InvokeFunction",
-        "FunctionName": { "Fn::GetAtt": ["LambdaFn", "Arn"] },
+        "FunctionName": { "Fn::GetAtt": ["S3ProxyFn", "Arn"] },
         "Principal": "apigateway.amazonaws.com",
         "SourceArn": {
           "Fn::Sub": [
@@ -303,6 +358,7 @@
       }
     },
     "ApiGatewayUnauthorizedResponse": {
+      "Condition": "ApiGatewayWithAuthorization",
       "Type": "AWS::ApiGateway::GatewayResponse",
       "Properties": {
         "ResponseType": "UNAUTHORIZED",
@@ -314,6 +370,7 @@
       }
     },
     "ApiGatewayAuthroizerRole": {
+      "Condition": "ApiGatewayWithAuthorization",
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -331,7 +388,7 @@
             "Fn::Sub": [
               "${Prefix}-authorizer-policy-${Suffix}", {
                 "Prefix": { "Ref": "AWS::StackName" },
-                "Suffix": { "Fn::GetAtt": ["RandomId", "Value"] }
+                "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
               }
             ]
           },
@@ -347,19 +404,16 @@
       }
     },
     "ApiGatewayAuthroizer": {
+      "Condition": "ApiGatewayWithAuthorization",
       "Type": "AWS::ApiGateway::Authorizer",
       "Properties": {
         "AuthorizerCredentials": { "Fn::GetAtt": ["ApiGatewayAuthroizerRole", "Arn"] },
         "AuthorizerUri": {
-          "Fn::Join" : [
-            "",
-            [
-              "arn:aws:apigateway:",
-              { "Ref": "AWS::Region" },
-              ":lambda:path/2015-03-31/functions/",
-              { "Fn::GetAtt": ["AuthorizerFn", "Arn"] },
-              "/invocations"
-            ]
+          "Fn::Sub": [
+            "arn:aws:apigateway:${Region}:lambda:path/2015-03-31/functions/${FunctionArn}/invocations", {
+              "Region": { "Ref": "AWS::Region" },
+              "FunctionArn": { "Fn::GetAtt": ["AuthorizerFn", "Arn"] }
+            }
           ]
         },
         "IdentitySource": "method.request.header.Authorization",
@@ -367,7 +421,7 @@
           "Fn::Sub": [
             "${Prefix}-authorizer-${Suffix}", {
               "Prefix": { "Ref": "AWS::StackName" },
-              "Suffix": { "Fn::GetAtt": ["RandomId", "Value"] }
+              "Suffix": { "Fn::GetAtt": ["StackSuffix", "Value"] }
             }
           ]
         },
