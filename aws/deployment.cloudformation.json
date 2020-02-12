@@ -75,6 +75,26 @@
                         "AccountId": { "Ref": "AWS::AccountId" },
                         "FunctionName": {
                           "Fn::Sub": [
+                            "${Prefix}-authorizer-function-${Suffix}", {
+                              "Prefix": { "Ref": "AWS::StackName" },
+                              "Suffix": { "Fn::GetAtt": ["RandomId", "Value"] }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Action": ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"],
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Sub": [
+                      "arn:aws:logs:${Region}:${AccountId}:log-group:/aws/lambda/${FunctionName}:*", {
+                        "Region": { "Ref": "AWS::Region" },
+                        "AccountId": { "Ref": "AWS::AccountId" },
+                        "FunctionName": {
+                          "Fn::Sub": [
                             "${Prefix}-lambda-function-${Suffix}", {
                               "Prefix": { "Ref": "AWS::StackName" },
                               "Suffix": { "Fn::GetAtt": ["RandomId", "Value"] }
@@ -100,6 +120,27 @@
         ]
       }
     },
+    "AuthorizerFn": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "ZipFile": "exports.handler=function(d,a,b){a=d.headers.authorization||d.headers.Authorization;if(!a)return b(\"Unauthorized\");a=a.split(\" \")[1];var c=(new Buffer(a,\"base64\")).toString().split(\":\");a=c[0];c=c[1];if(\"admin\"!==a||\"secret\"!==c)return b(\"Unauthorized\");b(null,buildAllowAllPolicy(d,a))};\nfunction buildAllowAllPolicy(d,a){var b=d.methodArn.split(\":\"),c=b[5].split(\"/\");return{principalId:a,policyDocument:{Version:\"2012-10-17\",Statement:[{Action:\"execute-api:Invoke\",Effect:\"Allow\",Resource:[\"arn:aws:execute-api:\"+b[3]+\":\"+b[4]+\":\"+c[0]+\"/\"+c[1]+\"/*/*\"]}]}}};"
+        },
+        "FunctionName": {
+          "Fn::Sub": [
+            "${Prefix}-authorizer-function-${Suffix}", {
+              "Prefix": { "Ref": "AWS::StackName" },
+              "Suffix": { "Fn::GetAtt": ["RandomId", "Value"] }
+            }
+          ]
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": ["LambdaFnRole", "Arn"]
+        },
+        "Runtime": "nodejs12.x"
+      }
+    },
     "LambdaFn": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
@@ -119,6 +160,26 @@
           "Fn::GetAtt": ["LambdaFnRole", "Arn"]
         },
         "Runtime": "nodejs12.x"
+      }
+    },
+    "AuthorizerLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Sub": [
+            "/aws/lambda/${FunctionName}", {
+              "FunctionName": {
+                "Fn::Sub": [
+                  "${Prefix}-authorizer-function-${Suffix}", {
+                    "Prefix": { "Ref": "AWS::StackName" },
+                    "Suffix": { "Fn::GetAtt": ["RandomId", "Value"] }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "RetentionInDays": 90
       }
     },
     "LambdaFnLogGroup": {
@@ -160,7 +221,8 @@
     "ApiGatewayRootMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
-        "AuthorizationType": "NONE",
+        "AuthorizationType": "CUSTOM",
+        "AuthorizerId": { "Ref": "ApiGatewayAuthroizer" },
         "HttpMethod": "ANY",
         "Integration": {
           "IntegrationHttpMethod": "POST",
@@ -189,7 +251,8 @@
     "ApiGatewayRootProxyMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
-        "AuthorizationType": "NONE",
+        "AuthorizationType": "CUSTOM",
+        "AuthorizerId": { "Ref": "ApiGatewayAuthroizer" },
         "RequestParameters": {
           "method.request.path.proxy": true
         },
@@ -237,6 +300,79 @@
             }
           ]
         }
+      }
+    },
+    "ApiGatewayUnauthorizedResponse": {
+      "Type": "AWS::ApiGateway::GatewayResponse",
+      "Properties": {
+        "ResponseType": "UNAUTHORIZED",
+        "ResponseParameters": {
+          "gatewayresponse.header.WWW-Authenticate": "'Basic'"
+        },
+        "StatusCode": "401",
+        "RestApiId": { "Ref": "ApiGateway" }
+      }
+    },
+    "ApiGatewayAuthroizerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [{
+            "Effect": "Allow",
+            "Principal": {
+              "Service": ["apigateway.amazonaws.com"]
+            },
+            "Action": ["sts:AssumeRole"]
+          }]
+        },
+        "Policies": [{
+          "PolicyName": {
+            "Fn::Sub": [
+              "${Prefix}-authorizer-policy-${Suffix}", {
+                "Prefix": { "Ref": "AWS::StackName" },
+                "Suffix": { "Fn::GetAtt": ["RandomId", "Value"] }
+              }
+            ]
+          },
+          "PolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [{
+              "Effect": "Allow",
+              "Action": "lambda:invokeFunction",
+              "Resource": { "Fn::GetAtt": ["AuthorizerFn", "Arn"] }
+            }]
+          }
+        }]
+      }
+    },
+    "ApiGatewayAuthroizer": {
+      "Type": "AWS::ApiGateway::Authorizer",
+      "Properties": {
+        "AuthorizerCredentials": { "Fn::GetAtt": ["ApiGatewayAuthroizerRole", "Arn"] },
+        "AuthorizerUri": {
+          "Fn::Join" : [
+            "",
+            [
+              "arn:aws:apigateway:",
+              { "Ref": "AWS::Region" },
+              ":lambda:path/2015-03-31/functions/",
+              { "Fn::GetAtt": ["AuthorizerFn", "Arn"] },
+              "/invocations"
+            ]
+          ]
+        },
+        "IdentitySource": "method.request.header.Authorization",
+        "Name": {
+          "Fn::Sub": [
+            "${Prefix}-authorizer-${Suffix}", {
+              "Prefix": { "Ref": "AWS::StackName" },
+              "Suffix": { "Fn::GetAtt": ["RandomId", "Value"] }
+            }
+          ]
+        },
+        "RestApiId": { "Ref": "ApiGateway" },
+        "Type": "REQUEST"
       }
     }
   },
