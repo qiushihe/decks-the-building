@@ -157,7 +157,7 @@
         }
       }
     },
-    "ApiGatewayMethod": {
+    "ApiGatewayRootMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "AuthorizationType": "NONE",
@@ -178,8 +178,44 @@
         "RestApiId": { "Ref": "ApiGateway" }
       }
     },
+    "ApiGatewayRootProxyResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "PathPart": "{proxy+}",
+        "ParentId": { "Fn::GetAtt": ["ApiGateway", "RootResourceId"] },
+        "RestApiId": { "Ref": "ApiGateway" }
+      }
+    },
+    "ApiGatewayRootProxyMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "RequestParameters": {
+          "method.request.path.proxy": true
+        },
+        "HttpMethod": "ANY",
+        "Integration": {
+          "CacheKeyParameters": ["method.request.path.proxy"],
+          "RequestParameters": {
+            "integration.request.path.proxy": "method.request.path.proxy"
+          },
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": [
+              "arn:aws:apigateway:${Region}:lambda:path/2015-03-31/functions/${FunctionArn}/invocations", {
+                "Region": { "Ref": "AWS::Region" },
+                "FunctionArn": { "Fn::GetAtt": ["LambdaFn", "Arn"] }
+              }
+            ]
+          }
+        },
+        "ResourceId": { "Ref": "ApiGatewayRootProxyResource" },
+        "RestApiId": { "Ref": "ApiGateway" }
+      }
+    },
     "ApiGatewayDeployment": {
-      "DependsOn": "ApiGatewayMethod",
+      "DependsOn": ["ApiGatewayRootMethod", "ApiGatewayRootProxyMethod"],
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": { "Ref": "ApiGateway" },
