@@ -1,5 +1,11 @@
 // Use https://closure-compiler.appspot.com to compile/minify
 
+const AWS = require("aws-sdk");
+
+const s3 = new AWS.S3();
+
+const DEFAULT_AUTH = "whodis:hearthstone";
+
 const buildPolicy = (event, principalId) => {
   const methodArnParts = event.methodArn.split(":");
   const apiGatewayArnTmp = methodArnParts[5].split("/");
@@ -44,9 +50,22 @@ exports.handler = function(event, context, callback) {
   const username = decidedAuthorization[0];
   const password = decidedAuthorization[1];
 
-  if (!(username === "admin" && password === "secret")) {
+  s3.getObject({
+    Bucket: process.env.ARTIFACTS_BUCKET_NAME,
+    Key: "http.basic.auth.txt"
+  }, (err, data) => {
+    let authData = DEFAULT_AUTH;
+    if (!err) {
+      authData = data.Body.toString();
+    }
+    const authEntries = authData.split("\n");
+    let i = 0;
+    for (i = 0; i < authEntries.length; i++) {
+      const authPair = authEntries[i].split(":");
+      if (username === authPair[0] && password === authPair[1]) {
+        return callback(null, buildPolicy(event, username));
+      }
+    }
     return callback("Unauthorized");
-  }
-
-  callback(null, buildPolicy(event, username));
+  });
 };

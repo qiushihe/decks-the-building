@@ -184,7 +184,7 @@
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
-          "ZipFile": "var buildPolicy=function(d,a){var b=d.methodArn.split(\":\"),c=b[5].split(\"/\");return{principalId:a,policyDocument:{Version:\"2012-10-17\",Statement:[{Action:\"execute-api:Invoke\",Effect:\"Allow\",Resource:[\"arn:aws:execute-api:\"+b[3]+\":\"+b[4]+\":\"+c[0]+\"/\"+c[1]+\"/*/*\"]}]}}};\nexports.handler=function(d,a,b){a=d.headers.authorization||d.headers.Authorization;if(!a)return b(\"Unauthorized\");a=a.split(\" \")[1];var c=(new Buffer(a,\"base64\")).toString().split(\":\");a=c[0];c=c[1];if(\"admin\"!==a||\"secret\"!==c)return b(\"Unauthorized\");b(null,buildPolicy(d,a))};"
+          "ZipFile": "var AWS=require(\"aws-sdk\"),s3=new AWS.S3,DEFAULT_AUTH=\"whodis:hearthstone\",buildPolicy=function(c,a){var b=c.methodArn.split(\":\"),d=b[5].split(\"/\");return{principalId:a,policyDocument:{Version:\"2012-10-17\",Statement:[{Action:\"execute-api:Invoke\",Effect:\"Allow\",Resource:[\"arn:aws:execute-api:\"+b[3]+\":\"+b[4]+\":\"+d[0]+\"/\"+d[1]+\"/*/*\"]}]}}};\nexports.handler=function(c,a,b){a=c.headers.authorization||c.headers.Authorization;if(!a)return b(\"Unauthorized\");a=a.split(\" \")[1];a=(new Buffer(a,\"base64\")).toString().split(\":\");var d=a[0],h=a[1];s3.getObject({Bucket:process.env.ARTIFACTS_BUCKET_NAME,Key:\"http.basic.auth.txt\"},function(a,k){var e=DEFAULT_AUTH;a||(e=k.Body.toString());e=e.split(\"\\n\");var f;for(f=0;f<e.length;f++){var g=e[f].split(\":\");if(d===g[0]&&h===g[1])return b(null,buildPolicy(c,d))}return b(\"Unauthorized\")})};"
         },
         "FunctionName": {
           "Fn::Sub": [
@@ -197,6 +197,19 @@
         "Handler": "index.handler",
         "Role": {
           "Fn::GetAtt": ["AuthorizerFnExecutionRole", "Arn"]
+        },
+        "Environment": {
+          "Variables": {
+            "ARTIFACTS_BUCKET_NAME": {
+              "Fn::Sub": [
+                "${Stack}-${Name}-${Suffix}", {
+                  "Stack": { "Ref": "AWS::StackName" },
+                  "Name": { "Ref": "ArtifactsBucketNameParameter" },
+                  "Suffix": { "Fn::GetAtt": ["StackS3BucketSuffix", "AlphanumericNoCapValue"] }
+                }
+              ]
+            }
+          }
         },
         "Runtime": "nodejs12.x"
       }
@@ -328,7 +341,6 @@
         },
         "Environment": {
           "Variables": {
-            "ARTIFACTS_BUCKET_REGION": { "Ref" : "AWS::Region" },
             "ARTIFACTS_BUCKET_NAME": {
               "Fn::Sub": [
                 "${Stack}-${Name}-${Suffix}", {
