@@ -4,7 +4,7 @@
     "ArtifactsBucketNameParameter": {
       "Description": "Name of the S3 bucket to store deployment artifacts",
       "Type": "String",
-      "Default": "decks-the-building-artifacts",
+      "Default": "deployment-artifacts",
       "AllowedPattern": ".+"
     },
     "ApiGatewayRequiresAuthorizationParameter": {
