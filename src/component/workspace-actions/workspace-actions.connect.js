@@ -5,7 +5,7 @@ import flow from "lodash/fp/flow";
 import first from "lodash/fp/first";
 import without from "lodash/fp/without";
 
-import { RENAME_OBJECT } from "/src/enum/modal.enum";
+import { RENAME_OBJECT, CLOUD_SYNC } from "/src/enum/modal.enum";
 import { WORKSPACE } from "/src/enum/nameable.enum";
 import { show } from "/src/action/modal.action";
 import { save, create, remove, activate } from "/src/action/workspace.action";
@@ -66,6 +66,13 @@ export default connect(
             first,
             workspaceId => dispatchProps.activate({ id: workspaceId })
           ])(stateProps.allWorkspaceIds)
-        )
+        ),
+    syncWithCloud: () =>
+      dispatchProps.show({
+        name: CLOUD_SYNC,
+        props: {
+          workspaceId: ownProps.workspaceId
+        }
+      })
   })
 )(WorkspaceActions);

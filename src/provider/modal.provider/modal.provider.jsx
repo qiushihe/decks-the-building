@@ -7,11 +7,18 @@ import forEach from "lodash/fp/forEach";
 
 import AddCardsToStack from "/src/component/modal/add-cards-to-stack";
 import RenameObject from "/src/component/modal/rename-object";
-import { ADD_CARDS_TO_STACK, RENAME_OBJECT } from "/src/enum/modal.enum";
+import CloudSync from "/src/component/modal/cloud-sync";
+
+import {
+  ADD_CARDS_TO_STACK,
+  RENAME_OBJECT,
+  CLOUD_SYNC
+} from "/src/enum/modal.enum";
 
 const ALL_MODAL_COMPONENTS = {
   [ADD_CARDS_TO_STACK]: AddCardsToStack,
-  [RENAME_OBJECT]: RenameObject
+  [RENAME_OBJECT]: RenameObject,
+  [CLOUD_SYNC]: CloudSync
 };
 
 const DisableScrollStyle = createGlobalStyle`
