@@ -3,7 +3,7 @@ import map from "lodash/fp/map";
 
 import { SAVE } from "/src/action/workspace.action";
 import { withProps } from "/src/util/selector.util";
-import { getWorkspaceDetailService } from "/src/services/workspace-detail.service";
+import { getSaveToLocalService } from "/src/service/workspace/save-to-local.service";
 
 import { laneLabel, laneStackIds } from "/src/selector/lane.selector";
 import { stackLabel, stackCardEntries } from "/src/selector/stack.selector";
@@ -42,11 +42,7 @@ export default ({ getState }) => next => action => {
         }))(withProps({ workspaceId })(workspaceLaneIds)(newState))
       };
 
-      return getWorkspaceDetailService().storeDetailByWorkspaceId(
-        getState,
-        workspaceId,
-        workspaceData
-      );
+      return getSaveToLocalService().save(workspaceId, workspaceData);
     }
   });
 };
