@@ -4,24 +4,37 @@ import styled from "styled-components";
 
 import BaseModal from "/src/component/modal/base";
 
+import LoginForm from "./login-form";
+import SyncOperationForm from "./sync-operation-form";
+
 const Base = styled.div``;
 
 export class CloudSync extends React.PureComponent {
   render() {
+    const { hideModal, hasLogin } = this.props;
+
     return (
       <BaseModal>
-        <Base>Oh Hai!</Base>
+        <Base>
+          {hasLogin ? (
+            <SyncOperationForm cancelSync={hideModal} />
+          ) : (
+            <LoginForm cancelLogin={hideModal} />
+          )}
+        </Base>
       </BaseModal>
     );
   }
 }
 
 CloudSync.propTypes = {
-  hideModal: PropTypes.func
+  hideModal: PropTypes.func,
+  hasLogin: PropTypes.bool
 };
 
 CloudSync.defaultProps = {
-  hideModal: () => {}
+  hideModal: () => {},
+  hasLogin: false
 };
 
 export default CloudSync;

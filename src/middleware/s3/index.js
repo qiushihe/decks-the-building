@@ -1,3 +1,3 @@
-import updateLogin from "./update-login.middleware";
+import fetchWorkspaces from "./fetch-workspaces.middleware";
 
-export default [updateLogin];
+export default [fetchWorkspaces];

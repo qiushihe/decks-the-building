@@ -32,7 +32,7 @@ class S3Client {
         resolve();
       } else {
         this.s3 = null;
-        reject();
+        reject(new Error("invalid S3 login"));
       }
     });
   }
