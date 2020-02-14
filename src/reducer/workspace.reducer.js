@@ -5,6 +5,7 @@ import {
   RESTORE,
   RENAME,
   REMOVE,
+  CLEAR,
   ACTIVATE,
   MOVE_LANE,
   ADD_LANES,
@@ -16,6 +17,7 @@ import create from "./workspace/create";
 import restore from "./workspace/restore";
 import rename from "./workspace/rename";
 import remove from "./workspace/remove";
+import clear from "./workspace/clear";
 import activate from "./workspace/activate";
 import moveLanes from "./workspace/move-lane";
 import addLanes from "./workspace/add-lanes";
@@ -32,6 +34,7 @@ export default handleActions(
     [RESTORE]: withPayload(restore),
     [RENAME]: withPayload(rename),
     [REMOVE]: withPayload(remove),
+    [CLEAR]: withPayload(clear),
     [ACTIVATE]: withPayload(activate),
     [MOVE_LANE]: withPayload(moveLanes),
     [ADD_LANES]: withPayload(addLanes),
