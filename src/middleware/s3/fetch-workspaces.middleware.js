@@ -6,6 +6,7 @@ import { getS3Client } from "/src/api/s3.api";
 
 import {
   SET_LOGIN,
+  FETCH_AVAILABLE_WORKSPACES,
   clearLogin,
   addAvailableWorkspace
 } from "/src/action/s3.action";
@@ -42,6 +43,8 @@ export default ({ dispatch }) => next => action => {
         .setLogin(login)
         .then(fetchAvailableWorkspaces)
         .catch(() => dispatch(clearLogin()));
+    } else if (actionType === FETCH_AVAILABLE_WORKSPACES) {
+      return fetchAvailableWorkspaces().catch(() => dispatch(clearLogin()));
     }
   });
 };

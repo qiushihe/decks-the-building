@@ -17,7 +17,7 @@ export class CloudSync extends React.PureComponent {
       <BaseModal>
         <Base>
           {hasLogin ? (
-            <SyncOperationForm cancelSync={hideModal} />
+            <SyncOperationForm doneSync={hideModal} />
           ) : (
             <LoginForm cancelLogin={hideModal} />
           )}

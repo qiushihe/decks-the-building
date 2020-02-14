@@ -48,7 +48,7 @@ export class SyncOperationForm extends React.PureComponent {
     const {
       hasLocal,
       hasRemote,
-      cancelSync,
+      doneSync,
       replaceCurrentWithSelected,
       openSelectedAsNew,
       saveCurrentToSelected,
@@ -84,7 +84,7 @@ export class SyncOperationForm extends React.PureComponent {
           </OperationsGroup>
         </Operations>
         <div>
-          <button onClick={cancelSync}>Cancel</button>
+          <button onClick={doneSync}>Done</button>
         </div>
       </Base>
     );
@@ -94,7 +94,7 @@ export class SyncOperationForm extends React.PureComponent {
 SyncOperationForm.propTypes = {
   hasLocal: PropTypes.bool,
   hasRemote: PropTypes.bool,
-  cancelSync: PropTypes.func,
+  doneSync: PropTypes.func,
   replaceCurrentWithSelected: PropTypes.func,
   openSelectedAsNew: PropTypes.func,
   saveCurrentToSelected: PropTypes.func,
@@ -104,7 +104,7 @@ SyncOperationForm.propTypes = {
 SyncOperationForm.defaultProps = {
   hasLocal: false,
   hasRemote: false,
-  cancelSync: () => {},
+  doneSync: () => {},
   replaceCurrentWithSelected: () => {},
   openSelectedAsNew: () => {},
   saveCurrentToSelected: () => {},
