@@ -12,7 +12,7 @@ class SaveToRemoteService {
 
 let DefaultInstance = null;
 
-export const getSaveToLocalService = () => {
+export const getSaveToRemoteService = () => {
   if (DefaultInstance === null) {
     DefaultInstance = new SaveToRemoteService();
   }
