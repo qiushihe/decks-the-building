@@ -104,7 +104,7 @@ export default (dispatch, data) => {
             : dispatch(addLanesToWorkspace({ id, laneIds }))
         )
       )
-      .then(() => id);
+      .then(constant(id));
   };
 
   return restoreWorkspaceData(data);

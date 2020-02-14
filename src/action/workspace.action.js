@@ -11,7 +11,6 @@ export const SAVE = "WORKSPACE/SAVE";
 export const MOVE_LANE = "WORKSPACE/MOVE_LANE";
 export const ADD_LANES = "WORKSPACE/ADD_LANES";
 export const REMOVE_LANES = "WORKSPACE/REMOVE_LANES";
-export const RESTORE_FROM_JSON = "WORKSPACE/RESTORE_FROM_JSON";
 
 export const create = createPromisedAction(CREATE, ["id", "label"], invoke);
 
@@ -42,11 +41,5 @@ export const addLanes = createPromisedAction(
 export const removeLanes = createPromisedAction(
   REMOVE_LANES,
   ["id", "laneIds"],
-  invoke
-);
-
-export const restoreFromJson = createPromisedAction(
-  RESTORE_FROM_JSON,
-  ["data"],
   invoke
 );
