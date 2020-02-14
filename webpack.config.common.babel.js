@@ -41,7 +41,8 @@ export default {
     new HtmlWebpackPlugin({
       excludeChunks: [],
       template: "./src/template/index.html",
-      filename: "index.html"
+      filename: "index.html",
+      hash: true
     })
   ]
 };
