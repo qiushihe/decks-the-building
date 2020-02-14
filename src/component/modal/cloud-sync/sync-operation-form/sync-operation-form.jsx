@@ -1,3 +1,4 @@
+import Promise from "bluebird";
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
@@ -48,12 +49,18 @@ export class SyncOperationForm extends React.PureComponent {
     const {
       hasLocal,
       hasRemote,
-      doneSync,
+      onComplete,
+      onCancel,
       replaceCurrentWithSelected,
       openSelectedAsNew,
       saveCurrentToSelected,
       saveCurrentAsNew
     } = this.props;
+
+    const withComplete = operationFn => () =>
+      Promise.resolve()
+        .then(() => operationFn())
+        .then(() => onComplete());
 
     return (
       <Base>
@@ -62,29 +69,35 @@ export class SyncOperationForm extends React.PureComponent {
         <Operations>
           <OperationsGroup>
             <OperationButton
-              onClick={replaceCurrentWithSelected}
+              onClick={withComplete(replaceCurrentWithSelected)}
               disabled={!hasLocal || !hasRemote}
             >
               Replace Current Workspace with Selected Workspace
             </OperationButton>
-            <OperationButton onClick={openSelectedAsNew} disabled={!hasRemote}>
+            <OperationButton
+              onClick={withComplete(openSelectedAsNew)}
+              disabled={!hasRemote}
+            >
               Open Selected Workspace as New Workspace
             </OperationButton>
           </OperationsGroup>
           <OperationsGroup>
             <OperationButton
-              onClick={saveCurrentToSelected}
+              onClick={withComplete(saveCurrentToSelected)}
               disabled={!hasLocal || !hasRemote}
             >
               Save Current Workspace to Selected Workspace
             </OperationButton>
-            <OperationButton onClick={saveCurrentAsNew} disabled={!hasLocal}>
+            <OperationButton
+              onClick={withComplete(saveCurrentAsNew)}
+              disabled={!hasLocal}
+            >
               Save Current Workspace as New Workspace
             </OperationButton>
           </OperationsGroup>
         </Operations>
         <div>
-          <button onClick={doneSync}>Done</button>
+          <button onClick={onCancel}>Cancel</button>
         </div>
       </Base>
     );
@@ -94,7 +107,8 @@ export class SyncOperationForm extends React.PureComponent {
 SyncOperationForm.propTypes = {
   hasLocal: PropTypes.bool,
   hasRemote: PropTypes.bool,
-  doneSync: PropTypes.func,
+  onComplete: PropTypes.func,
+  onCancel: PropTypes.func,
   replaceCurrentWithSelected: PropTypes.func,
   openSelectedAsNew: PropTypes.func,
   saveCurrentToSelected: PropTypes.func,
@@ -104,7 +118,8 @@ SyncOperationForm.propTypes = {
 SyncOperationForm.defaultProps = {
   hasLocal: false,
   hasRemote: false,
-  doneSync: () => {},
+  onComplete: () => {},
+  onCancel: () => {},
   replaceCurrentWithSelected: () => {},
   openSelectedAsNew: () => {},
   saveCurrentToSelected: () => {},

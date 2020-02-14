@@ -3,7 +3,7 @@ import isNil from "lodash/fp/isNil";
 import uuidV4 from "uuid/v4";
 
 import { IMPORT_WORKSPACE } from "/src/action/s3.action";
-import { clear, activate } from "/src/action/workspace.action";
+import { clear, activate, save } from "/src/action/workspace.action";
 import { getFetchFromRemoteService } from "/src/service/workspace/fetch-from-remote.service";
 
 import importFromJson from "./import-from-json";
@@ -24,20 +24,24 @@ export default ({ dispatch }) => next => action => {
             return importFromJson(dispatch, {
               ...workspaceData,
               id: uuidV4()
-            }).then(({ payload: { data: { id } } }) =>
-              dispatch(
-                activate({
-                  id
+            })
+              .then(() => dispatch(save({ id: localId })))
+              .then(({ payload: { data: { id } } }) =>
+                dispatch(
+                  activate({
+                    id
+                  })
+                )
+              );
+          } else {
+            return dispatch(clear({ id: localId }))
+              .then(() =>
+                importFromJson(dispatch, {
+                  ...workspaceData,
+                  id: localId
                 })
               )
-            );
-          } else {
-            return dispatch(clear({ id: localId })).then(() =>
-              importFromJson(dispatch, {
-                ...workspaceData,
-                id: localId
-              })
-            );
+              .then(() => dispatch(save({ id: localId })));
           }
         });
     }
