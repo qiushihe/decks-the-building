@@ -101,6 +101,10 @@ class LocalForgeClient {
       });
   }
 
+  deleteWorkspaceById(id) {
+    return this.deleteById("Workspace", id);
+  }
+
   storeById(modelName, id, data) {
     return getRecord(modelName, id).setAttr("data", JSON.stringify(data));
   }
@@ -112,6 +116,15 @@ class LocalForgeClient {
         return record.getAttr("data").then(data => JSON.parse(`${data}`));
       } else {
         throw new Error(`Unable to find ${modelName} with ID: ${id}`);
+      }
+    });
+  }
+
+  deleteById(modelName, id) {
+    const record = getRecord(modelName, id);
+    return record.exists().then(recordExists => {
+      if (recordExists) {
+        return record.deleteRecord();
       }
     });
   }
