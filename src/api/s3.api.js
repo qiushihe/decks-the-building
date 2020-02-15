@@ -37,6 +37,14 @@ class S3Client {
     });
   }
 
+  storeAllCardNames(data) {
+    return this.storeById("catalog", "card-names", data);
+  }
+
+  fetchAllCardNames() {
+    return this.fetchById("catalog", "card-names");
+  }
+
   storeCardById(id, data) {
     return this.storeById("cards", id, data);
   }

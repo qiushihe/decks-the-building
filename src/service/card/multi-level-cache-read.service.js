@@ -11,7 +11,30 @@ class MultiLevelCacheService {
     this.scryfall = getScryfallClient();
   }
 
-  read(cardId, cardName) {
+  readCardNames() {
+    return this.localForge
+      .fetchAllCardNames()
+      .catch(() =>
+        this.s3
+          .fetchAllCardNames()
+          .then(cardNames =>
+            this.localForge
+              .storeAllCardNames(cardNames)
+              .then(constant(cardNames))
+          )
+      )
+      .catch(() =>
+        this.scryfall.fetchAllCardNames().then(cardNames =>
+          this.s3
+            .storeAllCardNames(cardNames)
+            .catch(constant(null))
+            .finally(() => this.localForge.storeAllCardNames(cardNames))
+            .then(constant(cardNames))
+        )
+      );
+  }
+
+  readCardDetail(cardId, cardName) {
     return this.localForge
       .fetchCardById(cardId)
       .catch(() =>

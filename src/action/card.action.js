@@ -10,6 +10,8 @@ import { encode } from "/src/util/base64.util";
 export const ADD = "CARD/ADD";
 export const RESTORE = "CARD/RESTORE";
 
+export const RESTORE_CARD_NAMES = "CARD/RESTORE_CARD_NAMES";
+
 export const add = createPromisedAction(
   ADD,
   ["names"],
@@ -33,5 +35,11 @@ export const restore = createPromisedAction(
     "flavorText",
     "imageUrl"
   ],
+  invoke
+);
+
+export const restoreCardNames = createPromisedAction(
+  RESTORE_CARD_NAMES,
+  ["names"],
   invoke
 );

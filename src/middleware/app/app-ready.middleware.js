@@ -1,14 +1,23 @@
 import Promise from "bluebird";
+import flow from "lodash/fp/flow";
+import values from "lodash/fp/values";
+import every from "lodash/fp/every";
+import cond from "lodash/fp/cond";
+import identity from "lodash/fp/identity";
 
 import { BOOT, ready } from "/src/action/app.action";
+import { RESTORE_CARD_NAMES } from "/src/action/card.action";
 
 export default ({ dispatch }) => {
-  let appBooted = false;
+  const readyChecks = {
+    [BOOT]: false,
+    [RESTORE_CARD_NAMES]: false
+  };
 
   const dispatchIfReady = () => {
-    if (appBooted) {
-      dispatch(ready());
-    }
+    flow([values, every(Boolean), cond([[identity, () => dispatch(ready())]])])(
+      readyChecks
+    );
   };
 
   return next => action => {
@@ -16,7 +25,10 @@ export default ({ dispatch }) => {
 
     return Promise.resolve(next(action)).then(() => {
       if (actionType === BOOT) {
-        appBooted = true;
+        readyChecks[BOOT] = true;
+        dispatchIfReady();
+      } else if (actionType === RESTORE_CARD_NAMES) {
+        readyChecks[RESTORE_CARD_NAMES] = true;
         dispatchIfReady();
       }
     });

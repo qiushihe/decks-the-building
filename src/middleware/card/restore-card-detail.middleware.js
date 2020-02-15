@@ -23,7 +23,7 @@ export default ({ getState, dispatch }) => {
       })),
       map(({ id, name }) =>
         getMultiLevelCacheService()
-          .read(id, name)
+          .readCardDetail(id, name)
           .then(cardDetail => dispatch(restore({ id, ...cardDetail })))
       ),
       Promise.all
