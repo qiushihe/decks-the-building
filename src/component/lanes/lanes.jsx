@@ -33,7 +33,7 @@ class Lanes extends React.PureComponent {
     const { workspaceId, laneIds, moveLane } = this.props;
 
     return (
-      <Base data-scrollable="true">
+      <Base>
         <Container
           groupName="lane"
           lockAxis="y"

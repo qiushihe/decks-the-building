@@ -2,17 +2,23 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import { WORKSPACE, LANE, STACK } from "/src/enum/nameable.enum";
-import Arrange from "/src/component/arrange";
-import BaseModal from "/src/component/modal/base";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import DialogContentText from "@material-ui/core/DialogContentText";
 
-const Header = styled.div``;
+import { WORKSPACE, LANE, STACK } from "/src/enum/nameable.enum";
+import BaseModal from "/src/component/modal/base";
 
 const NameableTitle = {
   [WORKSPACE]: "Workspace",
   [LANE]: "Lane",
   [STACK]: "Stack"
 };
+
+const Base = styled.div`
+  min-width: 250px;
+  max-width: 420px;
+`;
 
 export class RenameObject extends React.PureComponent {
   constructor(...args) {
@@ -47,37 +53,37 @@ export class RenameObject extends React.PureComponent {
   }
 
   render() {
-    const { nameable } = this.props;
+    const { nameable, name } = this.props;
     const { fieldValue } = this.state;
 
     return (
-      <BaseModal>
-        <Arrange vertical={true}>
-          <Arrange.Fit>
-            <Header>Rename {NameableTitle[nameable]}</Header>
-          </Arrange.Fit>
-          <Arrange.Fit>&nbsp;</Arrange.Fit>
-          <Arrange.Fit>
-            <input
-              type="text"
-              value={fieldValue || ""}
-              onChange={this.handleFieldChange}
-            />
-          </Arrange.Fit>
-          <Arrange.Fit>&nbsp;</Arrange.Fit>
-          <Arrange.Fit>
-            <Arrange>
-              <Arrange.Fill>&nbsp;</Arrange.Fill>
-              <Arrange.Fit>
-                <button onClick={this.handleCancel}>Cancel</button>
-              </Arrange.Fit>
-              <Arrange.Fit>&nbsp;&nbsp;</Arrange.Fit>
-              <Arrange.Fit>
-                <button onClick={this.handleRename}>Rename</button>
-              </Arrange.Fit>
-            </Arrange>
-          </Arrange.Fit>
-        </Arrange>
+      <BaseModal
+        renderTitle={() => `Rename ${NameableTitle[nameable]}`}
+        renderActions={() => (
+          <React.Fragment>
+            <Button onClick={this.handleCancel} color="secondary">
+              Cancel
+            </Button>
+            <Button onClick={this.handleRename} color="primary">
+              Rename
+            </Button>
+          </React.Fragment>
+        )}
+      >
+        <Base>
+          <DialogContentText id="alert-dialog-description">
+            Enter a new name for the {NameableTitle[nameable]} &quot;{name}
+            &quot;:
+          </DialogContentText>
+          <TextField
+            label={`${NameableTitle[nameable]} name`}
+            variant="outlined"
+            margin="dense"
+            fullWidth={true}
+            value={fieldValue || ""}
+            onChange={this.handleFieldChange}
+          />
+        </Base>
       </BaseModal>
     );
   }
