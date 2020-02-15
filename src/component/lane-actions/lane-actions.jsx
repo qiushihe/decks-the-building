@@ -1,13 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
-import { Edit, Trash2, PlusCircle } from "react-feather";
 
 import Arrange from "/src/component/arrange";
+import { RenameIcon, DeleteIcon, CreateIcon } from "/src/component/icon";
 
 const IconStyle = css`
-  width: 16px;
-  height: 16px;
   cursor: pointer;
   opacity: 0.6;
 
@@ -16,15 +14,15 @@ const IconStyle = css`
   }
 `;
 
-const RenameLaneIcon = styled(Edit)`
+const RenameLane = styled(RenameIcon)`
   ${IconStyle}
 `;
 
-const DeleteLaneIcon = styled(Trash2)`
+const DeleteLane = styled(DeleteIcon)`
   ${IconStyle}
 `;
 
-const CreateLaneIcon = styled(PlusCircle)`
+const CreateLane = styled(CreateIcon)`
   ${IconStyle}
 `;
 
@@ -35,15 +33,15 @@ class LaneActions extends React.PureComponent {
       <div className={className}>
         <Arrange>
           <Arrange.Fit>
-            <RenameLaneIcon onClick={renameLane} />
+            <RenameLane onClick={renameLane} />
           </Arrange.Fit>
           <Arrange.Fit>&nbsp;</Arrange.Fit>
           <Arrange.Fit>
-            <DeleteLaneIcon onClick={removeLane} />
+            <DeleteLane onClick={removeLane} />
           </Arrange.Fit>
           <Arrange.Fit>&nbsp;</Arrange.Fit>
           <Arrange.Fit>
-            <CreateLaneIcon onClick={createLane} />
+            <CreateLane onClick={createLane} />
           </Arrange.Fit>
         </Arrange>
       </div>

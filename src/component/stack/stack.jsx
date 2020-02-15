@@ -1,13 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import flow from "lodash/fp/flow";
 import get from "lodash/fp/get";
 import multiply from "lodash/fp/multiply";
 import add from "lodash/fp/add";
 import omit from "lodash/fp/omit";
-
-import { Layers } from "react-feather";
 
 import {
   CARD_DEFAULT_SCALE,
@@ -15,9 +13,11 @@ import {
   STACK_CONTENT_SPACING,
   STACK_CARDS_SPACING
 } from "/src/config";
+
 import Arrange from "/src/component/arrange";
 import StackActions from "/src/component/stack-actions";
 import Cards from "/src/component/cards";
+import { StackIcon } from "/src/component/icon";
 
 const StyledStackActions = styled(StackActions)``;
 
@@ -63,15 +63,6 @@ const Header = styled.div`
   flex: 0 1 auto;
   padding: 0 6px;
   margin: 6px 0 12px 0;
-`;
-
-const IconStyle = css`
-  width: 16px;
-  height: 16px;
-`;
-
-const StackIcon = styled(Layers)`
-  ${IconStyle}
 `;
 
 class Stack extends React.PureComponent {

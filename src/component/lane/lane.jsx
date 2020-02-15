@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
-import { Trello } from "react-feather";
+import styled from "styled-components";
 
 import Arrange from "/src/component/arrange";
 import LaneActions from "/src/component/lane-actions";
 import Stacks from "/src/component/stacks";
+import { LaneIcon } from "/src/component/icon";
 
 const StyledLaneActions = styled(LaneActions)``;
 
@@ -30,15 +30,6 @@ const Header = styled.div`
   flex-direction: column;
   flex: 0 1 auto;
   padding: 0 6px 0 16px;
-`;
-
-const IconStyle = css`
-  width: 16px;
-  height: 16px;
-`;
-
-const LaneIcon = styled(Trello)`
-  ${IconStyle}
 `;
 
 const Divider = styled.div`

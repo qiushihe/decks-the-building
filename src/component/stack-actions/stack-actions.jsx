@@ -2,13 +2,17 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 
-import { Edit, FilePlus, Trash2, PlusCircle, Package } from "react-feather";
-
 import Arrange from "/src/component/arrange";
 
+import {
+  RenameIcon,
+  CreateIcon,
+  DeleteIcon,
+  AddCardsIcon,
+  CombineCardsIcon
+} from "/src/component/icon";
+
 const IconStyle = css`
-  width: 16px;
-  height: 16px;
   cursor: pointer;
   opacity: 0.6;
 
@@ -17,23 +21,23 @@ const IconStyle = css`
   }
 `;
 
-const RenameStackIcon = styled(Edit)`
+const RenameStack = styled(RenameIcon)`
   ${IconStyle}
 `;
 
-const AddCardIcon = styled(FilePlus)`
+const AddCardsToStack = styled(AddCardsIcon)`
   ${IconStyle}
 `;
 
-const DeleteStackIcon = styled(Trash2)`
+const DeleteStack = styled(DeleteIcon)`
   ${IconStyle}
 `;
 
-const TidyStackIcon = styled(Package)`
+const CombineCardsInStack = styled(CombineCardsIcon)`
   ${IconStyle}
 `;
 
-const CreateStackIcon = styled(PlusCircle)`
+const CreateStack = styled(CreateIcon)`
   ${IconStyle}
 `;
 
@@ -52,23 +56,23 @@ class StackActions extends React.PureComponent {
       <div className={className}>
         <Arrange>
           <Arrange.Fit>
-            <RenameStackIcon onClick={renameStack} />
+            <RenameStack onClick={renameStack} />
           </Arrange.Fit>
           <Arrange.Fit>&nbsp;</Arrange.Fit>
           <Arrange.Fit>
-            <AddCardIcon onClick={addCardsToStack} />
+            <AddCardsToStack onClick={addCardsToStack} />
           </Arrange.Fit>
           <Arrange.Fit>&nbsp;</Arrange.Fit>
           <Arrange.Fit>
-            <TidyStackIcon onClick={combineDuplicateCards} />
+            <CombineCardsInStack onClick={combineDuplicateCards} />
           </Arrange.Fit>
           <Arrange.Fit>&nbsp;</Arrange.Fit>
           <Arrange.Fit>
-            <DeleteStackIcon onClick={removeStack} />
+            <DeleteStack onClick={removeStack} />
           </Arrange.Fit>
           <Arrange.Fit>&nbsp;</Arrange.Fit>
           <Arrange.Fit>
-            <CreateStackIcon onClick={createStack} />
+            <CreateStack onClick={createStack} />
           </Arrange.Fit>
         </Arrange>
       </div>

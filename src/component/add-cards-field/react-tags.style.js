@@ -1,18 +1,28 @@
 import { css } from "styled-components";
+import flow from "lodash/fp/flow";
 import reduce from "lodash/fp/reduce";
+import invert from "lodash/fp/invert";
+import isNil from "lodash/fp/isNil";
 
 import { getRandomId, getPrefixedRandomId } from "/src/util/random-id.util";
 import { styleClassName } from "/src/util/classname.util";
 
 const getReactTagsClassName = getPrefixedRandomId(getRandomId(6, 62));
 
-export const ReactTagsClassNames = reduce(
-  (result, attrName) => ({
-    ...result,
-    [attrName]: getReactTagsClassName(16, 62)
-  }),
-  {}
-)([
+export const ReactTagsClassNames = flow([
+  reduce((result, attrName) => {
+    let className = null;
+    while (isNil(className) || !isNil(result[className])) {
+      className = getReactTagsClassName(16, 62);
+    }
+
+    return {
+      ...result,
+      [className]: attrName
+    };
+  }, {}),
+  invert
+])([
   "root",
   "rootFocused",
   "selected",

@@ -15,11 +15,13 @@ import {
   CARD_DEFAULT_SCALE,
   CARD_WIDTH,
   CARD_HEIGHT,
-  CARD_HEIGHT_COLLAPSED_SHRINK_FACTOR,
-  CARD_IMAGE_COLLAPSED_SHIFT_FACTOR,
-  CARD_MENU_EDGE_OFFSET_FACTOR,
-  CARD_MENU_EXPANDED_TOP_OFFSET_FACTOR,
-  CARD_MENU_ICON_SIZE_FACTOR
+  CARD_COLLAPSED_HEIGHT_SHRINK_FACTOR,
+  CARD_COLLAPSED_IMAGE_SHIFT_FACTOR,
+  CARD_MENU_ICON_SIZE_FACTOR,
+  CARD_COLLAPSED_MENU_VERTICAL_OFFSET_FACTOR,
+  CARD_COLLAPSED_MENU_HORIZONTAL_OFFSET_FACTOR,
+  CARD_EXPANDED_MENU_VERTICAL_OFFSET_FACTOR,
+  CARD_EXPANDED_MENU_HORIZONTAL_OFFSET_FACTOR
 } from "/src/config";
 
 const StyledCardActions = styled(props => {
@@ -33,7 +35,7 @@ const StyledCardActions = styled(props => {
       flow([
         get("scale"),
         multiply(CARD_HEIGHT),
-        multiply(CARD_MENU_EDGE_OFFSET_FACTOR)
+        multiply(CARD_COLLAPSED_MENU_VERTICAL_OFFSET_FACTOR)
       ])
     ],
     [
@@ -41,14 +43,28 @@ const StyledCardActions = styled(props => {
       flow([
         get("scale"),
         multiply(CARD_HEIGHT),
-        multiply(CARD_MENU_EXPANDED_TOP_OFFSET_FACTOR)
+        multiply(CARD_EXPANDED_MENU_VERTICAL_OFFSET_FACTOR)
       ])
     ]
   ])}px;
-  right: ${flow([
-    get("scale"),
-    multiply(CARD_HEIGHT),
-    multiply(CARD_MENU_EDGE_OFFSET_FACTOR)
+
+  right: ${cond([
+    [
+      get("collapsed"),
+      flow([
+        get("scale"),
+        multiply(CARD_HEIGHT),
+        multiply(CARD_COLLAPSED_MENU_HORIZONTAL_OFFSET_FACTOR)
+      ])
+    ],
+    [
+      stubTrue,
+      flow([
+        get("scale"),
+        multiply(CARD_HEIGHT),
+        multiply(CARD_EXPANDED_MENU_HORIZONTAL_OFFSET_FACTOR)
+      ])
+    ]
   ])}px;
 `;
 
@@ -65,7 +81,7 @@ const Content = styled(props => {
       flow([
         get("scale"),
         multiply(CARD_HEIGHT),
-        multiply(CARD_HEIGHT_COLLAPSED_SHRINK_FACTOR)
+        multiply(CARD_COLLAPSED_HEIGHT_SHRINK_FACTOR)
       ])
     ],
     [stubTrue, flow([get("scale"), multiply(CARD_HEIGHT)])]
@@ -101,7 +117,7 @@ const CardImage = styled(props => {
       flow([
         get("scale"),
         multiply(CARD_HEIGHT),
-        multiply(CARD_IMAGE_COLLAPSED_SHIFT_FACTOR),
+        multiply(CARD_COLLAPSED_IMAGE_SHIFT_FACTOR),
         multiply(-1)
       ])
     ],

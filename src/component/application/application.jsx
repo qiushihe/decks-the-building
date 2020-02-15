@@ -1,21 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
-import { Grid } from "react-feather";
+import styled from "styled-components";
 
 import WorkspaceSelector from "/src/component/workspace-selector";
 import WorkspaceActions from "/src/component/workspace-actions";
 import Arrange from "/src/component/arrange";
 import Lanes from "/src/component/lanes";
-
-const IconStyle = css`
-  width: 16px;
-  height: 16px;
-`;
-
-const WorkspaceIcon = styled(Grid)`
-  ${IconStyle}
-`;
+import { WorkspaceIcon } from "/src/component/icon";
 
 const Header = styled.div`
   display: flex;

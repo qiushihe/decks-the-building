@@ -6,7 +6,6 @@ import { Normalize as NormalizeStyles } from "styled-normalize";
 
 const GlobalStyle = createGlobalStyle`
   html, body, #root {
-    font-family: Arial,sans-serif;
     position: relative;
     display: flex;
     flex-direction: column;

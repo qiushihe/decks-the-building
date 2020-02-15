@@ -4,11 +4,16 @@ export const SCRYFALL_API_ORIGIN =
 export const CARD_DEFAULT_SCALE = 4;
 export const CARD_WIDTH = 63;
 export const CARD_HEIGHT = 88;
-export const CARD_HEIGHT_COLLAPSED_SHRINK_FACTOR = 17 / 154;
-export const CARD_IMAGE_COLLAPSED_SHIFT_FACTOR = 3 / 154;
-export const CARD_MENU_EDGE_OFFSET_FACTOR = 2 / 77;
-export const CARD_MENU_EXPANDED_TOP_OFFSET_FACTOR = 1 / 22;
-export const CARD_MENU_ICON_SIZE_FACTOR = 4 / 77;
+
+// The following are expressed as the desired value
+// over the effective height of the card
+export const CARD_MENU_ICON_SIZE_FACTOR = 5 / 77;
+export const CARD_COLLAPSED_HEIGHT_SHRINK_FACTOR = 17 / 154;
+export const CARD_COLLAPSED_IMAGE_SHIFT_FACTOR = 3 / 154;
+export const CARD_COLLAPSED_MENU_VERTICAL_OFFSET_FACTOR = 3 / 176;
+export const CARD_COLLAPSED_MENU_HORIZONTAL_OFFSET_FACTOR = 1 / 30;
+export const CARD_EXPANDED_MENU_VERTICAL_OFFSET_FACTOR = 1 / 30;
+export const CARD_EXPANDED_MENU_HORIZONTAL_OFFSET_FACTOR = 1 / 30;
 
 export const STACK_CONTENT_SPACING = 10;
 export const STACK_CARDS_SPACING = 6;

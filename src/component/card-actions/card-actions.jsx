@@ -1,8 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
-import { Maximize2, Minimize2, Plus, Minus, Copy } from "react-feather";
+import flow from "lodash/fp/flow";
 import get from "lodash/fp/get";
+import multiply from "lodash/fp/multiply";
+
+import {
+  DuplicateIcon,
+  AddOneIcon,
+  SubtractOneIcon,
+  ExpandIcon,
+  CollapseIcon
+} from "/src/component/icon";
 
 const Base = styled.div`
   display: flex;
@@ -36,31 +45,21 @@ const IconContainer = styled.div`
 `;
 
 const IconStyle = css`
-  width: 65%;
-  height: 65%;
   cursor: pointer;
   color: #ffffff;
 `;
 
-const AddCopyIcon = styled(Plus)`
+const makeCardIcon = IconComponent => styled(IconComponent).attrs(
+  flow([get("size"), multiply(0.75), size => ({ size })])
+)`
   ${IconStyle}
 `;
 
-const RemoveCopyIcon = styled(Minus)`
-  ${IconStyle}
-`;
-
-const DuplicateIcon = styled(Copy)`
-  ${IconStyle}
-`;
-
-const ExpandIcon = styled(Maximize2)`
-  ${IconStyle}
-`;
-
-const CollapseIcon = styled(Minimize2)`
-  ${IconStyle}
-`;
+const AddOneCardCopy = makeCardIcon(AddOneIcon);
+const SubtractOneCardCopy = makeCardIcon(SubtractOneIcon);
+const DuplicateCardEntry = makeCardIcon(DuplicateIcon);
+const ExpandCard = makeCardIcon(ExpandIcon);
+const CollapseCard = makeCardIcon(CollapseIcon);
 
 class CardActions extends React.PureComponent {
   render() {
@@ -78,19 +77,25 @@ class CardActions extends React.PureComponent {
     return (
       <Base className={className}>
         <IconContainer size={size}>
-          <DuplicateIcon onClick={() => duplicateCard({ cardIndex })} />
+          <DuplicateCardEntry
+            size={size}
+            onClick={() => duplicateCard({ cardIndex })}
+          />
         </IconContainer>
         <IconContainer size={size}>
-          <RemoveCopyIcon onClick={() => subtractCopy({ cardIndex })} />
+          <SubtractOneCardCopy
+            size={size}
+            onClick={() => subtractCopy({ cardIndex })}
+          />
         </IconContainer>
         <IconContainer size={size}>
-          <AddCopyIcon onClick={() => addCopy({ cardIndex })} />
+          <AddOneCardCopy size={size} onClick={() => addCopy({ cardIndex })} />
         </IconContainer>
         <IconContainer size={size}>
           {collapsed ? (
-            <ExpandIcon onClick={toggleCard} />
+            <ExpandCard size={size} onClick={toggleCard} />
           ) : (
-            <CollapseIcon onClick={toggleCard} />
+            <CollapseCard size={size} onClick={toggleCard} />
           )}
         </IconContainer>
       </Base>
@@ -113,7 +118,7 @@ CardActions.defaultProps = {
   className: "",
   cardIndex: 0,
   collapsed: false,
-  size: 16,
+  size: 18,
   toggleCard: () => {},
   addCopy: () => {},
   subtractCopy: () => {},

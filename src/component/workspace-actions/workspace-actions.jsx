@@ -1,13 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
-import { Edit, Trash2, Save, PlusCircle, CloudLightning } from "react-feather";
 
 import Arrange from "/src/component/arrange";
 
+import {
+  RenameIcon,
+  DeleteIcon,
+  SaveIcon,
+  ImportExportIcon,
+  CreateIcon
+} from "/src/component/icon";
+
 const IconStyle = css`
-  width: 16px;
-  height: 16px;
   cursor: pointer;
   opacity: 0.6;
 
@@ -16,23 +21,23 @@ const IconStyle = css`
   }
 `;
 
-const RenameWorkspaceIcon = styled(Edit)`
+const RenameWorkspaceIcon = styled(RenameIcon)`
   ${IconStyle}
 `;
 
-const DeleteWorkspaceIcon = styled(Trash2)`
+const DeleteWorkspaceIcon = styled(DeleteIcon)`
   ${IconStyle}
 `;
 
-const SaveWorkspaceIcon = styled(Save)`
+const SaveWorkspaceIcon = styled(SaveIcon)`
   ${IconStyle}
 `;
 
-const SyncWithCloudIcon = styled(CloudLightning)`
+const SyncWithCloudIcon = styled(ImportExportIcon)`
   ${IconStyle}
 `;
 
-const CreateWorkspaceIcon = styled(PlusCircle)`
+const CreateWorkspaceIcon = styled(CreateIcon)`
   ${IconStyle}
 `;
 
@@ -55,15 +60,15 @@ class WorkspaceActions extends React.PureComponent {
           </Arrange.Fit>
           <Arrange.Fit>&nbsp;</Arrange.Fit>
           <Arrange.Fit>
-            <DeleteWorkspaceIcon onClick={removeWorkspace} />
-          </Arrange.Fit>
-          <Arrange.Fit>&nbsp;</Arrange.Fit>
-          <Arrange.Fit>
             <SaveWorkspaceIcon onClick={saveWorkspace} />
           </Arrange.Fit>
           <Arrange.Fit>&nbsp;</Arrange.Fit>
           <Arrange.Fit>
             <SyncWithCloudIcon onClick={syncWithCloud} />
+          </Arrange.Fit>
+          <Arrange.Fit>&nbsp;</Arrange.Fit>
+          <Arrange.Fit>
+            <DeleteWorkspaceIcon onClick={removeWorkspace} />
           </Arrange.Fit>
           <Arrange.Fit>&nbsp;</Arrange.Fit>
           <Arrange.Fit>
