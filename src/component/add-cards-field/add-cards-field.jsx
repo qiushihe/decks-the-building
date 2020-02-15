@@ -5,8 +5,13 @@ import ReactTags from "react-tag-autocomplete";
 
 import { removeItem } from "/src/util/array.util";
 
-import { ReactTagsStyles, ReactTagsClassNames } from "./react-tags.style";
+import { getReactTagsStyles } from "./react-tags.style";
 import CardTag from "./card-tag";
+
+const {
+  styles: ReactTagsStyles,
+  classNames: reactTagsClassNames
+} = getReactTagsStyles();
 
 const Base = styled.div`
   ${ReactTagsStyles}
@@ -51,7 +56,7 @@ class AddCardsField extends React.PureComponent {
     return (
       <Base className={className}>
         <ReactTags
-          classNames={ReactTagsClassNames}
+          classNames={reactTagsClassNames}
           tags={cards}
           suggestions={suggestions}
           tagComponent={CardTag}

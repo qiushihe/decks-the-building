@@ -15,6 +15,3 @@ export const getRandomId = (len, radix) => {
 
   return newId.join("");
 };
-
-export const getPrefixedRandomId = prefix => (len, radix) =>
-  `${prefix}-${getRandomId(len, radix)}`;
