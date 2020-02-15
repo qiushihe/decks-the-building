@@ -4,8 +4,6 @@ import { createStructuredSelector } from "reselect";
 import flow from "lodash/fp/flow";
 import get from "lodash/fp/get";
 import getOr from "lodash/fp/getOr";
-import trim from "lodash/fp/trim";
-import split from "lodash/fp/split";
 import map from "lodash/fp/map";
 import reduce from "lodash/fp/reduce";
 
@@ -47,9 +45,6 @@ export default connect(
     ...dispatchProps,
     ...ownProps,
     onSubmit: flow([
-      trim,
-      split("\n"),
-      map(trim),
       map(name => name.match(cardLineRegexp).groups),
       map(({ copies, name }) => ({ copies: parseInt(copies) || 1, name })),
       cards => {

@@ -8,6 +8,8 @@ import { fromProps } from "/src/util/selector.util";
 
 import { card as cardState } from "./root.selector";
 
+export const allCardNames = createSelector(cardState, get("allCardNames"));
+
 export const cardById = createSelector(
   fromProps(get("cardId")),
   cardState,
