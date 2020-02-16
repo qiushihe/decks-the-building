@@ -20,6 +20,7 @@ const Base = styled(ActionsHeader)`
 `;
 
 const StyledStackIcon = styled(StackIcon)`
+  color: #0000008a;
   margin-right: 3px;
 `;
 

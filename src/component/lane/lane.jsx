@@ -9,7 +9,7 @@ const Base = styled.div`
   overflow: hidden;
   min-width: 0;
   background-color: #ebeef2;
-  padding: 12px 6px;
+  padding: 0 6px;
   box-shadow: 0 0 0 1px #00000026;
 `;
 
@@ -17,7 +17,7 @@ const Divider = styled.div`
   background: #cccccc;
   width: 100%;
   height: 1px;
-  margin: 12px 0;
+  margin-bottom: 12px;
 `;
 
 const StacksContainer = styled.div`

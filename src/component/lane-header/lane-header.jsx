@@ -18,6 +18,7 @@ const Base = styled(ActionsHeader)`
 `;
 
 const StyledLaneIcon = styled(LaneIcon)`
+  color: #0000008a;
   margin-right: 3px;
 `;
 

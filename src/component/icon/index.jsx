@@ -1,9 +1,6 @@
 import React from "react";
 
 import {
-  DashboardRounded,
-  VerticalSplitRounded,
-  HorizontalSplitRounded,
   EditOutlined,
   HighlightOffRounded,
   AddCircleOutlineRounded,
@@ -16,16 +13,19 @@ import {
   FlipToFrontOutlined,
   FullscreenRounded,
   FullscreenExitRounded,
-  DoubleArrow
+  DoubleArrow,
+  TableChartRounded,
+  ViewCarouselRounded,
+  ViewListRounded
 } from "@material-ui/icons";
 
 const makeIconHoc = IconComponent => ({ size = 24, ...restProps }) => (
   <IconComponent {...restProps} style={{ fontSize: size }} />
 );
 
-export const WorkspaceIcon = makeIconHoc(DashboardRounded);
-export const LaneIcon = makeIconHoc(VerticalSplitRounded);
-export const StackIcon = makeIconHoc(HorizontalSplitRounded);
+export const WorkspaceIcon = makeIconHoc(TableChartRounded);
+export const LaneIcon = makeIconHoc(ViewCarouselRounded);
+export const StackIcon = makeIconHoc(ViewListRounded);
 
 export const RenameIcon = makeIconHoc(EditOutlined);
 export const DeleteIcon = makeIconHoc(HighlightOffRounded);

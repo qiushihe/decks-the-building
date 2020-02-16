@@ -25,6 +25,7 @@ const Base = styled(ActionsHeader)`
 `;
 
 const StyledWorkspaceIcon = styled(WorkspaceIcon)`
+  color: #0000008a;
   margin-right: 3px;
 `;
 
