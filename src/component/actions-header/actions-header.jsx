@@ -14,9 +14,7 @@ import { DoubleArrowIcon } from "/src/component/icon";
 const Base = styled(Toolbar).attrs({
   variant: "dense",
   disableGutters: true
-})`
-  padding-left: 6px;
-`;
+})``;
 
 const Filler = styled.div`
   flex-grow: 1;
@@ -103,12 +101,14 @@ class ActionsHeader extends React.PureComponent {
   }
 
   render() {
-    const { className, renderLabel } = this.props;
+    const { className, renderLabel, disableLabelAutoHide } = this.props;
     const { menuOpened } = this.state;
 
     return (
       <Base className={className}>
-        {!menuOpened && isFunction(renderLabel) && renderLabel()}
+        {(!menuOpened || disableLabelAutoHide) &&
+          isFunction(renderLabel) &&
+          renderLabel()}
         {this.renderActions()}
       </Base>
     );
@@ -121,16 +121,18 @@ ActionsHeader.propTypes = {
   actions: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string,
-      icon: PropTypes.func,
+      icon: PropTypes.elementType,
       action: PropTypes.func
     })
-  )
+  ),
+  disableLabelAutoHide: PropTypes.bool
 };
 
 ActionsHeader.defaultProps = {
   className: "",
   renderLabel: null,
-  actions: []
+  actions: [],
+  disableLabelAutoHide: false
 };
 
 export default ActionsHeader;

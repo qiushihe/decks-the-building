@@ -2,14 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import { Typography } from "@material-ui/core";
-
-import Arrange from "/src/component/arrange";
-import LaneActions from "/src/component/lane-actions";
+import LaneHeader from "/src/component/lane-header";
 import Stacks from "/src/component/stacks";
-import { LaneIcon } from "/src/component/icon";
-
-const StyledLaneActions = styled(LaneActions)``;
 
 const Base = styled.div`
   overflow: hidden;
@@ -17,21 +11,6 @@ const Base = styled.div`
   background-color: #ebeef2;
   padding: 12px 6px;
   box-shadow: 0 0 0 1px #00000026;
-
-  ${StyledLaneActions} {
-    opacity: 0;
-  }
-
-  &:hover ${StyledLaneActions} {
-    opacity: 1;
-  }
-`;
-
-const Header = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 0 1 auto;
-  padding: 0 6px 0 16px;
 `;
 
 const Divider = styled.div`
@@ -48,39 +27,15 @@ const StacksContainer = styled.div`
 
 class Lane extends React.PureComponent {
   render() {
-    const {
-      className,
-      workspaceId,
-      laneId,
-      laneIndex,
-      label,
-      cardsCount
-    } = this.props;
+    const { className, workspaceId, laneId, laneIndex } = this.props;
 
     return (
       <Base className={className}>
-        <Header>
-          <Arrange>
-            <Arrange.Fit>
-              <LaneIcon />
-            </Arrange.Fit>
-            <Arrange.Fit>&nbsp;</Arrange.Fit>
-            <Arrange.Fill>
-              <Typography display="inline" noWrap={true}>
-                {label}
-                {cardsCount > 0 && ` (${cardsCount})`}
-              </Typography>
-            </Arrange.Fill>
-            <Arrange.Fit>&nbsp;</Arrange.Fit>
-            <Arrange.Fit>
-              <StyledLaneActions
-                workspaceId={workspaceId}
-                laneId={laneId}
-                laneIndex={laneIndex}
-              />
-            </Arrange.Fit>
-          </Arrange>
-        </Header>
+        <LaneHeader
+          workspaceId={workspaceId}
+          laneId={laneId}
+          laneIndex={laneIndex}
+        />
         <Divider />
         <StacksContainer>
           <Stacks laneId={laneId} />
@@ -94,18 +49,14 @@ Lane.propTypes = {
   className: PropTypes.string,
   workspaceId: PropTypes.string,
   laneId: PropTypes.string,
-  laneIndex: PropTypes.number,
-  label: PropTypes.string,
-  cardsCount: PropTypes.number
+  laneIndex: PropTypes.number
 };
 
 Lane.defaultProps = {
   className: "",
   workspaceId: "",
   laneId: "",
-  laneIndex: 0,
-  label: "Lane",
-  cardsCount: 0
+  laneIndex: 0
 };
 
 export default Lane;

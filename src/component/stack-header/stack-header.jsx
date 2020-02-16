@@ -4,6 +4,8 @@ import styled, { css } from "styled-components";
 
 import { Typography } from "@material-ui/core";
 
+import ActionsHeader from "/src/component/actions-header";
+
 import {
   StackIcon,
   RenameIcon,
@@ -13,7 +15,9 @@ import {
   CombineCardsIcon
 } from "/src/component/icon";
 
-import ActionsHeader from "/src/component/actions-header";
+const Base = styled(ActionsHeader)`
+  padding-left: 6px;
+`;
 
 const StyledStackIcon = styled(StackIcon)`
   margin-right: 3px;
@@ -55,7 +59,7 @@ class StackHeader extends React.PureComponent {
     } = this.props;
 
     return (
-      <ActionsHeader
+      <Base
         className={className}
         renderLabel={() => (
           <React.Fragment>

@@ -6,15 +6,22 @@ import { RENAME_OBJECT, REMOVE_OBJECT } from "/src/enum/modal.enum";
 import { LANE } from "/src/enum/nameable.enum";
 import { show as showModal } from "/src/action/modal.action";
 import { workspaceLanesCount } from "/src/selector/workspace.selector";
-import { laneLabel } from "/src/selector/lane.selector";
+import { laneLabel, laneStackIds } from "/src/selector/lane.selector";
+import { stacksCardsCount } from "/src/selector/stack.selector";
 import { create, remove } from "/src/action/lane.action";
 import { addLanes, moveLane } from "/src/action/workspace.action";
+import { withProps } from "/src/util/selector.util";
 
-import LaneActions from "./lane-actions";
+import LaneHeader from "./lane-header";
+
+const withStackIds = withProps({
+  stackIds: laneStackIds
+});
 
 export default connect(
   createStructuredSelector({
     laneLabel,
+    laneCardsCount: withStackIds(stacksCardsCount),
     lanesCount: workspaceLanesCount
   }),
   dispatch => ({
@@ -68,4 +75,4 @@ export default connect(
         }
       })
   })
-)(LaneActions);
+)(LaneHeader);

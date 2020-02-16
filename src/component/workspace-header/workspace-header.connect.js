@@ -12,7 +12,7 @@ import {
   workspaceLabel
 } from "/src/selector/workspace.selector";
 
-import WorkspaceActions from "./workspace-actions";
+import WorkspaceHeader from "./workspace-header";
 
 export default connect(
   createStructuredSelector({
@@ -68,4 +68,4 @@ export default connect(
         }
       })
   })
-)(WorkspaceActions);
+)(WorkspaceHeader);
