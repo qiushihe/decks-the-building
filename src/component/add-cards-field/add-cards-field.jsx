@@ -4,6 +4,7 @@ import styled from "styled-components";
 import ReactTags from "react-tag-autocomplete";
 
 import { removeItem } from "/src/util/array.util";
+import { getRandomId } from "/src/util/random-id.util";
 
 import { getReactTagsStyles } from "./react-tags.style";
 import CardTag from "./card-tag";
@@ -25,6 +26,9 @@ class AddCardsField extends React.PureComponent {
       cards: []
     };
 
+    this.rootRef = React.createRef();
+    this.inputId = getRandomId(12, 62);
+    this.inputElm = null;
     this.handleDelete = this.handleDelete.bind(this);
     this.handleAddition = this.handleAddition.bind(this);
   }
@@ -49,12 +53,26 @@ class AddCardsField extends React.PureComponent {
     });
   }
 
+  componentDidMount() {
+    const { current: rootElm } = this.rootRef;
+
+    if (rootElm) {
+      this.inputElm = rootElm.querySelector(
+        `[data-input-id="${this.inputId}"]`
+      );
+
+      if (this.inputElm) {
+        this.inputElm.focus();
+      }
+    }
+  }
+
   render() {
     const { className, suggestions } = this.props;
     const { cards } = this.state;
 
     return (
-      <Base className={className}>
+      <Base className={className} ref={this.rootRef}>
         <ReactTags
           classNames={reactTagsClassNames}
           tags={cards}
@@ -66,6 +84,9 @@ class AddCardsField extends React.PureComponent {
           clearInputOnDelete={false}
           placeholderText="Find a card by name ..."
           noSuggestionsText="Do you even Hearthstone?"
+          inputAttributes={{
+            "data-input-id": this.inputId
+          }}
         />
       </Base>
     );

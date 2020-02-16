@@ -8,7 +8,8 @@ let classNamePrefix = null;
 
 export const getReactTagsStyles = () => {
   if (classNamePrefix === null) {
-    classNamePrefix = getRandomId(12, 62);
+    // Add an "a" to prevent the class name from starting with a number.
+    classNamePrefix = `a${getRandomId(8, 62)}`;
   }
 
   const classNames = reduce(
@@ -48,6 +49,8 @@ export const getReactTagsStyles = () => {
     ${styleClassName(classNames.selected)} {
       display: flex;
       flex-direction: column;
+      max-height: 240px;
+      overflow-y: auto;
     }
 
     ${styleClassName(classNames.search)} {
@@ -76,6 +79,7 @@ export const getReactTagsStyles = () => {
       top: 100%;
       left: 0;
       width: 100%;
+      z-index: 9999;
 
       ul {
         margin: 4px -1px;

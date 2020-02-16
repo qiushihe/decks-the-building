@@ -4,11 +4,12 @@ import styled from "styled-components";
 import get from "lodash/fp/get";
 import map from "lodash/fp/map";
 
-import Arrange from "/src/component/arrange";
+import Button from "@material-ui/core/Button";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+
 import BaseModal from "/src/component/modal/base";
 import AddCardsField from "/src/component/add-cards-field";
-
-const Header = styled.div``;
 
 const StyledAddCardsField = styled(AddCardsField)`
   width: 420px;
@@ -19,12 +20,20 @@ export class AddCardsToStack extends React.PureComponent {
     super(...args);
 
     this.state = {
-      cardNames: ""
+      cardNames: "",
+      tabIndex: 0
     };
 
+    this.handleTabChange = this.handleTabChange.bind(this);
     this.handleFieldChange = this.handleFieldChange.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleAddCard = this.handleAddCard.bind(this);
+  }
+
+  handleTabChange(_, index) {
+    this.setState({
+      tabIndex: index
+    });
   }
 
   handleFieldChange({ cards }) {
@@ -45,20 +54,31 @@ export class AddCardsToStack extends React.PureComponent {
   }
 
   render() {
+    const { tabIndex } = this.state;
+
     return (
-      <BaseModal>
-        <Header>Add Cards to Stack</Header>
-        <StyledAddCardsField onChange={this.handleFieldChange} />
-        <Arrange>
-          <Arrange.Fill>&nbsp;</Arrange.Fill>
-          <Arrange.Fit>
-            <button onClick={this.handleCancel}>Cancel</button>
-          </Arrange.Fit>
-          <Arrange.Fit>&nbsp;&nbsp;</Arrange.Fit>
-          <Arrange.Fit>
-            <button onClick={this.handleAddCard}>Add</button>
-          </Arrange.Fit>
-        </Arrange>
+      <BaseModal
+        renderActions={() => (
+          <React.Fragment>
+            <Button onClick={this.handleCancel} color="secondary">
+              Cancel
+            </Button>
+            <Button onClick={this.handleAddCard} color="primary">
+              {tabIndex === 0 ? "Add" : "Import"}
+            </Button>
+          </React.Fragment>
+        )}
+      >
+        <Tabs value={tabIndex} onChange={this.handleTabChange}>
+          <Tab label={tabIndex === 0 ? "Add Cards to Stack" : "Add Cards"} />
+          <Tab
+            label={tabIndex === 1 ? "Import Cards to Stack" : "Import Cards"}
+          />
+        </Tabs>
+        {tabIndex === 0 && (
+          <StyledAddCardsField onChange={this.handleFieldChange} />
+        )}
+        {tabIndex === 1 && <div>WIP</div>}
       </BaseModal>
     );
   }

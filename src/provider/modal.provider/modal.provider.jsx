@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 
 import Dialog from "@material-ui/core/Dialog";
 
@@ -19,6 +20,18 @@ const ALL_MODAL_COMPONENTS = {
   [CLOUD_SYNC]: CloudSync
 };
 
+const Base = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  .MuiDialog-paper {
+    overflow-y: visible !important;
+  }
+`;
+
 export class ModalProvider extends React.PureComponent {
   render() {
     const { children, hasModal, modalName, modalProps, hide } = this.props;
@@ -28,14 +41,17 @@ export class ModalProvider extends React.PureComponent {
       const ModalComponent = ALL_MODAL_COMPONENTS[modalName];
       if (ModalComponent !== null) {
         renderedModal = (
-          <Dialog
-            open={true}
-            onClose={hide}
-            disableBackdropClick={true}
-            onEscapeKeyDown={hide}
-          >
-            <ModalComponent {...modalProps} hideModal={hide} />
-          </Dialog>
+          <Base>
+            <Dialog
+              open={true}
+              disablePortal={true}
+              onClose={hide}
+              disableBackdropClick={true}
+              onEscapeKeyDown={hide}
+            >
+              <ModalComponent {...modalProps} hideModal={hide} />
+            </Dialog>
+          </Base>
         );
       }
     }
