@@ -2,7 +2,12 @@ import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import uuidV4 from "uuid/v4";
 
-import { ADD_CARDS_TO_STACK, RENAME_OBJECT } from "/src/enum/modal.enum";
+import {
+  ADD_CARDS_TO_STACK,
+  RENAME_OBJECT,
+  REMOVE_OBJECT
+} from "/src/enum/modal.enum";
+
 import { STACK } from "/src/enum/nameable.enum";
 import { show } from "/src/action/modal.action";
 import { laneStacksCount } from "/src/selector/lane.selector";
@@ -76,15 +81,14 @@ export default connect(
           })
         ),
     removeStack: () =>
-      dispatchProps
-        .removeStacks({
-          id: ownProps.laneId,
-          stackIds: [ownProps.stackId]
-        })
-        .then(() =>
-          dispatchProps.remove({
-            ids: [ownProps.stackId]
-          })
-        )
+      dispatchProps.show({
+        name: REMOVE_OBJECT,
+        props: {
+          removable: STACK,
+          name: stateProps.stackLabel,
+          laneId: ownProps.laneId,
+          stackId: ownProps.stackId
+        }
+      })
   })
 )(StackActions);
