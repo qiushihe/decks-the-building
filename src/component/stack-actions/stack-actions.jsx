@@ -2,7 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 
-import Arrange from "/src/component/arrange";
+import Tooltip from "@material-ui/core/Tooltip";
+import IconButton from "@material-ui/core/IconButton";
 
 import {
   RenameIcon,
@@ -13,6 +14,7 @@ import {
 } from "/src/component/icon";
 
 const IconStyle = css`
+  margin: 2px;
   cursor: pointer;
   opacity: 0.6;
 
@@ -21,25 +23,17 @@ const IconStyle = css`
   }
 `;
 
-const RenameStack = styled(RenameIcon)`
+const makeStackActionIcon = IconComponent => styled(IconComponent).attrs({
+  size: 20
+})`
   ${IconStyle}
 `;
 
-const AddCardsToStack = styled(AddCardsIcon)`
-  ${IconStyle}
-`;
-
-const DeleteStack = styled(DeleteIcon)`
-  ${IconStyle}
-`;
-
-const CombineCardsInStack = styled(CombineCardsIcon)`
-  ${IconStyle}
-`;
-
-const CreateStack = styled(CreateIcon)`
-  ${IconStyle}
-`;
+const RenameStack = makeStackActionIcon(RenameIcon);
+const AddCardsToStack = makeStackActionIcon(AddCardsIcon);
+const DeleteStack = makeStackActionIcon(DeleteIcon);
+const CombineCardsInStack = makeStackActionIcon(CombineCardsIcon);
+const CreateStack = makeStackActionIcon(CreateIcon);
 
 class StackActions extends React.PureComponent {
   render() {
@@ -54,27 +48,31 @@ class StackActions extends React.PureComponent {
 
     return (
       <div className={className}>
-        <Arrange>
-          <Arrange.Fit>
-            <RenameStack onClick={renameStack} />
-          </Arrange.Fit>
-          <Arrange.Fit>&nbsp;</Arrange.Fit>
-          <Arrange.Fit>
-            <AddCardsToStack onClick={addCardsToStack} />
-          </Arrange.Fit>
-          <Arrange.Fit>&nbsp;</Arrange.Fit>
-          <Arrange.Fit>
-            <CombineCardsInStack onClick={combineDuplicateCards} />
-          </Arrange.Fit>
-          <Arrange.Fit>&nbsp;</Arrange.Fit>
-          <Arrange.Fit>
-            <DeleteStack onClick={removeStack} />
-          </Arrange.Fit>
-          <Arrange.Fit>&nbsp;</Arrange.Fit>
-          <Arrange.Fit>
-            <CreateStack onClick={createStack} />
-          </Arrange.Fit>
-        </Arrange>
+        <Tooltip title="Rename Stack">
+          <IconButton size="small" onClick={renameStack}>
+            <RenameStack />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Add Cards to Stack">
+          <IconButton size="small" onClick={addCardsToStack}>
+            <AddCardsToStack />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Combine Cards in Stack">
+          <IconButton size="small" onClick={combineDuplicateCards}>
+            <CombineCardsInStack />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Delete Stack">
+          <IconButton size="small" onClick={removeStack}>
+            <DeleteStack />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Create Stack">
+          <IconButton size="small" onClick={createStack}>
+            <CreateStack />
+          </IconButton>
+        </Tooltip>
       </div>
     );
   }

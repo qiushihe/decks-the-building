@@ -53,7 +53,7 @@ export class RemoveObject extends React.PureComponent {
       >
         <Base>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to remove {RemovableTitle[removable]} &quot;
+            Are you sure you want to delete {RemovableTitle[removable]} &quot;
             {name}
             &quot;?
           </DialogContentText>

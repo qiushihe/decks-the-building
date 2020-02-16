@@ -5,6 +5,9 @@ import flow from "lodash/fp/flow";
 import get from "lodash/fp/get";
 import multiply from "lodash/fp/multiply";
 
+import Tooltip from "@material-ui/core/Tooltip";
+import IconButton from "@material-ui/core/IconButton";
+
 import {
   DuplicateIcon,
   AddOneIcon,
@@ -49,23 +52,22 @@ const IconStyle = css`
   color: #ffffff;
 `;
 
-const makeCardIcon = IconComponent => styled(IconComponent).attrs(
+const makeCardActionIcon = IconComponent => styled(IconComponent).attrs(
   flow([get("size"), multiply(0.75), size => ({ size })])
 )`
   ${IconStyle}
 `;
 
-const AddOneCardCopy = makeCardIcon(AddOneIcon);
-const SubtractOneCardCopy = makeCardIcon(SubtractOneIcon);
-const DuplicateCardEntry = makeCardIcon(DuplicateIcon);
-const ExpandCard = makeCardIcon(ExpandIcon);
-const CollapseCard = makeCardIcon(CollapseIcon);
+const AddOneCardCopy = makeCardActionIcon(AddOneIcon);
+const SubtractOneCardCopy = makeCardActionIcon(SubtractOneIcon);
+const DuplicateCardEntry = makeCardActionIcon(DuplicateIcon);
+const ExpandCard = makeCardActionIcon(ExpandIcon);
+const CollapseCard = makeCardActionIcon(CollapseIcon);
 
 class CardActions extends React.PureComponent {
   render() {
     const {
       className,
-      cardIndex,
       size,
       collapsed,
       toggleCard,
@@ -77,26 +79,38 @@ class CardActions extends React.PureComponent {
     return (
       <Base className={className}>
         <IconContainer size={size}>
-          <DuplicateCardEntry
-            size={size}
-            onClick={() => duplicateCard({ cardIndex })}
-          />
+          <Tooltip title="Duplicate Card Entry">
+            <IconButton size="small" onClick={duplicateCard}>
+              <DuplicateCardEntry size={size} />
+            </IconButton>
+          </Tooltip>
         </IconContainer>
         <IconContainer size={size}>
-          <SubtractOneCardCopy
-            size={size}
-            onClick={() => subtractCopy({ cardIndex })}
-          />
+          <Tooltip title="Subtract Card Copy">
+            <IconButton size="small" onClick={subtractCopy}>
+              <SubtractOneCardCopy size={size} />
+            </IconButton>
+          </Tooltip>
         </IconContainer>
         <IconContainer size={size}>
-          <AddOneCardCopy size={size} onClick={() => addCopy({ cardIndex })} />
+          <Tooltip title="Add Card Copy">
+            <IconButton size="small" onClick={addCopy}>
+              <AddOneCardCopy size={size} />
+            </IconButton>
+          </Tooltip>
         </IconContainer>
         <IconContainer size={size}>
-          {collapsed ? (
-            <ExpandCard size={size} onClick={toggleCard} />
-          ) : (
-            <CollapseCard size={size} onClick={toggleCard} />
-          )}
+          <Tooltip title={collapsed ? "Expand Card" : "Collapse Card"}>
+            {collapsed ? (
+              <IconButton size="small" onClick={toggleCard}>
+                <ExpandCard size={size} />
+              </IconButton>
+            ) : (
+              <IconButton size="small" onClick={toggleCard}>
+                <CollapseCard size={size} />
+              </IconButton>
+            )}
+          </Tooltip>
         </IconContainer>
       </Base>
     );
@@ -105,7 +119,6 @@ class CardActions extends React.PureComponent {
 
 CardActions.propTypes = {
   className: PropTypes.string,
-  cardIndex: PropTypes.number,
   collapsed: PropTypes.bool,
   size: PropTypes.number,
   toggleCard: PropTypes.func,
@@ -116,7 +129,6 @@ CardActions.propTypes = {
 
 CardActions.defaultProps = {
   className: "",
-  cardIndex: 0,
   collapsed: false,
   size: 18,
   toggleCard: () => {},

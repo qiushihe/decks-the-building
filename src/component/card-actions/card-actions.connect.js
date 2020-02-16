@@ -43,22 +43,22 @@ export default connect(
         id: ownProps.stackId,
         cardIndices: [ownProps.cardIndex]
       }),
-    addCopy: ({ cardIndex }) =>
+    addCopy: () =>
       dispatchProps.changeCardCopies({
         id: ownProps.stackId,
-        cardIndex,
+        cardIndex: ownProps.cardIndex,
         change: 1
       }),
-    subtractCopy: ({ cardIndex }) =>
+    subtractCopy: () =>
       dispatchProps.changeCardCopies({
         id: ownProps.stackId,
-        cardIndex,
+        cardIndex: ownProps.cardIndex,
         change: -1
       }),
-    duplicateCard: ({ cardIndex }) =>
+    duplicateCard: () =>
       dispatchProps.duplicateCards({
         id: ownProps.stackId,
-        cardIndices: [cardIndex]
+        cardIndices: [ownProps.cardIndex]
       })
   })
 )(CardActions);

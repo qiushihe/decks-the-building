@@ -2,10 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 
-import Arrange from "/src/component/arrange";
+import Tooltip from "@material-ui/core/Tooltip";
+import IconButton from "@material-ui/core/IconButton";
+
 import { RenameIcon, DeleteIcon, CreateIcon } from "/src/component/icon";
 
 const IconStyle = css`
+  margin: 2px;
   cursor: pointer;
   opacity: 0.6;
 
@@ -14,36 +17,36 @@ const IconStyle = css`
   }
 `;
 
-const RenameLane = styled(RenameIcon)`
+const makeLaneActionIcon = IconComponent => styled(IconComponent).attrs({
+  size: 20
+})`
   ${IconStyle}
 `;
 
-const DeleteLane = styled(DeleteIcon)`
-  ${IconStyle}
-`;
-
-const CreateLane = styled(CreateIcon)`
-  ${IconStyle}
-`;
+const RenameLane = makeLaneActionIcon(RenameIcon);
+const DeleteLane = makeLaneActionIcon(DeleteIcon);
+const CreateLane = makeLaneActionIcon(CreateIcon);
 
 class LaneActions extends React.PureComponent {
   render() {
     const { className, renameLane, createLane, removeLane } = this.props;
     return (
       <div className={className}>
-        <Arrange>
-          <Arrange.Fit>
-            <RenameLane onClick={renameLane} />
-          </Arrange.Fit>
-          <Arrange.Fit>&nbsp;</Arrange.Fit>
-          <Arrange.Fit>
-            <DeleteLane onClick={removeLane} />
-          </Arrange.Fit>
-          <Arrange.Fit>&nbsp;</Arrange.Fit>
-          <Arrange.Fit>
-            <CreateLane onClick={createLane} />
-          </Arrange.Fit>
-        </Arrange>
+        <Tooltip title="Rename Lane">
+          <IconButton size="small" onClick={renameLane}>
+            <RenameLane />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Delete Lane">
+          <IconButton size="small" onClick={removeLane}>
+            <DeleteLane />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Create Lane">
+          <IconButton size="small" onClick={createLane}>
+            <CreateLane />
+          </IconButton>
+        </Tooltip>
       </div>
     );
   }
