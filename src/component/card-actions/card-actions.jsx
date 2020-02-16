@@ -32,7 +32,7 @@ const IconContainer = styled.div`
   border-radius: 100%;
   background: #000000;
   box-shadow: 0 0 0 1px #ffffff;
-  opacity: 0.6;
+  opacity: 0.65;
 
   &:hover {
     opacity: 1;
@@ -101,15 +101,13 @@ class CardActions extends React.PureComponent {
         </IconContainer>
         <IconContainer size={size}>
           <Tooltip title={collapsed ? "Expand Card" : "Collapse Card"}>
-            {collapsed ? (
-              <IconButton size="small" onClick={toggleCard}>
+            <IconButton size="small" onClick={toggleCard}>
+              {collapsed ? (
                 <ExpandCard size={size} />
-              </IconButton>
-            ) : (
-              <IconButton size="small" onClick={toggleCard}>
+              ) : (
                 <CollapseCard size={size} />
-              </IconButton>
-            )}
+              )}
+            </IconButton>
           </Tooltip>
         </IconContainer>
       </Base>

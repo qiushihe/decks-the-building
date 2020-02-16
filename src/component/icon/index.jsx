@@ -15,7 +15,8 @@ import {
   RemoveRounded,
   FlipToFrontOutlined,
   FullscreenRounded,
-  FullscreenExitRounded
+  FullscreenExitRounded,
+  DoubleArrow
 } from "@material-ui/icons";
 
 const makeIconHoc = IconComponent => ({ size = 24, ...restProps }) => (
@@ -41,3 +42,5 @@ export const SubtractOneIcon = makeIconHoc(RemoveRounded);
 export const DuplicateIcon = makeIconHoc(FlipToFrontOutlined);
 export const ExpandIcon = makeIconHoc(FullscreenRounded);
 export const CollapseIcon = makeIconHoc(FullscreenExitRounded);
+
+export const DoubleArrowIcon = makeIconHoc(DoubleArrow);

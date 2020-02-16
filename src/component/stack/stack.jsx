@@ -7,8 +7,6 @@ import multiply from "lodash/fp/multiply";
 import add from "lodash/fp/add";
 import omit from "lodash/fp/omit";
 
-import { Typography } from "@material-ui/core";
-
 import {
   CARD_DEFAULT_SCALE,
   CARD_WIDTH,
@@ -16,12 +14,8 @@ import {
   STACK_CARDS_SPACING
 } from "/src/config";
 
-import Arrange from "/src/component/arrange";
-import StackActions from "/src/component/stack-actions";
+import StackHeader from "/src/component/stack-header";
 import Cards from "/src/component/cards";
-import { StackIcon } from "/src/component/icon";
-
-const StyledStackActions = styled(StackActions)``;
 
 const Base = styled(props => {
   const componentProps = omit(["scale"])(props);
@@ -42,14 +36,6 @@ const Base = styled(props => {
   border-radius: 10px;
   background-color: #f4f6f9;
   box-shadow: 0 1px 2px -1px #00000069;
-
-  ${StyledStackActions} {
-    opacity: 0;
-  }
-
-  &:hover ${StyledStackActions} {
-    opacity: 1;
-  }
 `;
 
 const Content = styled.div`
@@ -59,51 +45,18 @@ const Content = styled.div`
   margin: ${STACK_CONTENT_SPACING}px;
 `;
 
-const Header = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 0 1 auto;
-  padding: 0 6px;
-  margin: 6px 0 12px 0;
-`;
-
 class Stack extends React.PureComponent {
   render() {
-    const {
-      className,
-      scale,
-      laneId,
-      stackId,
-      stackIndex,
-      label,
-      cardsCount
-    } = this.props;
+    const { className, scale, laneId, stackId, stackIndex } = this.props;
 
     return (
       <Base className={className} scale={scale}>
         <Content>
-          <Header>
-            <Arrange>
-              <Arrange.Fit>
-                <StackIcon />
-              </Arrange.Fit>
-              <Arrange.Fit>&nbsp;</Arrange.Fit>
-              <Arrange.Fill>
-                <Typography display="inline" noWrap={true}>
-                  {label}
-                  {cardsCount > 0 && ` (${cardsCount})`}
-                </Typography>
-              </Arrange.Fill>
-              <Arrange.Fit>&nbsp;</Arrange.Fit>
-              <Arrange.Fit>
-                <StyledStackActions
-                  laneId={laneId}
-                  stackId={stackId}
-                  stackIndex={stackIndex}
-                />
-              </Arrange.Fit>
-            </Arrange>
-          </Header>
+          <StackHeader
+            laneId={laneId}
+            stackId={stackId}
+            stackIndex={stackIndex}
+          />
           <Cards stackId={stackId} />
         </Content>
       </Base>
@@ -116,9 +69,7 @@ Stack.propTypes = {
   scale: PropTypes.number,
   laneId: PropTypes.string,
   stackId: PropTypes.string,
-  stackIndex: PropTypes.number,
-  label: PropTypes.string,
-  cardsCount: PropTypes.number
+  stackIndex: PropTypes.number
 };
 
 Stack.defaultProps = {
@@ -126,9 +77,7 @@ Stack.defaultProps = {
   scale: CARD_DEFAULT_SCALE,
   laneId: "",
   stackId: "",
-  stackIndex: 0,
-  label: "Stack",
-  cardsCount: 0
+  stackIndex: 0
 };
 
 export default Stack;

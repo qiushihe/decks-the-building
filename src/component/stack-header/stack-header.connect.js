@@ -11,7 +11,7 @@ import {
 import { STACK } from "/src/enum/nameable.enum";
 import { show } from "/src/action/modal.action";
 import { laneStacksCount } from "/src/selector/lane.selector";
-import { stackLabel } from "/src/selector/stack.selector";
+import { stackLabel, stackCardsCount } from "/src/selector/stack.selector";
 import { addStacks, removeStacks, moveStack } from "/src/action/lane.action";
 
 import {
@@ -20,11 +20,12 @@ import {
   combineDuplicateCards
 } from "/src/action/stack.action";
 
-import StackActions from "./stack-actions";
+import StackHeader from "./stack-header";
 
 export default connect(
   createStructuredSelector({
     stackLabel,
+    stackCardsCount: stackCardsCount,
     stacksCount: laneStacksCount
   }),
   dispatch => ({
@@ -91,4 +92,4 @@ export default connect(
         }
       })
   })
-)(StackActions);
+)(StackHeader);

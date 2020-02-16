@@ -10,7 +10,7 @@ import { RenameIcon, DeleteIcon, CreateIcon } from "/src/component/icon";
 const IconStyle = css`
   margin: 2px;
   cursor: pointer;
-  opacity: 0.6;
+  opacity: 0.75;
 
   &:hover {
     opacity: 1;
