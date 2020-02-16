@@ -7,6 +7,8 @@ import multiply from "lodash/fp/multiply";
 import add from "lodash/fp/add";
 import omit from "lodash/fp/omit";
 
+import { Typography } from "@material-ui/core";
+
 import {
   CARD_DEFAULT_SCALE,
   CARD_WIDTH,
@@ -87,8 +89,10 @@ class Stack extends React.PureComponent {
               </Arrange.Fit>
               <Arrange.Fit>&nbsp;</Arrange.Fit>
               <Arrange.Fill>
-                {label}
-                {cardsCount > 0 && ` (${cardsCount})`}
+                <Typography display="inline" noWrap={true}>
+                  {label}
+                  {cardsCount > 0 && ` (${cardsCount})`}
+                </Typography>
               </Arrange.Fill>
               <Arrange.Fit>&nbsp;</Arrange.Fit>
               <Arrange.Fit>

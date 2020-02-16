@@ -2,6 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
+import { Typography } from "@material-ui/core";
+
 import Arrange from "/src/component/arrange";
 import LaneActions from "/src/component/lane-actions";
 import Stacks from "/src/component/stacks";
@@ -64,8 +66,10 @@ class Lane extends React.PureComponent {
             </Arrange.Fit>
             <Arrange.Fit>&nbsp;</Arrange.Fit>
             <Arrange.Fill>
-              {label}
-              {cardsCount > 0 && ` (${cardsCount})`}
+              <Typography display="inline" noWrap={true}>
+                {label}
+                {cardsCount > 0 && ` (${cardsCount})`}
+              </Typography>
             </Arrange.Fill>
             <Arrange.Fit>&nbsp;</Arrange.Fit>
             <Arrange.Fit>

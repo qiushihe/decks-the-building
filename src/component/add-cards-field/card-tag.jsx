@@ -19,7 +19,7 @@ const DeleteEntry = styled(DeleteIcon).attrs({
   size: 18
 })`
   cursor: pointer;
-  margin: 0px 3px 2px 3px;
+  margin-right: 3px;
 `;
 
 class CardTag extends React.PureComponent {
