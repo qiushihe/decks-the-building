@@ -2,9 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 
-import Toolbar from "@material-ui/core/Toolbar";
-import Tooltip from "@material-ui/core/Tooltip";
-import IconButton from "@material-ui/core/IconButton";
 import { Typography } from "@material-ui/core";
 
 import {
@@ -13,23 +10,13 @@ import {
   CreateIcon,
   DeleteIcon,
   AddCardsIcon,
-  CombineCardsIcon,
-  DoubleArrowIcon
+  CombineCardsIcon
 } from "/src/component/icon";
 
-const Base = styled(Toolbar).attrs({
-  variant: "dense",
-  disableGutters: true
-})`
-  padding-left: 6px;
-`;
+import ActionsHeader from "/src/component/actions-header";
 
 const StyledStackIcon = styled(StackIcon)`
   margin-right: 3px;
-`;
-
-const Filler = styled.div`
-  flex-grow: 1;
 `;
 
 const IconStyle = css`
@@ -54,47 +41,12 @@ const DeleteStack = makeStackActionIcon(DeleteIcon);
 const CombineCardsInStack = makeStackActionIcon(CombineCardsIcon);
 const CreateStack = makeStackActionIcon(CreateIcon);
 
-const HideStackMenu = makeStackActionIcon(DoubleArrowIcon);
-const ShowStackMenu = styled(makeStackActionIcon(DoubleArrowIcon))`
-  transform: rotate(180deg);
-`;
-
 class StackHeader extends React.PureComponent {
-  constructor(...args) {
-    super(...args);
-
-    this.state = {
-      menuOpened: false
-    };
-
-    this.handleShowMenu = this.handleShowMenu.bind(this);
-    this.handleHideMenu = this.handleHideMenu.bind(this);
-  }
-
-  handleShowMenu() {
-    this.setState({ menuOpened: true });
-  }
-
-  handleHideMenu() {
-    this.setState({ menuOpened: false });
-  }
-
-  renderLabel() {
-    const { stackLabel, stackCardsCount } = this.props;
-
-    return (
-      <React.Fragment>
-        <StyledStackIcon />
-        <Typography display="inline" noWrap={true}>
-          {stackLabel}
-          {stackCardsCount > 0 && ` (${stackCardsCount})`}
-        </Typography>
-      </React.Fragment>
-    );
-  }
-
-  renderActions() {
+  render() {
     const {
+      className,
+      stackLabel,
+      stackCardsCount,
       addCardsToStack,
       combineDuplicateCards,
       renameStack,
@@ -102,70 +54,34 @@ class StackHeader extends React.PureComponent {
       removeStack
     } = this.props;
 
-    const { menuOpened } = this.state;
-
-    const withHideMenu = actionFn => (...args) => {
-      const ret = actionFn(...args);
-      this.handleHideMenu();
-      return ret;
-    };
-
     return (
-      <React.Fragment>
-        <Filler />
-        {menuOpened && (
+      <ActionsHeader
+        className={className}
+        renderLabel={() => (
           <React.Fragment>
-            <Tooltip title="Rename Stack">
-              <IconButton size="small" onClick={withHideMenu(renameStack)}>
-                <RenameStack />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Add Cards to Stack">
-              <IconButton size="small" onClick={withHideMenu(addCardsToStack)}>
-                <AddCardsToStack />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Combine Cards in Stack">
-              <IconButton
-                size="small"
-                onClick={withHideMenu(combineDuplicateCards)}
-              >
-                <CombineCardsInStack />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Delete Stack">
-              <IconButton size="small" onClick={withHideMenu(removeStack)}>
-                <DeleteStack />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Create Stack">
-              <IconButton size="small" onClick={withHideMenu(createStack)}>
-                <CreateStack />
-              </IconButton>
-            </Tooltip>
+            <StyledStackIcon />
+            <Typography display="inline" noWrap={true}>
+              {stackLabel}
+              {stackCardsCount > 0 && ` (${stackCardsCount})`}
+            </Typography>
           </React.Fragment>
         )}
-        <Tooltip title={menuOpened ? "Hide Stack Menu" : "Show Stack Menu"}>
-          <IconButton
-            size="small"
-            onClick={menuOpened ? this.handleHideMenu : this.handleShowMenu}
-          >
-            {menuOpened ? <HideStackMenu /> : <ShowStackMenu />}
-          </IconButton>
-        </Tooltip>
-      </React.Fragment>
-    );
-  }
-
-  render() {
-    const { className } = this.props;
-    const { menuOpened } = this.state;
-
-    return (
-      <Base className={className}>
-        {!menuOpened && this.renderLabel()}
-        {this.renderActions()}
-      </Base>
+        actions={[
+          { title: "Rename Stack", icon: RenameStack, action: renameStack },
+          {
+            title: "Add Cards to Stack",
+            icon: AddCardsToStack,
+            action: addCardsToStack
+          },
+          {
+            title: "Combine Cards in Stack",
+            icon: CombineCardsInStack,
+            action: combineDuplicateCards
+          },
+          { title: "Delete Stack", icon: DeleteStack, action: removeStack },
+          { title: "Create Stack", icon: CreateStack, action: createStack }
+        ]}
+      />
     );
   }
 }
