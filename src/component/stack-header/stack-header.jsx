@@ -2,9 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 
-import { Typography } from "@material-ui/core";
-
-import ActionsHeader from "/src/component/actions-header";
+import ActionsHeader, {
+  ActionsHeaderLabel
+} from "/src/component/actions-header";
 
 import {
   StackIcon,
@@ -62,13 +62,14 @@ class StackHeader extends React.PureComponent {
       <Base
         className={className}
         renderLabel={() => (
-          <React.Fragment>
-            <StyledStackIcon />
-            <Typography display="inline" noWrap={true}>
-              {stackLabel}
-              {stackCardsCount > 0 && ` (${stackCardsCount})`}
-            </Typography>
-          </React.Fragment>
+          <ActionsHeaderLabel
+            icon={StyledStackIcon}
+            label={
+              stackCardsCount > 0
+                ? `${stackLabel} (${stackCardsCount})`
+                : stackLabel
+            }
+          />
         )}
         actions={[
           { title: "Rename Stack", icon: RenameStack, action: renameStack },

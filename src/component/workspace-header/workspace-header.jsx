@@ -2,8 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 
-import ActionsHeader from "/src/component/actions-header";
 import WorkspaceSelector from "/src/component/workspace-selector";
+
+import ActionsHeader, {
+  ActionsHeaderLabel
+} from "/src/component/actions-header";
 
 import {
   RenameIcon,
@@ -63,10 +66,10 @@ class WorkspaceHeader extends React.PureComponent {
       <Base
         className={className}
         renderLabel={() => (
-          <React.Fragment>
-            <StyledWorkspaceIcon />
-            <WorkspaceSelector workspaceId={workspaceId} />
-          </React.Fragment>
+          <ActionsHeaderLabel
+            icon={StyledWorkspaceIcon}
+            label={() => <WorkspaceSelector workspaceId={workspaceId} />}
+          />
         )}
         actions={[
           {

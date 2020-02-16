@@ -16,8 +16,18 @@ const Base = styled(Toolbar).attrs({
   disableGutters: true
 })``;
 
-const Filler = styled.div`
-  flex-grow: 1;
+const LabelBase = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1 1 auto;
+`;
+
+const ActionsBase = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 `;
 
 const IconStyle = css`
@@ -72,8 +82,7 @@ class ActionsHeader extends React.PureComponent {
     };
 
     return (
-      <React.Fragment>
-        <Filler />
+      <ActionsBase>
         {menuOpened && (
           <React.Fragment>
             {flow([
@@ -96,7 +105,7 @@ class ActionsHeader extends React.PureComponent {
             {menuOpened ? <HideStackMenu /> : <ShowStackMenu />}
           </IconButton>
         </Tooltip>
-      </React.Fragment>
+      </ActionsBase>
     );
   }
 
@@ -104,11 +113,18 @@ class ActionsHeader extends React.PureComponent {
     const { className, renderLabel, disableLabelAutoHide } = this.props;
     const { menuOpened } = this.state;
 
+    const shouldRenderLabel =
+      (!menuOpened || disableLabelAutoHide) && isFunction(renderLabel);
+
     return (
       <Base className={className}>
-        {(!menuOpened || disableLabelAutoHide) &&
-          isFunction(renderLabel) &&
-          renderLabel()}
+        <LabelBase>
+          {shouldRenderLabel ? (
+            renderLabel()
+          ) : (
+            <React.Fragment>&nbsp;</React.Fragment>
+          )}
+        </LabelBase>
         {this.renderActions()}
       </Base>
     );

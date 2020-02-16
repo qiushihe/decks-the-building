@@ -2,9 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 
-import { Typography } from "@material-ui/core";
-
-import ActionsHeader from "/src/component/actions-header";
+import ActionsHeader, {
+  ActionsHeaderLabel
+} from "/src/component/actions-header";
 
 import {
   RenameIcon,
@@ -56,13 +56,14 @@ class LaneHeader extends React.PureComponent {
       <Base
         className={className}
         renderLabel={() => (
-          <React.Fragment>
-            <StyledLaneIcon />
-            <Typography display="inline" noWrap={true}>
-              {laneLabel}
-              {laneCardsCount > 0 && ` (${laneCardsCount})`}
-            </Typography>
-          </React.Fragment>
+          <ActionsHeaderLabel
+            icon={StyledLaneIcon}
+            label={
+              laneCardsCount > 0
+                ? `${laneLabel} (${laneCardsCount})`
+                : laneLabel
+            }
+          />
         )}
         actions={[
           { title: "Rename Lane", icon: RenameLane, action: renameLane },
