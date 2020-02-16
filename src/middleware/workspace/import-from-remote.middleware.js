@@ -25,8 +25,8 @@ export default ({ dispatch }) => next => action => {
               ...workspaceData,
               id: uuidV4()
             })
-              .then(() => dispatch(save({ id: localId })))
-              .then(({ payload: { data: { id } } }) =>
+              .then(id => dispatch(save({ id })))
+              .then(({ payload: { id } }) =>
                 dispatch(
                   activate({
                     id

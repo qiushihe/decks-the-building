@@ -17,7 +17,7 @@ import {
   WorkspaceIcon
 } from "/src/component/icon";
 
-const Base = styled(ActionsHeader)`
+const Base = styled.div`
   padding: 6px 6px 6px 22px;
   margin-bottom: 3px;
   background-color: #ebeef2;
@@ -64,43 +64,44 @@ class WorkspaceHeader extends React.PureComponent {
     } = this.props;
 
     return (
-      <Base
-        className={className}
-        renderLabel={() => (
-          <ActionsHeaderLabel
-            icon={StyledWorkspaceIcon}
-            label={() => <WorkspaceSelector workspaceId={workspaceId} />}
-          />
-        )}
-        actions={[
-          {
-            title: "Rename Workspace",
-            icon: RenameWorkspaceIcon,
-            action: renameWorkspace
-          },
-          {
-            title: "Save Workspace",
-            icon: SaveWorkspaceIcon,
-            action: saveWorkspace
-          },
-          {
-            title: "Sync Workspace",
-            icon: SyncWithCloudIcon,
-            action: syncWithCloud
-          },
-          {
-            title: "Delete Workspace",
-            icon: DeleteWorkspaceIcon,
-            action: removeWorkspace
-          },
-          {
-            title: "Create Workspace",
-            icon: CreateWorkspaceIcon,
-            action: createWorkspace
-          }
-        ]}
-        disableLabelAutoHide={true}
-      />
+      <Base className={className}>
+        <ActionsHeader
+          renderLabel={() => (
+            <ActionsHeaderLabel
+              icon={StyledWorkspaceIcon}
+              label={() => <WorkspaceSelector workspaceId={workspaceId} />}
+            />
+          )}
+          actions={[
+            {
+              title: "Rename Workspace",
+              icon: RenameWorkspaceIcon,
+              action: renameWorkspace
+            },
+            {
+              title: "Save Workspace",
+              icon: SaveWorkspaceIcon,
+              action: saveWorkspace
+            },
+            {
+              title: "Sync Workspace",
+              icon: SyncWithCloudIcon,
+              action: syncWithCloud
+            },
+            {
+              title: "Delete Workspace",
+              icon: DeleteWorkspaceIcon,
+              action: removeWorkspace
+            },
+            {
+              title: "Create Workspace",
+              icon: CreateWorkspaceIcon,
+              action: createWorkspace
+            }
+          ]}
+          disableLabelAutoHide={true}
+        />
+      </Base>
     );
   }
 }
