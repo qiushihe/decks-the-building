@@ -12,10 +12,7 @@ export const RESTORE_CARD_NAMES = "CARD/RESTORE_CARD_NAMES";
 export const CARD_DETAIL_ATTRIBUTES = [
   "layout",
   "manaCost",
-  "convertedManaCost",
   "typeLine",
-  "oracleText",
-  "flavorText",
   "imageUrls"
 ];
 

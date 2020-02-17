@@ -8,10 +8,7 @@ import compact from "lodash/fp/compact";
 const getName = get("name");
 const getLayout = get("layout");
 const getManaCost = get("mana_cost");
-const getConvertedManaCost = get("cmc");
 const getTypeLine = get("type_line");
-const getOracleText = get("oracle_text");
-const getFlavorText = get("flavor_text");
 const getImageUrls = flow([
   cardData =>
     map(getter => getter(cardData))([
@@ -30,9 +27,6 @@ export const normalizeCardDetail = cardData => ({
   name: getName(cardData),
   layout: getLayout(cardData),
   manaCost: getManaCost(cardData),
-  convertedManaCost: getConvertedManaCost(cardData),
   typeLine: getTypeLine(cardData),
-  oracleText: getOracleText(cardData),
-  flavorText: getFlavorText(cardData),
   imageUrls: getImageUrls(cardData)
 });
