@@ -4,16 +4,20 @@ import { createStructuredSelector } from "reselect";
 import {
   stackCardCountByCardIndex,
   stackCardCollapsedByCardIndex,
-  stackCardImageIndexByCardIndex
+  stackCardImageAlternationByCardIndex
 } from "/src/selector/stack.selector";
 
-import { cardName, cardDetailImageUrl } from "/src/selector/card.selector";
+import {
+  cardName,
+  cardDetailImageUrl,
+  cardDetailLayout
+} from "/src/selector/card.selector";
 import { withProps } from "/src/util/selector.util";
 
 import Card from "./card";
 
 const withCardImageIndex = withProps({
-  imageIndex: stackCardImageIndexByCardIndex
+  imageAlternation: stackCardImageAlternationByCardIndex
 });
 
 export default connect(
@@ -21,6 +25,8 @@ export default connect(
     collapsed: stackCardCollapsedByCardIndex,
     count: stackCardCountByCardIndex,
     name: cardName,
-    imageUrl: withCardImageIndex(cardDetailImageUrl)
+    imageUrl: withCardImageIndex(cardDetailImageUrl),
+    layout: cardDetailLayout,
+    alternation: stackCardImageAlternationByCardIndex
   })
 )(Card);

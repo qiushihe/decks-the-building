@@ -4,6 +4,7 @@ import get from "lodash/fp/get";
 import getOr from "lodash/fp/getOr";
 import size from "lodash/fp/size";
 import lt from "lodash/fp/lt";
+import includes from "lodash/fp/includes";
 
 import { fromProps } from "/src/util/selector.util";
 
@@ -26,10 +27,13 @@ export const cardDetailImageUrls = createSelector(
   getOr([], "imageUrls")
 );
 
+export const cardDetailLayout = createSelector(cardDetail, get("layout"));
+
 export const cardDetailImageUrl = createSelector(
-  fromProps(getOr(0, "imageIndex")),
+  fromProps(getOr(0, "imageAlternation")),
   cardDetailImageUrls,
-  (imageIndex, imageUrls) => get(imageIndex % size(imageUrls))(imageUrls)
+  (imageAlternation, imageUrls) =>
+    get(imageAlternation % size(imageUrls))(imageUrls)
 );
 
 export const cardDetailImageUrlsCount = createSelector(
@@ -39,5 +43,6 @@ export const cardDetailImageUrlsCount = createSelector(
 
 export const cardDetailHasAlternateImage = createSelector(
   cardDetailImageUrlsCount,
-  lt(1)
+  cardDetailLayout,
+  (urlsCount, layout) => lt(1)(urlsCount) || includes(layout)(["flip"])
 );
