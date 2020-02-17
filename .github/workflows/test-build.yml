@@ -37,4 +37,4 @@ jobs:
         with:
           path: ./node_modules
           key: ${{ github.ref }}-${{ github.sha }}-node-modules
-    - run: npm run build
+      - run: npm run build
