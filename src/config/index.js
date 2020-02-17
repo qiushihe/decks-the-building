@@ -1,9 +1,14 @@
 export const SCRYFALL_API_ORIGIN =
   process.env.SCRYFALL_API_ORIGIN || "https://api.scryfall.com";
 
-export const CARD_DETAIL_CACHE_VERSION = "6a381a6e-61e1-429b-8b81-94c632393e7c";
-export const CARD_DETAIL_CACHE_TIMEOUT = 1000 * 60 * 60 * 24 * 30; // 30 days in milliseconds
-export const CARD_NAMES_CACHE_TIMEOUT = 1000 * 60 * 60 * 24 * 3; // 2 days in milliseconds
+// Use `new Date().getTime()` to generate this value
+export const CARD_DETAIL_CACHE_VERSION = 1581979105335;
+
+// 30 days in milliseconds
+export const CARD_DETAIL_CACHE_TIMEOUT = 1000 * 60 * 60 * 24 * 30;
+
+// 3 days in milliseconds
+export const CARD_NAMES_CACHE_TIMEOUT = 1000 * 60 * 60 * 24 * 3;
 
 export const CARD_LOAD_TIMEOUT = 5000;
 
