@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  deploy:
+  setup:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -14,5 +14,27 @@ jobs:
         with:
           node-version: 10.x
       - run: npm install
+      - uses: actions/cache@v1
+        with:
+          path: ./node_modules
+          key: ${{ github.ref }}-${{ github.sha }}-node-modules
+
+  test:
+    needs: [setup]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/cache@v1
+        with:
+          path: ./node_modules
+          key: ${{ github.ref }}-${{ github.sha }}-node-modules
       - run: npm test
-      - run: npm run build
+
+  build:
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/cache@v1
+        with:
+          path: ./node_modules
+          key: ${{ github.ref }}-${{ github.sha }}-node-modules
+    - run: npm run build
