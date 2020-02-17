@@ -17,7 +17,10 @@ export default (state = {}, { id, cardIndices } = {}) => {
           uncappedReduce(
             (result, card, index) =>
               includes(index)(cardIndices)
-                ? [...result, { ...card, imageIndex: card.imageIndex + 1 }]
+                ? [
+                    ...result,
+                    { ...card, imageAlternation: card.imageAlternation + 1 }
+                  ]
                 : [...result, card],
             []
           )
