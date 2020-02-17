@@ -3,7 +3,7 @@ export const SCRYFALL_API_ORIGIN =
 
 export const CARD_DETAIL_CACHE_VERSION = "6a381a6e-61e1-429b-8b81-94c632393e7c";
 export const CARD_DETAIL_CACHE_TIMEOUT = 1000 * 60 * 60 * 24 * 30; // 30 days in milliseconds
-export const CARD_NAMES_CACHE_TIMEOUT = 1000 * 60 * 60 * 24; // 24 hours in milliseconds
+export const CARD_NAMES_CACHE_TIMEOUT = 1000 * 60 * 60 * 24 * 3; // 2 days in milliseconds
 
 export const CARD_LOAD_TIMEOUT = 5000;
 
