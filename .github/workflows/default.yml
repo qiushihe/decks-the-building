@@ -1,9 +1,10 @@
-name: Test and Build
+name: Default Workflow
 
 on:
   push:
     branches:
       - master
+      - deploy
 
 jobs:
   setup:
@@ -40,3 +41,26 @@ jobs:
           path: ./node_modules
           key: ${{ github.ref }}-${{ github.sha }}-node-modules
       - run: npm run build
+      - uses: actions/cache@v1
+        with:
+          path: ./build
+          key: ${{ github.ref }}-${{ github.sha }}-build
+
+  deploy:
+    needs: [build]
+    if: github.ref == 'refs/heads/deploy'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/cache@v1
+        with:
+          path: ./build
+          key: ${{ github.ref }}-${{ github.sha }}-build
+      - uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          SOURCE_DIR: build
