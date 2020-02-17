@@ -16,6 +16,13 @@ import {
   CARD_DETAIL_CACHE_VERSION
 } from "/src/config";
 
+const logError = console.warn;
+
+const logAndRethrowError = err => {
+  logError(err);
+  throw err;
+};
+
 class MultiLevelCacheService {
   constructor() {
     this.localForge = getLocalForgeClient();
@@ -73,14 +80,18 @@ class MultiLevelCacheService {
   readCardDetail(cardId, cardName) {
     return this.localForge
       .fetchCardById(cardId)
-      .catch(() =>
-        this.s3
-          .fetchCardById(cardId)
-          .then(cardData =>
-            this.localForge
-              .storeCardById(cardId, cardData)
-              .then(constant(cardData))
-          )
+      .catch(
+        flow([
+          logError,
+          () =>
+            this.s3
+              .fetchCardById(cardId)
+              .then(cardData =>
+                this.localForge
+                  .storeCardById(cardId, cardData)
+                  .then(constant(cardData))
+              )
+        ])
       )
       .then(cardData => {
         const cacheTimestamp = flow([
@@ -98,27 +109,33 @@ class MultiLevelCacheService {
           cacheVersion !== CARD_DETAIL_CACHE_VERSION ||
           new Date().getTime() - cacheTimestamp >= CARD_DETAIL_CACHE_TIMEOUT
         ) {
-          console.warn(`card detail cache for ${cardName} has become stale`);
-          throw new Error("card detail cache stale");
+          throw new Error(`card detail cache for ${cardName} has become stale`);
         } else {
           return cardData;
         }
       })
-      .catch(() =>
-        this.scryfall
-          .fetchCardByName(cardName)
-          .then(cardData => ({
-            ...cardData,
-            __dtbCacheVersion: CARD_DETAIL_CACHE_VERSION,
-            __dtbCacheTimestamp: new Date().getTime()
-          }))
-          .then(cardData =>
-            this.s3
-              .storeCardById(cardId, cardData)
-              .catch(constant(null))
-              .finally(() => this.localForge.storeCardById(cardId, cardData))
-              .then(constant(cardData))
-          )
+      .catch(
+        flow([
+          logError,
+          () =>
+            this.scryfall
+              .fetchCardByName(cardName)
+              .then(cardData => ({
+                ...cardData,
+                __dtbCacheVersion: CARD_DETAIL_CACHE_VERSION,
+                __dtbCacheTimestamp: new Date().getTime()
+              }))
+              .then(cardData =>
+                this.s3
+                  .storeCardById(cardId, cardData)
+                  .catch(constant(null))
+                  .finally(() =>
+                    this.localForge.storeCardById(cardId, cardData)
+                  )
+                  .then(constant(cardData))
+              )
+              .catch(logAndRethrowError)
+        ])
       );
   }
 }
