@@ -66,8 +66,8 @@ class MultiLevelCacheService {
               .finally(() => this.localForge.storeAllCardNames(cardNamesData))
               .then(constant(cardNamesData))
           )
-          .then(get("names"))
-      );
+      )
+      .then(get("names"));
   }
 
   readCardDetail(cardId, cardName) {

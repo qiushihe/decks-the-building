@@ -6,6 +6,7 @@ import flow from "lodash/fp/flow";
 import get from "lodash/fp/get";
 import multiply from "lodash/fp/multiply";
 import cond from "lodash/fp/cond";
+import eq from "lodash/fp/eq";
 import stubTrue from "lodash/fp/stubTrue";
 import constant from "lodash/fp/constant";
 
@@ -105,12 +106,18 @@ const Base = styled.div`
 
 const CardImage = styled(props => {
   const { imageUrl, title } = props;
-  const componentProps = omit(["imageUrl", "title", "scale", "collapsed"])(
-    props
-  );
+  const componentProps = omit([
+    "imageUrl",
+    "title",
+    "scale",
+    "collapsed",
+    "layout",
+    "alternation"
+  ])(props);
   return <img {...componentProps} src={imageUrl} alt={title} />;
 })`
   display: block;
+  pointer-events: none;
   width: 100%;
   height: auto;
   position: absolute;
@@ -127,7 +134,19 @@ const CardImage = styled(props => {
     ],
     [stubTrue, constant(0)]
   ])}px;
-  pointer-events: none;
+  transform: ${cond([
+    [
+      flow([get("layout"), eq("flip")]),
+      flow([
+        get("alternation"),
+        cond([
+          [flow([value => value % 2, eq(0)]), constant("none")],
+          [stubTrue, constant("rotate(180deg)")]
+        ])
+      ])
+    ],
+    [stubTrue, constant("none")]
+  ])};
 `;
 
 const CardCount = styled.div`
@@ -206,7 +225,9 @@ class Card extends React.PureComponent {
       collapsed,
       count,
       name,
-      imageUrl
+      imageUrl,
+      layout,
+      alternation
     } = this.props;
 
     return (
@@ -217,6 +238,8 @@ class Card extends React.PureComponent {
             imageUrl={imageUrl}
             scale={scale}
             collapsed={collapsed}
+            layout={layout}
+            alternation={alternation}
             onLoad={this.handleImageLoad}
           />
           {count > 1 && (
@@ -248,7 +271,9 @@ Card.propTypes = {
   collapsed: PropTypes.bool,
   count: PropTypes.number,
   name: PropTypes.string,
-  imageUrl: PropTypes.string
+  imageUrl: PropTypes.string,
+  layout: PropTypes.string,
+  alternation: PropTypes.number
 };
 
 Card.defaultProps = {
@@ -261,7 +286,9 @@ Card.defaultProps = {
   collapsed: false,
   count: 1,
   name: "Card",
-  imageUrl: ""
+  imageUrl: "",
+  layout: "",
+  alternation: 0
 };
 
 export default Card;
