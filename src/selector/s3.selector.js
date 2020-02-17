@@ -6,7 +6,6 @@ import getOr from "lodash/fp/getOr";
 import negate from "lodash/fp/negate";
 import isEmpty from "lodash/fp/isEmpty";
 import find from "lodash/fp/find";
-import eq from "lodash/fp/eq";
 
 import { fromProps } from "/src/util/selector.util";
 
@@ -40,10 +39,4 @@ export const availableWorkspaceLabel = createSelector(
 export const selectedWorkspaceId = createSelector(
   s3State,
   get("selectedWorkspaceId")
-);
-
-export const availableWorkspaceIsSelected = createSelector(
-  fromProps(get("workspaceId")),
-  selectedWorkspaceId,
-  eq
 );

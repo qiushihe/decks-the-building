@@ -2,104 +2,133 @@ import Promise from "bluebird";
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import map from "lodash/fp/map";
+import isEmpty from "lodash/fp/isEmpty";
 
-import WorkspacesList from "../workspaces-list";
+import Button from "@material-ui/core/Button";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import Select from "@material-ui/core/Select";
 
-const Base = styled.div``;
+import BaseModal from "/src/component/modal/base";
 
-const Operations = styled.div`
+import WorkspacesList from "./workspaces-list.connect";
+
+const SYNC_OPT_IMPORT_AS_CURRENT = "SYNC_OPT_IMPORT_AS_CURRENT";
+const SYNC_OPT_IMPORT_AS_NEW = "SYNC_OPT_IMPORT_AS_NEW";
+const SYNC_OPT_EXPORT_AS_SELECTED = "SYNC_OPT_EXPORT_AS_SELECTED";
+const SYNC_OPT_EXPORT_AS_NEW = "SYNC_OPT_EXPORT_AS_NEW";
+
+const SYNC_OPT_LABEL = {
+  [SYNC_OPT_IMPORT_AS_CURRENT]:
+    "Import selected workspace to replace current workspace",
+  [SYNC_OPT_IMPORT_AS_NEW]: "Import selected workspace as a new workspace",
+  [SYNC_OPT_EXPORT_AS_SELECTED]:
+    "Export current workspace to overwrite selected workspace",
+  [SYNC_OPT_EXPORT_AS_NEW]: "Export current workspace as a new workspace"
+};
+
+const Spacer = styled.div`
   display: flex;
-  flex-direction: column;
-  margin: 12px 0;
-`;
-
-const OperationsGroup = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin: 6px 0;
-
-  &:first-child {
-    margin-top: 0;
-  }
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-`;
-
-const OperationButton = styled.button`
-  display: flex;
-  white-space: normal;
-  width: 160px;
-  height: 80px;
-  font-size: 14px;
-  margin: 0 6px;
-
-  &:first-child {
-    margin-left: 0;
-  }
-
-  &:last-child {
-    margin-right: 0;
-  }
+  height: 16px;
 `;
 
 export class SyncOperationForm extends React.PureComponent {
-  render() {
+  constructor(...args) {
+    super(...args);
+
+    this.state = {
+      operation: ""
+    };
+
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleOperationChange = this.handleOperationChange.bind(this);
+  }
+
+  handleSubmit() {
     const {
-      hasLocal,
-      hasRemote,
       onComplete,
-      onCancel,
       replaceCurrentWithSelected,
       openSelectedAsNew,
       saveCurrentToSelected,
       saveCurrentAsNew
     } = this.props;
 
-    const withComplete = operationFn => () =>
-      Promise.resolve()
-        .then(() => operationFn())
-        .then(() => onComplete());
+    const { operation } = this.state;
+
+    let operationFn = () => Promise.resolve();
+    if (operation === SYNC_OPT_IMPORT_AS_CURRENT) {
+      operationFn = replaceCurrentWithSelected;
+    } else if (operation === SYNC_OPT_IMPORT_AS_NEW) {
+      operationFn = openSelectedAsNew;
+    } else if (operation === SYNC_OPT_EXPORT_AS_SELECTED) {
+      operationFn = saveCurrentToSelected;
+    } else if (operation === SYNC_OPT_EXPORT_AS_NEW) {
+      operationFn = saveCurrentAsNew;
+    }
+
+    operationFn().then(onComplete);
+  }
+
+  handleOperationChange(evt) {
+    this.setState({
+      operation: evt.target.value
+    });
+  }
+
+  render() {
+    const { hasLocal, hasRemote, onCancel } = this.props;
+
+    const { operation } = this.state;
+
+    const optDisabled = {
+      [SYNC_OPT_IMPORT_AS_CURRENT]: !hasLocal || !hasRemote,
+      [SYNC_OPT_IMPORT_AS_NEW]: !hasRemote,
+      [SYNC_OPT_EXPORT_AS_SELECTED]: !hasLocal || !hasRemote,
+      [SYNC_OPT_EXPORT_AS_NEW]: !hasLocal
+    };
 
     return (
-      <Base>
-        <div>Available Remote Workspaces</div>
+      <BaseModal
+        renderTitle={() => "Workspaces in the Cloud"}
+        renderActions={() => (
+          <React.Fragment>
+            <Button onClick={onCancel} color="secondary">
+              Cancel
+            </Button>
+            <Button onClick={this.handleSubmit} color="primary">
+              Submit
+            </Button>
+          </React.Fragment>
+        )}
+      >
+        <DialogContentText>
+          Select a remote workspace from the list below:
+        </DialogContentText>
         <WorkspacesList />
-        <Operations>
-          <OperationsGroup>
-            <OperationButton
-              onClick={withComplete(replaceCurrentWithSelected)}
-              disabled={!hasLocal || !hasRemote}
-            >
-              Replace Current Workspace with Selected Workspace
-            </OperationButton>
-            <OperationButton
-              onClick={withComplete(openSelectedAsNew)}
-              disabled={!hasRemote}
-            >
-              Open Selected Workspace as New Workspace
-            </OperationButton>
-          </OperationsGroup>
-          <OperationsGroup>
-            <OperationButton
-              onClick={withComplete(saveCurrentToSelected)}
-              disabled={!hasLocal || !hasRemote}
-            >
-              Save Current Workspace to Selected Workspace
-            </OperationButton>
-            <OperationButton
-              onClick={withComplete(saveCurrentAsNew)}
-              disabled={!hasLocal}
-            >
-              Save Current Workspace as New Workspace
-            </OperationButton>
-          </OperationsGroup>
-        </Operations>
-        <div>
-          <button onClick={onCancel}>Cancel</button>
-        </div>
-      </Base>
+        <Spacer />
+        <DialogContentText>Select an operation to perform:</DialogContentText>
+        <Select
+          native
+          variant="outlined"
+          value={operation || ""}
+          onChange={this.handleOperationChange}
+          fullWidth={true}
+        >
+          {isEmpty(operation) && (
+            <option value="">-- No Operation Selected --</option>
+          )}
+          {map(opt => (
+            <option key={opt} value={opt} disabled={optDisabled[opt]}>
+              {SYNC_OPT_LABEL[opt]}
+            </option>
+          ))([
+            SYNC_OPT_IMPORT_AS_CURRENT,
+            SYNC_OPT_IMPORT_AS_NEW,
+            SYNC_OPT_EXPORT_AS_SELECTED,
+            SYNC_OPT_EXPORT_AS_NEW
+          ])}
+        </Select>
+      </BaseModal>
     );
   }
 }

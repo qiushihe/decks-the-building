@@ -2,19 +2,14 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import Arrange from "/src/component/arrange";
+import Button from "@material-ui/core/Button";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import TextField from "@material-ui/core/TextField";
 
-const Base = styled.div``;
+import BaseModal from "/src/component/modal/base";
 
-const S3LoginInput = styled.input.attrs({
-  type: "password",
-  placeholder: "access-key@secret-key@region@bucket"
-})`
-  width: 250px;
-
-  &::placeholder {
-    font-size: 12px;
-  }
+const Base = styled.div`
+  max-width: 420px;
 `;
 
 export class LoginForm extends React.PureComponent {
@@ -47,20 +42,35 @@ export class LoginForm extends React.PureComponent {
     const { loginValue } = this.state;
 
     return (
-      <Base>
-        <div>S3 Login:</div>
-        <S3LoginInput value={loginValue} onChange={this.handleChange} />
-        <Arrange>
-          <Arrange.Fill>&nbsp;</Arrange.Fill>
-          <Arrange.Fit>
-            <button onClick={cancelLogin}>Cancel</button>
-          </Arrange.Fit>
-          <Arrange.Fit>&nbsp;&nbsp;</Arrange.Fit>
-          <Arrange.Fit>
-            <button onClick={this.handleSubmit}>Submit</button>
-          </Arrange.Fit>
-        </Arrange>
-      </Base>
+      <BaseModal
+        renderTitle={() => "Workspaces in the Cloud"}
+        renderActions={() => (
+          <React.Fragment>
+            <Button onClick={cancelLogin} color="secondary">
+              Cancel
+            </Button>
+            <Button onClick={this.handleSubmit} color="primary">
+              Submit
+            </Button>
+          </React.Fragment>
+        )}
+      >
+        <Base>
+          <DialogContentText>
+            Enter your AWS S3 credential in order to sync workspaces with the
+            cloud:
+          </DialogContentText>
+          <TextField
+            label="S3 Credential"
+            variant="outlined"
+            type="password"
+            helperText="Credential format: access-key@secret-key@region@bucket"
+            value={loginValue}
+            onChange={this.handleChange}
+            fullWidth={true}
+          />
+        </Base>
+      </BaseModal>
     );
   }
 }

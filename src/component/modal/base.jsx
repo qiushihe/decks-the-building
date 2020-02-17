@@ -8,6 +8,9 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
 const Base = styled.div`
+  display: flex;
+  flex-direction: column;
+
   .MuiDialogContent-root {
     overflow-y: visible !important;
   }

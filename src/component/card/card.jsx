@@ -12,6 +12,7 @@ import constant from "lodash/fp/constant";
 import CardActions from "/src/component/card-actions";
 
 import {
+  CARD_LOAD_TIMEOUT,
   CARD_DEFAULT_SCALE,
   CARD_WIDTH,
   CARD_HEIGHT,
@@ -103,15 +104,18 @@ const Base = styled.div`
 `;
 
 const CardImage = styled(props => {
-  const componentProps = omit(["imageUrl", "scale", "collapsed"])(props);
-  return <div {...componentProps} />;
+  const { imageUrl, title } = props;
+  const componentProps = omit(["imageUrl", "title", "scale", "collapsed"])(
+    props
+  );
+  return <img {...componentProps} src={imageUrl} alt={title} />;
 })`
   display: block;
   width: 100%;
-  height: 100%;
-  background-image: url(${get("imageUrl")});
-  background-size: cover;
-  background-position-y: ${cond([
+  height: auto;
+  position: absolute;
+  left: 0;
+  top: ${cond([
     [
       get("collapsed"),
       flow([
@@ -123,6 +127,7 @@ const CardImage = styled(props => {
     ],
     [stubTrue, constant(0)]
   ])}px;
+  pointer-events: none;
 `;
 
 const CardCount = styled.div`
@@ -163,6 +168,34 @@ const CardCount = styled.div`
 `;
 
 class Card extends React.PureComponent {
+  constructor(...args) {
+    super(...args);
+
+    this.loadTimeout = null;
+    this.handleImageLoad = this.handleImageLoad.bind(this);
+  }
+
+  notifyLoaded() {
+    const { onLoad } = this.props;
+
+    if (this.loadTimeout !== null) {
+      clearTimeout(this.loadTimeout);
+      this.loadTimeout = null;
+    }
+
+    onLoad();
+  }
+
+  handleImageLoad() {
+    this.notifyLoaded();
+  }
+
+  componentDidMount() {
+    this.loadTimeout = setTimeout(() => {
+      this.notifyLoaded();
+    }, CARD_LOAD_TIMEOUT);
+  }
+
   render() {
     const {
       className,
@@ -183,6 +216,7 @@ class Card extends React.PureComponent {
             imageUrl={imageUrl}
             scale={scale}
             collapsed={collapsed}
+            onLoad={this.handleImageLoad}
           />
           {count > 1 && (
             <CardCount>
@@ -204,6 +238,7 @@ class Card extends React.PureComponent {
 
 Card.propTypes = {
   className: PropTypes.string,
+  onLoad: PropTypes.func,
   stackId: PropTypes.string,
   cardIndex: PropTypes.number,
   scale: PropTypes.number,
@@ -215,6 +250,7 @@ Card.propTypes = {
 
 Card.defaultProps = {
   className: "",
+  onLoad: () => {},
   stackId: "",
   cardIndex: 0,
   scale: CARD_DEFAULT_SCALE,

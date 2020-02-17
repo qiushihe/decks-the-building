@@ -41,6 +41,7 @@ const StyledDraggable = styled(Draggable)`
 class Cards extends React.PureComponent {
   render() {
     const { className, stackId, cardIds, moveCard } = this.props;
+
     return (
       <Container
         className={className}

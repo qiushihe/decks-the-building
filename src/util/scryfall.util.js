@@ -6,7 +6,7 @@ const getConvertedManaCost = get("cmc");
 const getTypeLine = get("type_line");
 const getOracleText = get("oracle_text");
 const getFlavorText = get("flavor_text");
-const getImageUrl = get("image_uris.large");
+const getImageUrl = get("image_uris.normal");
 
 export const normalizeCardDetail = cardData => ({
   name: getName(cardData),
