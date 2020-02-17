@@ -1,9 +1,11 @@
 name: Default Workflow
 
 on:
-  push:
+  pull_request:
     branches:
       - master
+  push:
+    branches:
       - deploy
 
 jobs:
