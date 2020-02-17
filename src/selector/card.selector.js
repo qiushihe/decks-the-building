@@ -1,8 +1,9 @@
 import { createSelector } from "reselect";
 import flow from "lodash/fp/flow";
 import get from "lodash/fp/get";
-import negate from "lodash/fp/negate";
-import isEmpty from "lodash/fp/isEmpty";
+import getOr from "lodash/fp/getOr";
+import size from "lodash/fp/size";
+import lt from "lodash/fp/lt";
 
 import { fromProps } from "/src/util/selector.util";
 
@@ -20,25 +21,23 @@ export const cardName = createSelector(cardById, get("name"));
 
 export const cardDetail = createSelector(cardById, get("detail"));
 
-export const cardHasDetail = createSelector(cardDetail, negate(isEmpty));
-
-export const cardDetailManaCost = createSelector(cardDetail, get("manaCost"));
-
-export const cardDetailConvertedManaCost = createSelector(
+export const cardDetailImageUrls = createSelector(
   cardDetail,
-  get("convertedManaCost")
+  getOr([], "imageUrls")
 );
 
-export const cardDetailTypeLine = createSelector(cardDetail, get("typeLine"));
-
-export const cardDetailOracleText = createSelector(
-  cardDetail,
-  get("oracleText")
+export const cardDetailImageUrl = createSelector(
+  fromProps(getOr(0, "imageIndex")),
+  cardDetailImageUrls,
+  (imageIndex, imageUrls) => get(imageIndex % size(imageUrls))(imageUrls)
 );
 
-export const cardDetailFlavorText = createSelector(
-  cardDetail,
-  get("flavorText")
+export const cardDetailImageUrlsCount = createSelector(
+  cardDetailImageUrls,
+  size
 );
 
-export const cardDetailImageUrl = createSelector(cardDetail, get("imageUrl"));
+export const cardDetailHasAlternateImage = createSelector(
+  cardDetailImageUrlsCount,
+  lt(1)
+);

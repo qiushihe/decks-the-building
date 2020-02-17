@@ -78,7 +78,7 @@ export class AddCardsToStack extends React.PureComponent {
         {tabIndex === 0 && (
           <StyledAddCardsField onChange={this.handleFieldChange} />
         )}
-        {tabIndex === 1 && <div>WIP</div>}
+        {tabIndex === 1 && <div>Shits ain&apos;t done yo!</div>}
       </BaseModal>
     );
   }

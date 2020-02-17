@@ -13,7 +13,8 @@ import {
   AddOneIcon,
   SubtractOneIcon,
   ExpandIcon,
-  CollapseIcon
+  CollapseIcon,
+  AlternateImageIcon
 } from "/src/component/icon";
 
 const Base = styled.div`
@@ -61,6 +62,7 @@ const makeCardActionIcon = IconComponent => styled(IconComponent).attrs(
 const AddOneCardCopy = makeCardActionIcon(AddOneIcon);
 const SubtractOneCardCopy = makeCardActionIcon(SubtractOneIcon);
 const DuplicateCardEntry = makeCardActionIcon(DuplicateIcon);
+const AlternateCardImage = makeCardActionIcon(AlternateImageIcon);
 const ExpandCard = makeCardActionIcon(ExpandIcon);
 const CollapseCard = makeCardActionIcon(CollapseIcon);
 
@@ -70,14 +72,25 @@ class CardActions extends React.PureComponent {
       className,
       size,
       collapsed,
+      hasAlternateImage,
       toggleCard,
       addCopy,
       subtractCopy,
-      duplicateCard
+      duplicateCard,
+      alternateCardImage
     } = this.props;
 
     return (
       <Base className={className}>
+        {!collapsed && hasAlternateImage && (
+          <IconContainer size={size}>
+            <Tooltip title="Alternate Card Image">
+              <IconButton size="small" onClick={alternateCardImage}>
+                <AlternateCardImage size={size} />
+              </IconButton>
+            </Tooltip>
+          </IconContainer>
+        )}
         <IconContainer size={size}>
           <Tooltip title="Duplicate Card Entry">
             <IconButton size="small" onClick={duplicateCard}>
@@ -118,21 +131,25 @@ class CardActions extends React.PureComponent {
 CardActions.propTypes = {
   className: PropTypes.string,
   collapsed: PropTypes.bool,
+  hasAlternateImage: PropTypes.bool,
   size: PropTypes.number,
   toggleCard: PropTypes.func,
   addCopy: PropTypes.func,
   subtractCopy: PropTypes.func,
-  duplicateCard: PropTypes.func
+  duplicateCard: PropTypes.func,
+  alternateCardImage: PropTypes.func
 };
 
 CardActions.defaultProps = {
   className: "",
   collapsed: false,
+  hasAlternateImage: false,
   size: 18,
   toggleCard: () => {},
   addCopy: () => {},
   subtractCopy: () => {},
-  duplicateCard: () => {}
+  duplicateCard: () => {},
+  alternateCardImage: () => {}
 };
 
 export default CardActions;

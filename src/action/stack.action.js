@@ -8,6 +8,7 @@ export const REMOVE = "STACK/REMOVE";
 export const ADD_CARDS = "STACK/ADD_CARDS";
 export const TOGGLE_CARDS = "STACK/TOGGLE_CARDS";
 export const DUPLICATE_CARDS = "STACK/DUPLICATE_CARDS";
+export const ALTERNATE_CARDS_IMAGE = "STACK/ALTERNATE_CARDS_IMAGE";
 export const COMBINE_DUPLICATE_CARDS = "STACK/COMBINE_DUPLICATE_CARDS";
 export const MOVE_CARD = "STACK/MOVE_CARD";
 export const CHANGE_CARD_COPIES = "STACK/CHANGE_COPIES";
@@ -34,6 +35,12 @@ export const toggleCards = createPromisedAction(
 
 export const duplicateCards = createPromisedAction(
   DUPLICATE_CARDS,
+  ["id", "cardIndices"],
+  invoke
+);
+
+export const alternateCardsImage = createPromisedAction(
+  ALTERNATE_CARDS_IMAGE,
   ["id", "cardIndices"],
   invoke
 );

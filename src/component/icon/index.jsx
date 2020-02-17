@@ -16,7 +16,8 @@ import {
   ViewListRounded,
   DeleteRounded,
   ExposurePlus1Rounded,
-  ExposureNeg1Rounded
+  ExposureNeg1Rounded,
+  Rotate90DegreesCcwRounded
 } from "@material-ui/icons";
 
 const makeIconHoc = IconComponent => ({ size = 24, ...restProps }) => (
@@ -40,6 +41,7 @@ export const ImportExportIcon = makeIconHoc(FilterDramaOutlined);
 export const AddOneIcon = makeIconHoc(ExposurePlus1Rounded);
 export const SubtractOneIcon = makeIconHoc(ExposureNeg1Rounded);
 export const DuplicateIcon = makeIconHoc(FlipToFrontOutlined);
+export const AlternateImageIcon = makeIconHoc(Rotate90DegreesCcwRounded);
 export const ExpandIcon = makeIconHoc(FullscreenRounded);
 export const CollapseIcon = makeIconHoc(FullscreenExitRounded);
 

@@ -68,3 +68,8 @@ export const stackCardCollapsedByCardIndex = createSelector(
   stackCardByCardIndex,
   get("collapsed")
 );
+
+export const stackCardImageIndexByCardIndex = createSelector(
+  stackCardByCardIndex,
+  get("imageIndex")
+);

@@ -9,6 +9,16 @@ export const RESTORE = "CARD/RESTORE";
 
 export const RESTORE_CARD_NAMES = "CARD/RESTORE_CARD_NAMES";
 
+export const CARD_DETAIL_ATTRIBUTES = [
+  "layout",
+  "manaCost",
+  "convertedManaCost",
+  "typeLine",
+  "oracleText",
+  "flavorText",
+  "imageUrls"
+];
+
 export const add = createPromisedAction(
   ADD,
   ["names"],
@@ -22,16 +32,7 @@ export const add = createPromisedAction(
 
 export const restore = createPromisedAction(
   RESTORE,
-  [
-    "id",
-    "name",
-    "manaCost",
-    "convertedManaCost",
-    "typeLine",
-    "oracleText",
-    "flavorText",
-    "imageUrl"
-  ],
+  ["id", "name", ...CARD_DETAIL_ATTRIBUTES],
   invoke
 );
 

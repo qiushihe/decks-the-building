@@ -200,6 +200,7 @@ class Card extends React.PureComponent {
     const {
       className,
       stackId,
+      cardId,
       cardIndex,
       scale,
       collapsed,
@@ -225,6 +226,7 @@ class Card extends React.PureComponent {
           )}
           <StyledCardActions
             stackId={stackId}
+            cardId={cardId}
             cardIndex={cardIndex}
             scale={scale}
             collapsed={collapsed}
@@ -240,6 +242,7 @@ Card.propTypes = {
   className: PropTypes.string,
   onLoad: PropTypes.func,
   stackId: PropTypes.string,
+  cardId: PropTypes.string,
   cardIndex: PropTypes.number,
   scale: PropTypes.number,
   collapsed: PropTypes.bool,
@@ -252,6 +255,7 @@ Card.defaultProps = {
   className: "",
   onLoad: () => {},
   stackId: "",
+  cardId: "",
   cardIndex: 0,
   scale: CARD_DEFAULT_SCALE,
   collapsed: false,

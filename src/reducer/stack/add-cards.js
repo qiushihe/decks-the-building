@@ -24,7 +24,7 @@ export default (state = {}, { id, cardIds } = {}) => {
                   isNil,
                   () => [
                     ...existingCards,
-                    { id: cardId, count: 1, collapsed: true }
+                    { id: cardId, count: 1, collapsed: true, imageIndex: 0 }
                   ]
                 ],
                 [

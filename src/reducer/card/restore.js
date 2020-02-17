@@ -1,16 +1,4 @@
-export default (
-  state = {},
-  {
-    id,
-    name,
-    manaCost,
-    convertedManaCost,
-    typeLine,
-    oracleText,
-    flavorText,
-    imageUrl
-  } = {}
-) => {
+export default (state = {}, { id, name, ...cardDetail } = {}) => {
   return {
     ...state,
     allCards: {
@@ -18,12 +6,7 @@ export default (
       [id]: {
         name,
         detail: {
-          manaCost,
-          convertedManaCost,
-          typeLine,
-          oracleText,
-          flavorText,
-          imageUrl
+          ...cardDetail
         }
       }
     }

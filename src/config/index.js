@@ -4,8 +4,9 @@ export const SCRYFALL_API_ORIGIN =
 export const CARD_LOAD_TIMEOUT = 5000;
 
 export const CARD_DEFAULT_SCALE = 4;
-export const CARD_WIDTH = 63;
+export const CARD_ASPECT_RATIO = 1 + 11 / 28;
 export const CARD_HEIGHT = 88;
+export const CARD_WIDTH = CARD_HEIGHT / CARD_ASPECT_RATIO;
 
 // The following are expressed as the desired value
 // over the effective height of the card

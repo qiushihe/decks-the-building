@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import ReactTags from "react-tag-autocomplete";
 
+import { FormHelperText } from "@material-ui/core";
+
 import { removeItem } from "/src/util/array.util";
 import { getRandomId } from "/src/util/random-id.util";
 
@@ -80,14 +82,21 @@ class AddCardsField extends React.PureComponent {
           tagComponent={CardTag}
           onDelete={this.handleDelete}
           onAddition={this.handleAddition}
+          allowNew={true}
           allowBackspace={false}
           clearInputOnDelete={false}
           placeholderText="Find a card by name ..."
-          noSuggestionsText="Do you even Hearthstone?"
+          noSuggestionsText="No card found. Press enter to add it anyway."
           inputAttributes={{
             "data-input-id": this.inputId
           }}
         />
+        <FormHelperText>
+          Note: The card name auto-completion catalog does NOT include names of
+          token cards. To enter a token card, simply enter its exact, full name
+          and press enter. For example: &quot;City&apos;s Blessing //
+          Elemental&quot;
+        </FormHelperText>
       </Base>
     );
   }
