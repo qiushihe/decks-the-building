@@ -9,8 +9,6 @@ export const CARD_DETAIL_CACHE_VERSION = 1581979105335;
 export const CARD_DETAIL_CACHE_TIMEOUT = 1000 * 60 * 60 * 24 * 30;
 export const CARD_NAMES_CACHE_TIMEOUT = 1000 * 60 * 60 * 24 * 3;
 
-export const CARD_LOAD_TIMEOUT = 5000;
-
 export const CARD_DEFAULT_SCALE = 4;
 export const CARD_ASPECT_RATIO = 1 + 11 / 28;
 export const CARD_HEIGHT = 88;

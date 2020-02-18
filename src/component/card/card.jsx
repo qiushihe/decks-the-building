@@ -13,7 +13,6 @@ import constant from "lodash/fp/constant";
 import CardActions from "/src/component/card-actions";
 
 import {
-  CARD_LOAD_TIMEOUT,
   CARD_DEFAULT_SCALE,
   CARD_WIDTH,
   CARD_HEIGHT,
@@ -167,14 +166,15 @@ const CardCount = styled.div`
     line-height: 16px;
     color: #ffffff;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 11px;
     text-align: center;
     z-index: 2;
+    text-shadow: 1px 1px 1px #0000004d;
   }
 
   &::before {
     content: "";
-    background-color: #808080;
+    background-color: #424242;
     width: 200%;
     height: 200%;
     display: block;
@@ -182,39 +182,12 @@ const CardCount = styled.div`
     top: 0;
     left: 0;
     transform: rotate(45deg) translate(-85%, 0px);
+    box-shadow: 1px 0 1px 0 #00000033;
     z-index: 1;
   }
 `;
 
 class Card extends React.PureComponent {
-  constructor(...args) {
-    super(...args);
-
-    this.loadTimeout = null;
-    this.handleImageLoad = this.handleImageLoad.bind(this);
-  }
-
-  notifyLoaded() {
-    const { onLoad } = this.props;
-
-    if (this.loadTimeout !== null) {
-      clearTimeout(this.loadTimeout);
-      this.loadTimeout = null;
-    }
-
-    onLoad();
-  }
-
-  handleImageLoad() {
-    this.notifyLoaded();
-  }
-
-  componentDidMount() {
-    this.loadTimeout = setTimeout(() => {
-      this.notifyLoaded();
-    }, CARD_LOAD_TIMEOUT);
-  }
-
   render() {
     const {
       className,
@@ -240,11 +213,10 @@ class Card extends React.PureComponent {
             collapsed={collapsed}
             layout={layout}
             alternation={alternation}
-            onLoad={this.handleImageLoad}
           />
           {count > 1 && (
             <CardCount>
-              <span>{count}</span>
+              <span>{count > 99 ? "99+" : count}</span>
             </CardCount>
           )}
           <StyledCardActions
@@ -263,7 +235,6 @@ class Card extends React.PureComponent {
 
 Card.propTypes = {
   className: PropTypes.string,
-  onLoad: PropTypes.func,
   stackId: PropTypes.string,
   cardId: PropTypes.string,
   cardIndex: PropTypes.number,
@@ -278,7 +249,6 @@ Card.propTypes = {
 
 Card.defaultProps = {
   className: "",
-  onLoad: () => {},
   stackId: "",
   cardId: "",
   cardIndex: 0,
