@@ -5,6 +5,7 @@ import isNaN from "lodash/fp/isNaN";
 import stubTrue from "lodash/fp/stubTrue";
 import identity from "lodash/fp/identity";
 import constant from "lodash/fp/constant";
+import join from "lodash/fp/join";
 
 import { getLocalForgeClient } from "/src/api/localforge.api";
 import { getS3Client } from "/src/api/s3.api";
@@ -13,8 +14,14 @@ import { getScryfallClient } from "/src/api/scryfall.api";
 import {
   CARD_NAMES_CACHE_TIMEOUT,
   CARD_DETAIL_CACHE_TIMEOUT,
+  CARD_NAMES_CACHE_VERSION,
   CARD_DETAIL_CACHE_VERSION
 } from "/src/config";
+
+const logAndRethrowError = prefix => err => {
+  console.warn(join(" > ")(prefix), err);
+  throw err;
+};
 
 class MultiLevelCacheService {
   constructor() {
@@ -24,14 +31,34 @@ class MultiLevelCacheService {
   }
 
   readCardNames() {
+    const nowTimestamp = new Date().getTime();
+
     return this.localForge
-      .fetchAllCardNames()
+      .fetchAllCardNames(CARD_NAMES_CACHE_VERSION)
+      .catch(
+        logAndRethrowError(["readCardNames", "localForge.fetchAllCardNames"])
+      )
       .catch(() =>
         this.s3
-          .fetchAllCardNames()
+          .fetchAllCardNames(CARD_NAMES_CACHE_VERSION)
+          .catch(
+            logAndRethrowError([
+              "readCardNames",
+              "localForge.fetchAllCardNames",
+              "s3.fetchAllCardNames"
+            ])
+          )
           .then(cardNamesData =>
             this.localForge
-              .storeAllCardNames(cardNamesData)
+              .storeAllCardNames(CARD_NAMES_CACHE_VERSION, cardNamesData)
+              .catch(
+                logAndRethrowError([
+                  "readCardNames",
+                  "localForge.fetchAllCardNames",
+                  "s3.fetchAllCardNames",
+                  "localForge.storeAllCardNames"
+                ])
+              )
               .then(constant(cardNamesData))
           )
       )
@@ -45,9 +72,10 @@ class MultiLevelCacheService {
           ])
         ])(cardNamesData);
 
-        if (new Date().getTime() - cacheTimestamp >= CARD_NAMES_CACHE_TIMEOUT) {
-          console.warn(`card names cache has become stale`);
-          throw new Error("card names cache stale");
+        if (nowTimestamp - cacheTimestamp >= CARD_NAMES_CACHE_TIMEOUT) {
+          const err = new Error("card names cache has timed out");
+          logAndRethrowError(["readCardNames", "stale check"])(err);
+          throw err;
         } else {
           return cardNamesData;
         }
@@ -55,15 +83,26 @@ class MultiLevelCacheService {
       .catch(() =>
         this.scryfall
           .fetchAllCardNames()
+          .catch(
+            logAndRethrowError(["readCardNames", "scryfall.fetchAllCardNames"])
+          )
           .then(names => ({
             names,
-            __dtbCacheTimestamp: new Date().getTime()
+            __dtbCacheTimestamp: nowTimestamp
           }))
           .then(cardNamesData =>
             this.s3
-              .storeAllCardNames(cardNamesData)
+              .storeAllCardNames(CARD_NAMES_CACHE_VERSION, cardNamesData)
+              .catch(
+                logAndRethrowError(["readCardNames", "s3.storeAllCardNames"])
+              )
               .catch(constant(null))
-              .finally(() => this.localForge.storeAllCardNames(cardNamesData))
+              .finally(() =>
+                this.localForge.storeAllCardNames(
+                  CARD_NAMES_CACHE_VERSION,
+                  cardNamesData
+                )
+              )
               .then(constant(cardNamesData))
           )
       )
@@ -71,14 +110,24 @@ class MultiLevelCacheService {
   }
 
   readCardDetail(cardId, cardName) {
+    const nowTimestamp = new Date().getTime();
+
     return this.localForge
-      .fetchCardById(cardId)
+      .fetchCardById(CARD_DETAIL_CACHE_VERSION, cardId)
+      .catch(logAndRethrowError(["readCardDetail", "localForge.fetchCardById"]))
       .catch(() =>
         this.s3
-          .fetchCardById(cardId)
+          .fetchCardById(CARD_DETAIL_CACHE_VERSION, cardId)
+          .catch(logAndRethrowError(["readCardDetail", "s3.fetchCardById"]))
           .then(cardData =>
             this.localForge
-              .storeCardById(cardId, cardData)
+              .storeCardById(CARD_DETAIL_CACHE_VERSION, cardId, cardData)
+              .catch(
+                logAndRethrowError([
+                  "readCardDetail",
+                  "localForge.storeCardById"
+                ])
+              )
               .then(constant(cardData))
           )
       )
@@ -92,14 +141,12 @@ class MultiLevelCacheService {
           ])
         ])(cardData);
 
-        const cacheVersion = get("__dtbCacheVersion")(cardData);
-
-        if (
-          cacheVersion !== CARD_DETAIL_CACHE_VERSION ||
-          new Date().getTime() - cacheTimestamp >= CARD_DETAIL_CACHE_TIMEOUT
-        ) {
-          console.warn(`card detail cache for ${cardName} has become stale`);
-          throw new Error("card detail cache stale");
+        if (nowTimestamp - cacheTimestamp >= CARD_DETAIL_CACHE_TIMEOUT) {
+          const err = new Error(
+            `card detail cache for ${cardName} has timed out`
+          );
+          logAndRethrowError(["readCardDetail", "stale check"])(err);
+          throw err;
         } else {
           return cardData;
         }
@@ -107,16 +154,25 @@ class MultiLevelCacheService {
       .catch(() =>
         this.scryfall
           .fetchCardByName(cardName)
+          .catch(
+            logAndRethrowError(["readCardDetail", "scryfall.fetchCardByName"])
+          )
           .then(cardData => ({
             ...cardData,
-            __dtbCacheVersion: CARD_DETAIL_CACHE_VERSION,
-            __dtbCacheTimestamp: new Date().getTime()
+            __dtbCacheTimestamp: nowTimestamp
           }))
           .then(cardData =>
             this.s3
-              .storeCardById(cardId, cardData)
+              .storeCardById(CARD_DETAIL_CACHE_VERSION, cardId, cardData)
+              .catch(logAndRethrowError(["readCardDetail", "s3.storeCardById"]))
               .catch(constant(null))
-              .finally(() => this.localForge.storeCardById(cardId, cardData))
+              .finally(() =>
+                this.localForge.storeCardById(
+                  CARD_DETAIL_CACHE_VERSION,
+                  cardId,
+                  cardData
+                )
+              )
               .then(constant(cardData))
           )
       );

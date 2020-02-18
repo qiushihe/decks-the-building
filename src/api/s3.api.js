@@ -37,20 +37,20 @@ class S3Client {
     });
   }
 
-  storeAllCardNames(data) {
-    return this.storeById("catalog", "card-names", data);
+  storeAllCardNames(version, data) {
+    return this.storeById("catalog", `card-names-${version}`, data);
   }
 
-  fetchAllCardNames() {
-    return this.fetchById("catalog", "card-names");
+  fetchAllCardNames(version) {
+    return this.fetchById("catalog", `card-names-${version}`);
   }
 
-  storeCardById(id, data) {
-    return this.storeById("cards", id, data);
+  storeCardById(version, id, data) {
+    return this.storeById(`cards-${version}`, id, data);
   }
 
-  fetchCardById(id) {
-    return this.fetchById("cards", id);
+  fetchCardById(version, id) {
+    return this.fetchById(`cards-${version}`, id);
   }
 
   storeWorkspaceById(id, data) {

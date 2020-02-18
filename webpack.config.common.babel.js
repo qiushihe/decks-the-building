@@ -42,7 +42,9 @@ export default {
       excludeChunks: [],
       template: "./src/template/index.html",
       filename: "index.html",
-      hash: true
+      favicon: "./src/image/favicon.png",
+      hash: true,
+      xhtml: true
     })
   ]
 };
