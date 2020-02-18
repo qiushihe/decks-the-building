@@ -24,6 +24,7 @@ import CardActions from "/src/component/card-actions";
 
 import CardCount from "./card-count.connect";
 import FullImage from "./full-image.connect";
+import CompactImage from "./compact-image.connect";
 
 const Base = styled.div`
   overflow: visible !important;
@@ -117,7 +118,15 @@ class Card extends React.PureComponent {
     return (
       <Base className={className}>
         <Content scale={scale} collapsed={collapsed}>
-          <FullImage stackId={stackId} cardId={cardId} cardIndex={cardIndex} />
+          {collapsed ? (
+            <CompactImage cardId={cardId} />
+          ) : (
+            <FullImage
+              stackId={stackId}
+              cardId={cardId}
+              cardIndex={cardIndex}
+            />
+          )}
           <CardCount stackId={stackId} cardIndex={cardIndex} />
           <StyledCardActions
             stackId={stackId}

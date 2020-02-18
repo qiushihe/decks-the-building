@@ -53,7 +53,8 @@ const Base = styled(props => {
     top: 0;
     left: 0;
     transform: rotate(45deg) translate(-85%, 0px);
-    box-shadow: 1px 0 1px 0 #00000033;
+    box-shadow: 1px 0 1px 0 #000000bf;
+    opacity: 0.75;
     z-index: 1;
   }
 `;

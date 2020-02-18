@@ -29,6 +29,8 @@ export const cardDetailImageUrls = createSelector(
 
 export const cardDetailLayout = createSelector(cardDetail, get("layout"));
 
+export const cardDetailManaCost = createSelector(cardDetail, get("manaCost"));
+
 export const cardDetailImageUrl = createSelector(
   fromProps(getOr(0, "imageAlternation")),
   cardDetailImageUrls,

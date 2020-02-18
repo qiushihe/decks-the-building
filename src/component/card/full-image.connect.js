@@ -11,6 +11,7 @@ import {
   cardDetailImageUrl,
   cardDetailLayout
 } from "/src/selector/card.selector";
+
 import { withProps } from "/src/util/selector.util";
 
 import FullImage from "./full-image";
