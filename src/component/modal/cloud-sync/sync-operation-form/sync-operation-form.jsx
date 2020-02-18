@@ -95,7 +95,11 @@ export class SyncOperationForm extends React.PureComponent {
             <Button onClick={onCancel} color="secondary">
               Cancel
             </Button>
-            <Button onClick={this.handleSubmit} color="primary">
+            <Button
+              onClick={this.handleSubmit}
+              color="primary"
+              disabled={isEmpty(operation)}
+            >
               Submit
             </Button>
           </React.Fragment>
