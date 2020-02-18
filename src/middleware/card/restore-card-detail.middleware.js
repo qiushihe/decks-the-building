@@ -1,7 +1,8 @@
 import Promise from "bluebird";
-import flow from "lodash/fp/flow";
 import map from "lodash/fp/map";
 import get from "lodash/fp/get";
+import once from "lodash/fp/once";
+import isNil from "lodash/fp/isNil";
 
 import { READY } from "/src/action/app.action";
 import { ADD, restore } from "/src/action/card.action";
@@ -9,46 +10,60 @@ import { cardName } from "/src/selector/card.selector";
 import { withProps } from "/src/util/selector.util";
 import { getMultiLevelCacheService } from "/src/service/card/multi-level-cache-read.service";
 
+const IDLE_DELAY = 2000;
+const BUSY_DELAY = 10;
+
 export default ({ getState, dispatch }) => {
-  let appReady = false;
-  let pendingCardIds = [];
+  const pendingCardIds = [];
+  let currentTaskPromise = null;
 
-  const restoreCardsByIds = cardIds => {
-    const currentState = getState();
+  const processRestoreQueue = () => {
+    if (currentTaskPromise === null) {
+      const currentState = getState();
 
-    return flow([
-      map(id => ({
-        id,
-        name: withProps({ cardId: id })(cardName)(currentState)
-      })),
-      map(({ id, name }) =>
-        getMultiLevelCacheService()
-          .readCardDetail(id, name)
-          .then(cardDetail => dispatch(restore({ id, ...cardDetail })))
-      ),
-      Promise.all
-    ])(cardIds);
+      const id = pendingCardIds.shift();
+
+      currentTaskPromise = Promise.resolve().then(() => {
+        if (!isNil(id)) {
+          const name = withProps({ cardId: id })(cardName)(currentState);
+
+          return getMultiLevelCacheService()
+            .readCardDetail(id, name)
+            .then(cardDetail => dispatch(restore({ id, ...cardDetail })));
+        }
+      });
+
+      currentTaskPromise
+        .catch(err => console.warn(err))
+        .finally(() => {
+          currentTaskPromise = null;
+          return new Promise(resolve => {
+            setTimeout(resolve, isNil(id) ? IDLE_DELAY : BUSY_DELAY);
+          }).then(processRestoreQueue);
+        });
+
+      return currentTaskPromise;
+    } else {
+      return currentTaskPromise;
+    }
   };
+
+  const startRestoreQueue = once(() => {
+    return processRestoreQueue();
+  });
 
   return next => action => {
     const { type: actionType } = action;
 
     return Promise.resolve(next(action)).then(() => {
       if (actionType === READY) {
-        appReady = true;
-        return restoreCardsByIds(pendingCardIds);
+        return startRestoreQueue();
       } else if (actionType === ADD) {
         const {
           payload: { cards }
         } = action;
 
-        const cardIds = map(get("id"))(cards);
-
-        if (appReady) {
-          return restoreCardsByIds(cardIds);
-        } else {
-          pendingCardIds = [...pendingCardIds, ...cardIds];
-        }
+        map(card => pendingCardIds.push(get("id")(card)))(cards);
       }
     });
   };
