@@ -26,10 +26,6 @@ import CardCount from "./card-count.connect";
 import FullImage from "./full-image.connect";
 import CompactImage from "./compact-image.connect";
 
-const Base = styled.div`
-  overflow: visible !important;
-`;
-
 const StyledCardActions = styled(props => {
   const componentProps = omit(["scale", "collapsed"])(props);
   return <CardActions {...componentProps} />;
@@ -74,7 +70,7 @@ const StyledCardActions = styled(props => {
   ])}px;
 `;
 
-const Content = styled(props => {
+const Base = styled(props => {
   const componentProps = omit(["scale", "collapsed"])(props);
   return <div {...componentProps} />;
 })`
@@ -116,27 +112,25 @@ class Card extends React.PureComponent {
     } = this.props;
 
     return (
-      <Base className={className}>
-        <Content scale={scale} collapsed={collapsed}>
-          {collapsed ? (
-            <CompactImage cardId={cardId} />
-          ) : (
-            <FullImage
-              stackId={stackId}
-              cardId={cardId}
-              cardIndex={cardIndex}
-            />
-          )}
-          <CardCount stackId={stackId} cardIndex={cardIndex} />
-          <StyledCardActions
+      <Base className={className} scale={scale} collapsed={collapsed}>
+        {collapsed ? (
+          <CompactImage cardId={cardId} />
+        ) : (
+          <FullImage
             stackId={stackId}
             cardId={cardId}
             cardIndex={cardIndex}
-            scale={scale}
-            collapsed={collapsed}
-            size={scale * CARD_HEIGHT * CARD_MENU_ICON_SIZE_FACTOR}
           />
-        </Content>
+        )}
+        <CardCount stackId={stackId} cardIndex={cardIndex} />
+        <StyledCardActions
+          stackId={stackId}
+          cardId={cardId}
+          cardIndex={cardIndex}
+          scale={scale}
+          collapsed={collapsed}
+          size={scale * CARD_HEIGHT * CARD_MENU_ICON_SIZE_FACTOR}
+        />
       </Base>
     );
   }
