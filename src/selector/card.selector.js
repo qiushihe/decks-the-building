@@ -5,12 +5,26 @@ import getOr from "lodash/fp/getOr";
 import size from "lodash/fp/size";
 import lt from "lodash/fp/lt";
 import includes from "lodash/fp/includes";
+import find from "lodash/fp/find";
 
 import { fromProps } from "/src/util/selector.util";
 
 import { card as cardState } from "./root.selector";
 
 export const allCardNames = createSelector(cardState, get("allCardNames"));
+
+export const allCardSymbols = createSelector(cardState, get("allCardSymbols"));
+
+export const cardSymbol = createSelector(
+  fromProps(get("symbol")),
+  allCardSymbols,
+  (symbol, allSymbols) =>
+    find({ symbol: `${symbol}`.trim().toUpperCase() })(allSymbols)
+);
+
+export const cardSymbolLabel = createSelector(cardSymbol, get("label"));
+
+export const cardSymbolImageUrl = createSelector(cardSymbol, get("imageUrl"));
 
 export const cardById = createSelector(
   fromProps(get("cardId")),

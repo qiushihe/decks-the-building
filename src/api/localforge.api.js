@@ -71,12 +71,12 @@ const getRecord = (model, id, { storageEngine } = {}) => {
 };
 
 class LocalForgeClient {
-  storeAllCardNames(version, data) {
-    return this.storeById("Catalog", `CardNames-${version}`, data);
+  storeCardCatalog(name, version, data) {
+    return this.storeById("Catalog", `${name}-${version}`, data);
   }
 
-  fetchAllCardNames(version) {
-    return this.fetchById("Catalog", `CardNames-${version}`);
+  fetchCardCatalog(name, version) {
+    return this.fetchById("Catalog", `${name}-${version}`);
   }
 
   storeCardById(version, id, data) {

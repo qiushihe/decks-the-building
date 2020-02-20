@@ -12,7 +12,7 @@ const uncappedMap = map.convert({ cap: false });
 const Base = styled.div`
   display: flex;
   flex: 1 1 auto;
-  padding: ${STACK_CARDS_SPACING - 2}px ${STACK_CARDS_SPACING}px;
+  padding: ${STACK_CARDS_SPACING - 1}px ${STACK_CARDS_SPACING}px;
   border-radius: 10px;
   background-color: #ffffff;
   box-shadow: 0 3px 6px -3px rgba(0, 0, 0, 0.2);
@@ -28,8 +28,7 @@ const ContainerBase = styled.div`
 const StyledCard = styled(Card)``;
 
 const StyledDraggable = styled(Draggable)`
-  overflow: visible !important;
-  padding: 2px 0;
+  padding: 1px 0;
 `;
 
 class Cards extends React.PureComponent {

@@ -8,6 +8,7 @@ export const ADD = "CARD/ADD";
 export const RESTORE = "CARD/RESTORE";
 
 export const RESTORE_CARD_NAMES = "CARD/RESTORE_CARD_NAMES";
+export const RESTORE_CARD_SYMBOLS = "CARD/RESTORE_CARD_SYMBOLS";
 
 export const CARD_DETAIL_ATTRIBUTES = [
   "layout",
@@ -36,5 +37,11 @@ export const restore = createPromisedAction(
 export const restoreCardNames = createPromisedAction(
   RESTORE_CARD_NAMES,
   ["names"],
+  invoke
+);
+
+export const restoreCardSymbols = createPromisedAction(
+  RESTORE_CARD_SYMBOLS,
+  ["symbols"],
   invoke
 );

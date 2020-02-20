@@ -1,46 +1,68 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import flow from "lodash/fp/flow";
+import trim from "lodash/fp/trim";
+import map from "lodash/fp/map";
+
+import ManaCost from "./mana-cost.connect";
 
 const Base = styled.div`
   position: relative;
   display: flex;
   width: 100%;
   height: 100%;
+  border-radius: 10px;
+  overflow: hidden;
   background-color: #000000;
 `;
 
 const Backdrop = styled.div`
   display: flex;
   position: absolute;
-  top: 3px;
-  left: 6px;
-  right: 6px;
-  bottom: 3px;
+  top: 0;
+  left: 25px;
+  right: 0;
+  bottom: 0;
   border-radius: 10px;
-  overflow: hidden;
   background-color: #ffffff;
-  box-shadow: inset 0 0 1px 0 #000000;
+  border: 2px solid #000000;
 `;
 
 const Content = styled.div`
   display: flex;
   position: absolute;
   top: 5px;
-  left: 6px;
-  right: 4px;
+  left: 5px;
+  right: 5px;
   bottom: 6px;
   border-radius: 10px;
   overflow: hidden;
   background-color: #e4e4e4;
-  box-shadow: 1px 1px 1px 0 #0000004d;
+  box-shadow: 1px 1px 1px 0 #0000003d;
+`;
+
+const CountContainer = styled.div`
+  display: flex;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 12px;
+  text-shadow: 1px 1px 1px #ffffff3d;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 1px;
+  width: 25px;
+  bottom: 0;
 `;
 
 const NameContainer = styled.div`
   position: relative;
   display: flex;
   flex: 1 1 auto;
-  margin-left: 10px;
+  margin-left: 8px;
 `;
 
 const CardName = styled.div`
@@ -65,17 +87,32 @@ const CardName = styled.div`
   }
 `;
 
+const StyledManaCost = styled(ManaCost)``;
+
 const ManaContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   flex: 0 1 auto;
+  margin-left: 6px;
   margin-right: 6px;
+
+  ${StyledManaCost} {
+    margin: 0 1px;
+  }
+
+  ${StyledManaCost}:first-child {
+    margin-left: 0;
+  }
+
+  ${StyledManaCost}:last-child {
+    margin-right: 0;
+  }
 `;
 
 class CompactImage extends React.PureComponent {
   render() {
-    const { className, name, manaCost } = this.props;
+    const { className, count, name, manaCost } = this.props;
 
     return (
       <Base className={className}>
@@ -86,9 +123,17 @@ class CompactImage extends React.PureComponent {
                 <span>{name}</span>
               </CardName>
             </NameContainer>
-            <ManaContainer>{manaCost}</ManaContainer>
+            <ManaContainer>
+              {flow([
+                trim,
+                value => value.match(new RegExp("({[^{}]})", "gi")) || [],
+                map(symbol => <StyledManaCost symbol={symbol} />),
+                React.Children.toArray
+              ])(manaCost)}
+            </ManaContainer>
           </Content>
         </Backdrop>
+        <CountContainer>{count > 99 ? "99+" : `${count}x`}</CountContainer>
       </Base>
     );
   }
@@ -96,12 +141,14 @@ class CompactImage extends React.PureComponent {
 
 CompactImage.propTypes = {
   className: PropTypes.string,
+  count: PropTypes.number,
   name: PropTypes.string,
   manaCost: PropTypes.string
 };
 
 CompactImage.defaultProps = {
   className: "",
+  count: 0,
   name: "",
   manaCost: ""
 };

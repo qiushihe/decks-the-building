@@ -75,7 +75,6 @@ const Base = styled(props => {
   return <div {...componentProps} />;
 })`
   position: relative;
-  border-radius: 10px;
   width: ${flow([get("scale"), multiply(CARD_WIDTH)])}px;
   height: ${cond([
     [
@@ -89,7 +88,6 @@ const Base = styled(props => {
     [stubTrue, flow([get("scale"), multiply(CARD_HEIGHT)])]
   ])}px;
   overflow: hidden !important;
-  box-shadow: 0 3px 6px -3px rgba(0, 0, 0, 0.69);
 
   ${StyledCardActions} {
     opacity: 0;
@@ -114,15 +112,21 @@ class Card extends React.PureComponent {
     return (
       <Base className={className} scale={scale} collapsed={collapsed}>
         {collapsed ? (
-          <CompactImage cardId={cardId} />
-        ) : (
-          <FullImage
+          <CompactImage
             stackId={stackId}
-            cardId={cardId}
             cardIndex={cardIndex}
+            cardId={cardId}
           />
+        ) : (
+          <React.Fragment>
+            <FullImage
+              stackId={stackId}
+              cardId={cardId}
+              cardIndex={cardIndex}
+            />
+            <CardCount stackId={stackId} cardIndex={cardIndex} />
+          </React.Fragment>
         )}
-        <CardCount stackId={stackId} cardIndex={cardIndex} />
         <StyledCardActions
           stackId={stackId}
           cardId={cardId}

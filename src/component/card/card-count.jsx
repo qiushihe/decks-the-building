@@ -30,29 +30,27 @@ const Base = styled(props => {
 
   span {
     position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 16px;
-    height: 16px;
-    line-height: 16px;
+    top: 12%;
+    left: 12%;
     color: #ffffff;
-    font-weight: bold;
+    font-weight: 700;
     font-size: 11px;
     text-align: center;
     z-index: 2;
-    text-shadow: 1px 1px 1px #0000004d;
+    text-shadow: 1px 1px 1px #0000003d;
   }
 
   &::before {
     content: "";
     background-color: #424242;
-    width: 200%;
-    height: 200%;
+    border-radius: 0 0 100% 0;
+    width: 100%;
+    height: 100%;
     display: block;
     position: absolute;
     top: 0;
     left: 0;
-    transform: rotate(45deg) translate(-85%, 0px);
+    transform: translate(-4px, -4px);
     box-shadow: 1px 0 1px 0 #000000bf;
     opacity: 0.75;
     z-index: 1;
@@ -65,7 +63,7 @@ class CardCount extends React.PureComponent {
 
     return (
       <Base className={className} count={count}>
-        <span>{count > 99 ? "99+" : count}</span>
+        <span>{count > 99 ? "99+" : `${count}x`}</span>
       </Base>
     );
   }
