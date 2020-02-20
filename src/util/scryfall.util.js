@@ -9,6 +9,7 @@ import first from "lodash/fp/first";
 const getName = get("name");
 const getLayout = get("layout");
 const getTypeLine = get("type_line");
+const getColorIdentity = get("color_identity");
 
 const getManaCost = flow([
   cardData =>
@@ -42,6 +43,7 @@ const getImageUrls = flow([
 export const normalizeCardDetail = cardData => ({
   name: getName(cardData),
   layout: getLayout(cardData),
+  colorIdentity: getColorIdentity(cardData),
   manaCost: getManaCost(cardData),
   typeLine: getTypeLine(cardData),
   imageUrls: getImageUrls(cardData)

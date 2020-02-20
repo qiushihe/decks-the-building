@@ -4,7 +4,7 @@ export const SCRYFALL_API_ORIGIN =
 // Use `new Date().getTime()` to generate these value
 export const CARD_SYMBOLS_CACHE_VERSION = 1581979105335;
 export const CARD_NAMES_CACHE_VERSION = 1581979105335;
-export const CARD_DETAIL_CACHE_VERSION = 1582011861167;
+export const CARD_DETAIL_CACHE_VERSION = 1582176953844;
 
 // days in milliseconds
 export const CARD_SYMBOLS_CACHE_TIMEOUT = 1000 * 60 * 60 * 24 * 90;

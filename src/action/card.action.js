@@ -12,6 +12,7 @@ export const RESTORE_CARD_SYMBOLS = "CARD/RESTORE_CARD_SYMBOLS";
 
 export const CARD_DETAIL_ATTRIBUTES = [
   "layout",
+  "colorIdentity",
   "manaCost",
   "typeLine",
   "imageUrls"

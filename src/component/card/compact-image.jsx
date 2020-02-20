@@ -25,8 +25,8 @@ const Backdrop = styled.div`
   right: 0;
   bottom: 0;
   border-radius: 10px;
-  background-color: #ffffff;
   border: 2px solid #000000;
+  background: #edeef0;
 `;
 
 const Content = styled.div`
@@ -38,7 +38,7 @@ const Content = styled.div`
   bottom: 6px;
   border-radius: 10px;
   overflow: hidden;
-  background-color: #e4e4e4;
+  background-color: #ccd1d7;
   box-shadow: 1px 1px 1px 0 #0000003d;
 `;
 
@@ -112,7 +112,23 @@ const ManaContainer = styled.div`
 
 class CompactImage extends React.PureComponent {
   render() {
-    const { className, count, name, manaCost } = this.props;
+    const { className, count, name, manaCost, colorIdentity } = this.props;
+
+    // Content color
+    // White: #CCD1D7
+    // Red:   #F2B09A
+    // Green: #ADCEBD
+    // Black: #A09B98
+    // Blue:  #85B7D8
+
+    // Backdrop color
+    // White: #EDEEF0
+    // Red:   #E04C32
+    // Green: #007C46
+    // Black: #54504D
+    // Blue:  #227DAC
+
+    console.log("colorIdentity", colorIdentity);
 
     return (
       <Base className={className}>
@@ -126,7 +142,7 @@ class CompactImage extends React.PureComponent {
             <ManaContainer>
               {flow([
                 trim,
-                value => value.match(new RegExp("({[^{}]})", "gi")) || [],
+                value => value.match(/({[^{}]})/gi) || [],
                 map(symbol => <StyledManaCost symbol={symbol} />),
                 React.Children.toArray
               ])(manaCost)}
@@ -143,14 +159,16 @@ CompactImage.propTypes = {
   className: PropTypes.string,
   count: PropTypes.number,
   name: PropTypes.string,
-  manaCost: PropTypes.string
+  manaCost: PropTypes.string,
+  colorIdentity: PropTypes.arrayOf(PropTypes.string)
 };
 
 CompactImage.defaultProps = {
   className: "",
   count: 0,
   name: "",
-  manaCost: ""
+  manaCost: "",
+  colorIdentity: []
 };
 
 export default CompactImage;
