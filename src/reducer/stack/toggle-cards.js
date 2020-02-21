@@ -21,7 +21,8 @@ export default (state = {}, { id, cardIndices } = {}) => {
                     ...result,
                     {
                       ...card,
-                      collapsed: !card.collapsed
+                      collapsed: !card.collapsed,
+                      imageAlternation: 0
                     }
                   ]
                 : [...result, card],
