@@ -1,9 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import omit from "lodash/fp/omit";
 import flow from "lodash/fp/flow";
 import trim from "lodash/fp/trim";
+import get from "lodash/fp/get";
 import map from "lodash/fp/map";
+
+import {
+  COLOR_IDENTITY_LABEL_GRADIENT_COLOR,
+  COLOR_IDENTITY_CARD_GRADIENT_COLOR
+} from "/src/enum/color-identity.enum";
+
+import { colorIdentityGradientGetter } from "/src/util/card.util";
 
 import ManaCost from "./mana-cost.connect";
 
@@ -17,7 +26,10 @@ const Base = styled.div`
   background-color: #000000;
 `;
 
-const Backdrop = styled.div`
+const Backdrop = styled(props => {
+  const componentProps = omit(["colorIdentity"])(props);
+  return <div {...componentProps} />;
+})`
   display: flex;
   position: absolute;
   top: 0;
@@ -26,10 +38,19 @@ const Backdrop = styled.div`
   bottom: 0;
   border-radius: 10px;
   border: 2px solid #000000;
-  background: #edeef0;
+  background: linear-gradient(
+    225deg,
+    ${flow([
+      get("colorIdentity"),
+      colorIdentityGradientGetter(COLOR_IDENTITY_CARD_GRADIENT_COLOR)
+    ])}
+  );
 `;
 
-const Content = styled.div`
+const Content = styled(props => {
+  const componentProps = omit(["colorIdentity"])(props);
+  return <div {...componentProps} />;
+})`
   display: flex;
   position: absolute;
   top: 5px;
@@ -38,8 +59,14 @@ const Content = styled.div`
   bottom: 6px;
   border-radius: 10px;
   overflow: hidden;
-  background-color: #ccd1d7;
-  box-shadow: 1px 1px 1px 0 #0000003d;
+  box-shadow: 1px 1px 1px 0 #0000003d, -1px -1px 0 0 #0000000f;
+  background: linear-gradient(
+    315deg,
+    ${flow([
+      get("colorIdentity"),
+      colorIdentityGradientGetter(COLOR_IDENTITY_LABEL_GRADIENT_COLOR)
+    ])}
+  );
 `;
 
 const CountContainer = styled.div`
@@ -114,26 +141,10 @@ class CompactImage extends React.PureComponent {
   render() {
     const { className, count, name, manaCost, colorIdentity } = this.props;
 
-    // Content color
-    // White: #CCD1D7
-    // Red:   #F2B09A
-    // Green: #ADCEBD
-    // Black: #A09B98
-    // Blue:  #85B7D8
-
-    // Backdrop color
-    // White: #EDEEF0
-    // Red:   #E04C32
-    // Green: #007C46
-    // Black: #54504D
-    // Blue:  #227DAC
-
-    console.log("colorIdentity", colorIdentity);
-
     return (
       <Base className={className}>
-        <Backdrop>
-          <Content>
+        <Backdrop colorIdentity={colorIdentity}>
+          <Content colorIdentity={colorIdentity}>
             <NameContainer>
               <CardName>
                 <span>{name}</span>
@@ -142,7 +153,7 @@ class CompactImage extends React.PureComponent {
             <ManaContainer>
               {flow([
                 trim,
-                value => value.match(/({[^{}]})/gi) || [],
+                value => value.match(/({[^{}]+})/gi) || [],
                 map(symbol => <StyledManaCost symbol={symbol} />),
                 React.Children.toArray
               ])(manaCost)}
