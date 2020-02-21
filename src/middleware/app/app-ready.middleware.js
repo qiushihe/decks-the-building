@@ -4,14 +4,19 @@ import values from "lodash/fp/values";
 import every from "lodash/fp/every";
 import cond from "lodash/fp/cond";
 import identity from "lodash/fp/identity";
+import isUndefined from "lodash/fp/isUndefined";
 
 import { BOOT, ready } from "/src/action/app.action";
-import { RESTORE_CARD_NAMES } from "/src/action/card.action";
+import {
+  RESTORE_CARD_NAMES,
+  RESTORE_CARD_SYMBOLS
+} from "/src/action/card.action";
 
 export default ({ dispatch }) => {
   const readyChecks = {
     [BOOT]: false,
-    [RESTORE_CARD_NAMES]: false
+    [RESTORE_CARD_NAMES]: false,
+    [RESTORE_CARD_SYMBOLS]: false
   };
 
   const dispatchIfReady = () => {
@@ -24,11 +29,8 @@ export default ({ dispatch }) => {
     const { type: actionType } = action;
 
     return Promise.resolve(next(action)).then(() => {
-      if (actionType === BOOT) {
-        readyChecks[BOOT] = true;
-        dispatchIfReady();
-      } else if (actionType === RESTORE_CARD_NAMES) {
-        readyChecks[RESTORE_CARD_NAMES] = true;
+      if (!isUndefined(readyChecks[actionType])) {
+        readyChecks[actionType] = true;
         dispatchIfReady();
       }
     });

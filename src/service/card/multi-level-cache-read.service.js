@@ -1,3 +1,4 @@
+import Promise from "bluebird";
 import flow from "lodash/fp/flow";
 import get from "lodash/fp/get";
 import cond from "lodash/fp/cond";
@@ -12,11 +13,38 @@ import { getS3Client } from "/src/api/s3.api";
 import { getScryfallClient } from "/src/api/scryfall.api";
 
 import {
+  CARD_SYMBOLS_CACHE_TIMEOUT,
   CARD_NAMES_CACHE_TIMEOUT,
   CARD_DETAIL_CACHE_TIMEOUT,
+  CARD_SYMBOLS_CACHE_VERSION,
   CARD_NAMES_CACHE_VERSION,
   CARD_DETAIL_CACHE_VERSION
 } from "/src/config";
+
+import {
+  CARD_CATALOG_NAMES,
+  CARD_CATALOG_SYMBOLS
+} from "/src/enum/catalog.enum";
+
+const CATALOG_TIMEOUTS = {
+  [CARD_CATALOG_SYMBOLS]: CARD_SYMBOLS_CACHE_TIMEOUT,
+  [CARD_CATALOG_NAMES]: CARD_NAMES_CACHE_TIMEOUT
+};
+
+const CATALOG_VERSIONS = {
+  [CARD_CATALOG_SYMBOLS]: CARD_SYMBOLS_CACHE_VERSION,
+  [CARD_CATALOG_NAMES]: CARD_NAMES_CACHE_VERSION
+};
+
+const CATALOG_LOCALFORGE_NAMES = {
+  [CARD_CATALOG_SYMBOLS]: "CardSymbols",
+  [CARD_CATALOG_NAMES]: "CardNames"
+};
+
+const CATALOG_S3_NAMES = {
+  [CARD_CATALOG_SYMBOLS]: "card-symbols",
+  [CARD_CATALOG_NAMES]: "card-names"
+};
 
 const logAndRethrowError = prefix => err => {
   console.warn(join(" > ")(prefix), err);
@@ -30,39 +58,59 @@ class MultiLevelCacheService {
     this.scryfall = getScryfallClient();
   }
 
-  readCardNames() {
+  readCardCatalog(catalogName) {
+    if (
+      catalogName !== CARD_CATALOG_NAMES &&
+      catalogName !== CARD_CATALOG_SYMBOLS
+    ) {
+      return Promise.reject(new Error(`unknown catalog: ${catalogName}`));
+    }
+
     const nowTimestamp = new Date().getTime();
 
     return this.localForge
-      .fetchAllCardNames(CARD_NAMES_CACHE_VERSION)
+      .fetchCardCatalog(
+        CATALOG_LOCALFORGE_NAMES[catalogName],
+        CATALOG_VERSIONS[catalogName]
+      )
       .catch(
-        logAndRethrowError(["readCardNames", "localForge.fetchAllCardNames"])
+        logAndRethrowError([
+          `readCardCatalog(${catalogName})`,
+          "localForge.fetchCardCatalog"
+        ])
       )
       .catch(() =>
         this.s3
-          .fetchAllCardNames(CARD_NAMES_CACHE_VERSION)
+          .fetchCardCatalog(
+            CATALOG_S3_NAMES[catalogName],
+            CATALOG_VERSIONS[catalogName]
+          )
           .catch(
             logAndRethrowError([
-              "readCardNames",
-              "localForge.fetchAllCardNames",
-              "s3.fetchAllCardNames"
+              `readCardCatalog(${catalogName})`,
+              "localForge.fetchCardCatalog",
+              "s3.fetchCardCatalog"
             ])
           )
-          .then(cardNamesData =>
+          .then(catalogData =>
             this.localForge
-              .storeAllCardNames(CARD_NAMES_CACHE_VERSION, cardNamesData)
+              .storeCardCatalog(
+                CATALOG_LOCALFORGE_NAMES[catalogName],
+                CATALOG_VERSIONS[catalogName],
+                catalogData
+              )
               .catch(
                 logAndRethrowError([
-                  "readCardNames",
-                  "localForge.fetchAllCardNames",
-                  "s3.fetchAllCardNames",
-                  "localForge.storeAllCardNames"
+                  `readCardCatalog(${catalogName})`,
+                  "localForge.fetchCardCatalog",
+                  "s3.fetchCardCatalog",
+                  "localForge.storeCardCatalog"
                 ])
               )
-              .then(constant(cardNamesData))
+              .then(constant(catalogData))
           )
       )
-      .then(cardNamesData => {
+      .then(catalogData => {
         const cacheTimestamp = flow([
           get("__dtbCacheTimestamp"),
           value => parseInt(value, 10),
@@ -70,43 +118,57 @@ class MultiLevelCacheService {
             [isNaN, constant(0)],
             [stubTrue, identity]
           ])
-        ])(cardNamesData);
+        ])(catalogData);
 
-        if (nowTimestamp - cacheTimestamp >= CARD_NAMES_CACHE_TIMEOUT) {
-          const err = new Error("card names cache has timed out");
-          logAndRethrowError(["readCardNames", "stale check"])(err);
+        if (nowTimestamp - cacheTimestamp >= CATALOG_TIMEOUTS[catalogName]) {
+          const err = new Error("catalog data has timed out");
+          logAndRethrowError([
+            `readCardCatalog(${catalogName})`,
+            "cache timestamp check"
+          ])(err);
           throw err;
         } else {
-          return cardNamesData;
+          return catalogData;
         }
       })
       .catch(() =>
         this.scryfall
-          .fetchAllCardNames()
+          .fetchCardCatalog(catalogName)
           .catch(
-            logAndRethrowError(["readCardNames", "scryfall.fetchAllCardNames"])
+            logAndRethrowError([
+              `readCardCatalog(${catalogName})`,
+              "scryfall.fetchCardCatalog"
+            ])
           )
-          .then(names => ({
-            names,
+          .then(catalogData => ({
+            catalogData,
             __dtbCacheTimestamp: nowTimestamp
           }))
-          .then(cardNamesData =>
+          .then(catalogData =>
             this.s3
-              .storeAllCardNames(CARD_NAMES_CACHE_VERSION, cardNamesData)
+              .storeCardCatalog(
+                CATALOG_S3_NAMES[catalogName],
+                CATALOG_VERSIONS[catalogName],
+                catalogData
+              )
               .catch(
-                logAndRethrowError(["readCardNames", "s3.storeAllCardNames"])
+                logAndRethrowError([
+                  `readCardCatalog(${catalogName})`,
+                  "s3.storeCardCatalog"
+                ])
               )
               .catch(constant(null))
               .finally(() =>
-                this.localForge.storeAllCardNames(
-                  CARD_NAMES_CACHE_VERSION,
-                  cardNamesData
+                this.localForge.storeCardCatalog(
+                  CATALOG_LOCALFORGE_NAMES[catalogName],
+                  CATALOG_VERSIONS[catalogName],
+                  catalogData
                 )
               )
-              .then(constant(cardNamesData))
+              .then(constant(catalogData))
           )
       )
-      .then(get("names"));
+      .then(get("catalogData"));
   }
 
   readCardDetail(cardId, cardName) {

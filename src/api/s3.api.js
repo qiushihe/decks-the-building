@@ -37,12 +37,12 @@ class S3Client {
     });
   }
 
-  storeAllCardNames(version, data) {
-    return this.storeById("catalog", `card-names-${version}`, data);
+  storeCardCatalog(name, version, data) {
+    return this.storeById("catalog", `${name}-${version}`, data);
   }
 
-  fetchAllCardNames(version) {
-    return this.fetchById("catalog", `card-names-${version}`);
+  fetchCardCatalog(name, version) {
+    return this.fetchById("catalog", `${name}-${version}`);
   }
 
   storeCardById(version, id, data) {
@@ -104,7 +104,8 @@ class S3Client {
           Bucket: this.bucketName,
           Key: `${subDirectory}/${id}.json`,
           Body: JSON.stringify(data, null, 2),
-          ContentType: "text/plain"
+          ContentType: "text/plain",
+          CacheControl: "no-cache"
         },
         (err, data) => {
           if (err) {
@@ -128,7 +129,8 @@ class S3Client {
           Bucket: this.bucketName,
           Key: `${subDirectory}/${id}.json`,
           ResponseContentType: "text/plain",
-          ResponseContentDisposition: "inline"
+          ResponseContentDisposition: "inline",
+          ResponseCacheControl: "no-cache"
         },
         (err, data) => {
           if (err) {

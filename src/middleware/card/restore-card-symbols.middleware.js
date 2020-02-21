@@ -1,9 +1,9 @@
 import Promise from "bluebird";
 
 import { BOOT } from "/src/action/app.action";
-import { restoreCardNames } from "/src/action/card.action";
+import { restoreCardSymbols } from "/src/action/card.action";
 import { getMultiLevelCacheService } from "/src/service/card/multi-level-cache-read.service";
-import { CARD_CATALOG_NAMES } from "/src/enum/catalog.enum";
+import { CARD_CATALOG_SYMBOLS } from "/src/enum/catalog.enum";
 
 export default ({ dispatch }) => {
   return next => action => {
@@ -12,8 +12,8 @@ export default ({ dispatch }) => {
     return Promise.resolve(next(action)).then(() => {
       if (actionType === BOOT) {
         return getMultiLevelCacheService()
-          .readCardCatalog(CARD_CATALOG_NAMES)
-          .then(names => dispatch(restoreCardNames({ names })));
+          .readCardCatalog(CARD_CATALOG_SYMBOLS)
+          .then(symbols => dispatch(restoreCardSymbols({ symbols })));
       }
     });
   };
