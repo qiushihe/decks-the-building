@@ -4,8 +4,12 @@ import styled from "styled-components";
 import omit from "lodash/fp/omit";
 import flow from "lodash/fp/flow";
 import trim from "lodash/fp/trim";
+import split from "lodash/fp/split";
+import first from "lodash/fp/first";
 import get from "lodash/fp/get";
 import map from "lodash/fp/map";
+
+import Tooltip from "@material-ui/core/Tooltip";
 
 import {
   COLOR_IDENTITY_LABEL_GRADIENT_COLOR,
@@ -53,13 +57,13 @@ const Content = styled(props => {
 })`
   display: flex;
   position: absolute;
-  top: 5px;
+  top: 6px;
   left: 5px;
   right: 5px;
   bottom: 6px;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 1px 1px 1px 0 #0000003d, -1px -1px 0 0 #0000000f;
+  box-shadow: 1px 1px 1px 0 #0000003d;
   background: linear-gradient(
     315deg,
     ${flow([
@@ -83,6 +87,7 @@ const CountContainer = styled.div`
   left: 1px;
   width: 25px;
   bottom: 0;
+  cursor: default;
 `;
 
 const NameContainer = styled.div`
@@ -95,7 +100,7 @@ const NameContainer = styled.div`
 const CardName = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-end;
   flex: 1 1 auto;
   position: absolute;
   top: 0;
@@ -104,13 +109,13 @@ const CardName = styled.div`
   bottom: 0;
 
   span {
-    font-family: serif;
-    font-weight: 700;
-    font-size: 13px;
+    font-family: "Beleren Bold", serif;
+    font-size: 14px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     text-shadow: 0px 1px #ffffffbf;
+    cursor: default;
   }
 `;
 
@@ -125,7 +130,7 @@ const ManaContainer = styled.div`
   margin-right: 6px;
 
   ${StyledManaCost} {
-    margin: 0 1px;
+    margin: 0 1px 0 0;
   }
 
   ${StyledManaCost}:first-child {
@@ -145,13 +150,18 @@ class CompactImage extends React.PureComponent {
       <Base className={className}>
         <Backdrop colorIdentity={colorIdentity}>
           <Content colorIdentity={colorIdentity}>
-            <NameContainer>
-              <CardName>
-                <span>{name}</span>
-              </CardName>
-            </NameContainer>
+            <Tooltip title={name}>
+              <NameContainer>
+                <CardName>
+                  <span>{name}</span>
+                </CardName>
+              </NameContainer>
+            </Tooltip>
             <ManaContainer>
               {flow([
+                trim,
+                split("//"),
+                first,
                 trim,
                 value => value.match(/({[^{}]+})/gi) || [],
                 map(symbol => <StyledManaCost symbol={symbol} />),

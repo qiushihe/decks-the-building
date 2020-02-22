@@ -4,6 +4,7 @@ import flowRight from "lodash/fp/flowRight";
 
 import NormalizedStyleProvider from "/src/provider/normalized-style.provider";
 import MaterialUiProvider from "/src/provider/material-ui.provider";
+import BelerenFontStyle from "/src/provider/beleren-font-provider";
 import ReduxStoreProvider from "/src/provider/redux-store.provider";
 import ModalProvider from "/src/provider/modal.provider";
 import createStore from "/src/store/create";
@@ -18,6 +19,7 @@ const withProvider = (Provider, props = {}) => children => (
 const withProviders = flowRight([
   withProvider(NormalizedStyleProvider),
   withProvider(MaterialUiProvider),
+  withProvider(BelerenFontStyle),
   withProvider(ReduxStoreProvider, { store }),
   withProvider(ModalProvider)
 ]);

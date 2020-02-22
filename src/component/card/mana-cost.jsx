@@ -7,7 +7,7 @@ const Base = styled.div`
 `;
 
 const ManaImage = styled.img`
-  height: 13px;
+  height: 12px;
   width: auto;
   border-radius: 9999px;
   box-shadow: -0.5px 0.5px 0 0 black;

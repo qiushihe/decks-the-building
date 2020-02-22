@@ -23,6 +23,30 @@ export default {
         use: {
           loader: "babel-loader"
         }
+      },
+      {
+        test: /\.(png|svg|jpe?g|gif)$/,
+        exclude: /beleren-bold/,
+        use: {
+          loader: "url-loader",
+          options: {
+            name: "[name].[ext]",
+            limit: 8000, // Convert images < 8kb to base64 strings
+            outputPath: "asset/image/"
+          }
+        }
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "[name].[ext]",
+              outputPath: "asset/font/"
+            }
+          }
+        ]
       }
     ]
   },
@@ -42,7 +66,7 @@ export default {
       excludeChunks: [],
       template: "./src/template/index.html",
       filename: "index.html",
-      favicon: "./src/image/favicon.png",
+      favicon: "./src/asset/image/favicon.png",
       hash: true,
       xhtml: true
     })
