@@ -63,7 +63,7 @@ const Content = styled(props => {
   bottom: 6px;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 1px 1px 1px 0 #0000003d, -1px -1px 0 0 #0000000f;
+  box-shadow: 1px 1px 1px 0 #0000003d;
   background: linear-gradient(
     315deg,
     ${flow([
