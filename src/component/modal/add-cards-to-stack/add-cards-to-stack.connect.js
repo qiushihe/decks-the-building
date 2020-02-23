@@ -17,9 +17,7 @@ import {
 
 import AddCardsToStack from "./add-cards-to-stack";
 
-const cardLineRegexp = new RegExp(
-  "^((?<copies>\\d*)(\\s*.)?\\s+)?(?<name>.+)$"
-);
+const cardLineRegexp = new RegExp("^((\\d*)(\\s*.)?\\s+)?(.+)$");
 
 const uncappedMap = map.convert({ cap: false });
 
@@ -45,8 +43,11 @@ export default connect(
     ...dispatchProps,
     ...ownProps,
     onSubmit: flow([
-      map(name => name.match(cardLineRegexp).groups),
-      map(({ copies, name }) => ({ copies: parseInt(copies) || 1, name })),
+      map(name => name.match(cardLineRegexp)),
+      map((matches = []) => ({
+        copies: parseInt(matches[2]) || 1,
+        name: matches[4]
+      })),
       cards => {
         const copiesByCardName = reduce(
           (result, { copies, name }) => ({
