@@ -24,12 +24,15 @@ exports.handler = (evt, ctx) => {
           "</pre>"
       });
     } else {
+      let responseBody = data.Body.toString();
       let responseContentType = data.ContentType;
+      let isBase64Encoded = false;
 
-      if (objectKey.match(/\.woff$/)) {
-        responseContentType = "font/woff";
-      } else if (objectKey.match(/\.woff2$/)) {
-        responseContentType = "font/woff2";
+      const fontMatch = objectKey.match(/\.(woff|woff2|tff)$/);
+      if (fontMatch) {
+        responseContentType = "font/" + fontMatch[1];
+        responseBody = data.Body.toString("base64");
+        isBase64Encoded = true;
       }
 
       ctx.succeed({
@@ -38,7 +41,8 @@ exports.handler = (evt, ctx) => {
           "Content-Type": responseContentType,
           "Content-Length": data.ContentLength
         },
-        body: data.Body.toString()
+        body: responseBody,
+        isBase64Encoded: isBase64Encoded
       });
     }
   });

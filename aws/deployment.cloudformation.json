@@ -330,7 +330,7 @@
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
-          "ZipFile": "var AWS=require(\"aws-sdk\"),s3=new AWS.S3;\nexports.handler=function(a,e){var b=a.requestContext.path.replace(new RegExp(\"^/\"+a.requestContext.stage),\"\").replace(/^\\//,\"\");s3.getObject({Bucket:process.env.ARTIFACTS_BUCKET_NAME,Key:b},function(a,c){if(a)e.succeed({statusCode:500,headers:{\"Content-Type\":\"text/html\"},body:\"<h1>Oh Nose! Shit didn't work!</h1><pre>Error: \"+JSON.stringify(a)+\"</pre>\"});else{var d=c.ContentType;b.match(/\\.woff$/)?d=\"font/woff\":b.match(/\\.woff2$/)&&(d=\"font/woff2\");e.succeed({statusCode:200,headers:{\"Content-Type\":d,\n\"Content-Length\":c.ContentLength},body:c.Body.toString()})}})};"
+          "ZipFile": "var AWS=require(\"aws-sdk\"),s3=new AWS.S3;\nexports.handler=function(a,c){var d=a.requestContext.path.replace(new RegExp(\"^/\"+a.requestContext.stage),\"\").replace(/^\\//,\"\");s3.getObject({Bucket:process.env.ARTIFACTS_BUCKET_NAME,Key:d},function(a,b){if(a)c.succeed({statusCode:500,headers:{\"Content-Type\":\"text/html\"},body:\"<h1>Oh Nose! Shit didn't work!</h1><pre>Error: \"+JSON.stringify(a)+\"</pre>\"});else{var e=b.Body.toString(),f=b.ContentType,g=!1,h=d.match(/\\.(woff|woff2|tff)$/);h&&(f=\"font/\"+h[1],e=b.Body.toString(\"base64\"),g=!0);c.succeed({statusCode:200,\nheaders:{\"Content-Type\":f,\"Content-Length\":b.ContentLength},body:e,isBase64Encoded:g})}})};"
         },
         "FunctionName": {
           "Fn::Sub": [
@@ -383,6 +383,7 @@
     "ApiGateway": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
+        "BinaryMediaTypes": ["*~1*"],
         "EndpointConfiguration": {
           "Types": ["REGIONAL"]
         },
@@ -422,6 +423,12 @@
             ]
           }
         },
+        "MethodResponses": [{
+          "ResponseParameters": {
+            "method.response.header.Content-Type": true
+          },
+          "StatusCode": "200"
+        }],
         "ResourceId": { "Fn::GetAtt": ["ApiGateway", "RootResourceId"] },
         "RestApiId": { "Ref": "ApiGateway" }
       }
@@ -467,6 +474,12 @@
             ]
           }
         },
+        "MethodResponses": [{
+          "ResponseParameters": {
+            "method.response.header.Content-Type": true
+          },
+          "StatusCode": "200"
+        }],
         "ResourceId": { "Ref": "ApiGatewayRootProxyResource" },
         "RestApiId": { "Ref": "ApiGateway" }
       }
