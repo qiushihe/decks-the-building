@@ -2,22 +2,80 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Parameters": {
     "StorageBucketNameParameter": {
-      "Description": "Name of the S3 bucket to store runtime cache data",
+      "Description": "Name of the S3 bucket to store workspaces and runtime cache data",
       "Type": "String",
-      "Default": "decks-the-building-data",
+      "Default": "storage-bucket",
       "AllowedPattern": ".+"
+    },
+    "StorageUsernameParameter": {
+      "Description": "Username for the IAM user to access the storage bucket",
+      "Type": "String",
+      "Default": "storage-user"
     }
   },
   "Resources": {
+    "GetRandomIdFnExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [{
+            "Action": ["sts:AssumeRole"],
+            "Effect": "Allow",
+            "Principal": {
+              "Service": ["lambda.amazonaws.com"]
+            }
+          }],
+          "Version": "2012-10-17"
+        }
+      }
+    },
+    "GetRandomIdFn": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "ZipFile": "var https=require(\"https\"),url=require(\"url\"),newId=function(b,c){var d=\"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_\".split(\"\"),a=[];c=c||d.length;b=b||22;var e;for(e=0;e<b;e++)a[e]=d[0|Math.random()*c];return a.join(\"\")};\nexports.handler=function(b,c){var d=JSON.stringify({Status:\"SUCCESS\",PhysicalResourceId:c.logStreamName,StackId:b.StackId,RequestId:b.RequestId,LogicalResourceId:b.LogicalResourceId,Data:{AlphanumericValue:newId(10,62),AlphanumericNoCapValue:newId(10,36)}}),a=url.parse(b.ResponseURL);a=https.request({hostname:a.hostname,port:443,path:a.path,method:\"PUT\",headers:{\"content-length\":d.length}},function(){return c.done()});a.on(\"error\",function(){return c.done()});a.write(d);a.end()};"
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": ["GetRandomIdFnExecutionRole", "Arn"]
+        },
+        "Runtime": "nodejs12.x"
+      }
+    },
+    "StackSuffix": {
+      "Type": "Custom::StackSuffix",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt" : ["GetRandomIdFn", "Arn"]
+        }
+      }
+    },
+    "StackS3BucketSuffix": {
+      "Type": "Custom::StackS3BucketSuffix",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt" : ["GetRandomIdFn", "Arn"]
+        }
+      }
+    },
+    "StackUsernameSuffix": {
+      "Type": "Custom::StackS3BucketSuffix",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt" : ["GetRandomIdFn", "Arn"]
+        }
+      }
+    },
     "StorageBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
         "AccessControl": "Private",
         "BucketName": {
           "Fn::Sub": [
-            "${Stack}-${Name}", {
-              "Stack": { "Ref": "AWS::StackName" },
-              "Name": { "Ref": "StorageBucketNameParameter" }
+            "${Prefix}-${Name}-${Suffix}", {
+              "Prefix": { "Ref": "AWS::StackName" },
+              "Name": { "Ref": "StorageBucketNameParameter" },
+              "Suffix": { "Fn::GetAtt": ["StackS3BucketSuffix", "AlphanumericNoCapValue"] }
             }
           ]
         },
@@ -36,6 +94,76 @@
           }]
         }
       }
+    },
+    "StorageUser": {
+      "Type": "AWS::IAM::User",
+      "Properties": {
+        "UserName": {
+          "Fn::Sub": [
+            "${Prefix}-${Name}-${Suffix}", {
+              "Prefix": { "Ref": "AWS::StackName" },
+              "Name": { "Ref": "StorageUsernameParameter" },
+              "Suffix": { "Fn::GetAtt": ["StackUsernameSuffix", "AlphanumericValue"] }
+            }
+          ]
+        },
+        "Policies": [{
+          "PolicyDocument": {
+            "Statement": [{
+              "Action": ["s3:ListBucket"],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Sub": [
+                  "arn:aws:s3:::${BucketName}", {
+                    "BucketName": {
+                      "Fn::Sub": [
+                        "${Prefix}-${Name}-${Suffix}", {
+                          "Prefix": { "Ref": "AWS::StackName" },
+                          "Name": { "Ref": "StorageBucketNameParameter" },
+                          "Suffix": { "Fn::GetAtt": ["StackS3BucketSuffix", "AlphanumericNoCapValue"] }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }, {
+              "Action": ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Sub": [
+                  "arn:aws:s3:::${BucketName}/*", {
+                    "BucketName": {
+                      "Fn::Sub": [
+                        "${Prefix}-${Name}-${Suffix}", {
+                          "Prefix": { "Ref": "AWS::StackName" },
+                          "Name": { "Ref": "StorageBucketNameParameter" },
+                          "Suffix": { "Fn::GetAtt": ["StackS3BucketSuffix", "AlphanumericNoCapValue"] }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }],
+            "Version": "2012-10-17"
+          },
+          "PolicyName": {
+            "Fn::Sub": [
+              "${Prefix}-deployment-user-policy-${Suffix}", {
+                "Prefix": { "Ref": "AWS::StackName" },
+                "Suffix": { "Fn::GetAtt": ["StackSuffix", "AlphanumericValue"] }
+              }
+            ]
+          }
+        }]
+      }
+    },
+    "StorageUserKeys": {
+      "Type": "AWS::IAM::AccessKey",
+      "Properties": {
+        "UserName": { "Ref": "StorageUser" }
+      }
     }
   },
   "Outputs": {
@@ -51,7 +179,46 @@
     },
     "StorageBucketName": {
       "Description": "Runtime cache storage bucket name",
-      "Value": { "Ref": "StorageBucket" }
+      "Value": {
+        "Fn::Sub": [
+          "${Prefix}-${Name}-${Suffix}", {
+            "Prefix": { "Ref": "AWS::StackName" },
+            "Name": { "Ref": "StorageBucketNameParameter" },
+            "Suffix": { "Fn::GetAtt": ["StackS3BucketSuffix", "AlphanumericNoCapValue"] }
+          }
+        ]
+      }
+    },
+    "StorageUserAccessKey": {
+      "Description": "Storage IAM user's access key",
+      "Value": { "Ref": "StorageUserKeys" }
+    },
+    "StorageUserSecretKey": {
+      "Description": "Storage IAM user's secret key",
+      "Value": {
+        "Fn::GetAtt": ["StorageUserKeys", "SecretAccessKey"]
+      }
+    },
+    "InAppCredential": {
+      "Description": "S3 credential to be used in the app. access-key@secret-key@region@bucket",
+      "Value": {
+        "Fn::Sub": [
+          "${AccessKey}@${SecretKey}@${Region}@${Bucket}", {
+            "AccessKey": { "Ref": "StorageUserKeys" },
+            "SecretKey": { "Fn::GetAtt": ["StorageUserKeys", "SecretAccessKey"] },
+            "Region": { "Ref": "AWS::Region" },
+            "Bucket": {
+              "Fn::Sub": [
+                "${Prefix}-${Name}-${Suffix}", {
+                  "Prefix": { "Ref": "AWS::StackName" },
+                  "Name": { "Ref": "StorageBucketNameParameter" },
+                  "Suffix": { "Fn::GetAtt": ["StackS3BucketSuffix", "AlphanumericNoCapValue"] }
+                }
+              ]
+            }
+          }
+        ]
+      }
     }
   }
 }
