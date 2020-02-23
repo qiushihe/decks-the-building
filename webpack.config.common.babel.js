@@ -3,8 +3,6 @@ import { resolve as resolvePath } from "path";
 import { DefinePlugin } from "webpack";
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
-import CopyWebpackPlugin from "copy-webpack-plugin";
-import HtmlWebpackTagsPlugin from "html-webpack-tags-plugin";
 
 export default {
   entry: {
@@ -25,6 +23,30 @@ export default {
         use: {
           loader: "babel-loader"
         }
+      },
+      {
+        test: /\.(png|svg|jpe?g|gif)$/,
+        exclude: /beleren-bold/,
+        use: {
+          loader: "url-loader",
+          options: {
+            name: "[name].[ext]",
+            limit: 8000, // Convert images < 8kb to base64 strings
+            outputPath: "asset/image/"
+          }
+        }
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "[name].[ext]",
+              outputPath: "asset/font/"
+            }
+          }
+        ]
       }
     ]
   },
@@ -40,11 +62,6 @@ export default {
       "process.env.SCRYFALL_API_ORIGIN": JSON.stringify(process.env.SCRYFALL_API_ORIGIN)
     }),
 
-    new CopyWebpackPlugin([{
-      from: "./node_modules/@saeris/typeface-beleren-bold",
-      to: "asset/font/typeface-beleren-bold"
-    }]),
-
     new HtmlWebpackPlugin({
       excludeChunks: [],
       template: "./src/template/index.html",
@@ -52,11 +69,6 @@ export default {
       favicon: "./src/asset/image/favicon.png",
       hash: true,
       xhtml: true
-    }),
-
-    new HtmlWebpackTagsPlugin({
-      links: "asset/font/typeface-beleren-bold/index.css",
-      append: true
     })
   ]
 };
