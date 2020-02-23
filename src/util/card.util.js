@@ -18,7 +18,13 @@ import size from "lodash/fp/size";
 import isNil from "lodash/fp/isNil";
 import join from "lodash/fp/join";
 
-import { encode } from "/src/util/base64.util";
+import CardBackgroundGold from "/src/asset/image/card-background/card-background-gold.png";
+import CardBackgroundArtifact from "/src/asset/image/card-background/card-background-artifact.png";
+import CardBackgroundWhite from "/src/asset/image/card-background/card-background-white.png";
+import CardBackgroundRed from "/src/asset/image/card-background/card-background-red.png";
+import CardBackgroundGreen from "/src/asset/image/card-background/card-background-green.png";
+import CardBackgroundBlack from "/src/asset/image/card-background/card-background-black.png";
+import CardBackgroundBlue from "/src/asset/image/card-background/card-background-blue.png";
 
 import {
   COLOR_IDENTITY_NONE,
@@ -28,6 +34,8 @@ import {
   COLOR_IDENTITY_BLACK,
   COLOR_IDENTITY_BLUE
 } from "/src/enum/color-identity.enum";
+
+import { encode } from "/src/util/base64.util";
 
 export const encodeCardName = flow([trim, toLower, encode]);
 
@@ -102,3 +110,28 @@ export const colorIdentityGradientGetter = gradientSource =>
     ),
     join(", ")
   ]);
+
+export const getCardBackground = flow([
+  parseColorIdentity,
+  cond([
+    [isEmpty, constant([COLOR_IDENTITY_NONE])],
+    [stubTrue, identity]
+  ]),
+  cond([
+    [
+      flow([size, eq(1)]),
+      flow([
+        get(0),
+        cond([
+          [eq(COLOR_IDENTITY_WHITE), constant(CardBackgroundWhite)],
+          [eq(COLOR_IDENTITY_RED), constant(CardBackgroundRed)],
+          [eq(COLOR_IDENTITY_GREEN), constant(CardBackgroundGreen)],
+          [eq(COLOR_IDENTITY_BLACK), constant(CardBackgroundBlack)],
+          [eq(COLOR_IDENTITY_BLUE), constant(CardBackgroundBlue)],
+          [stubTrue, constant(CardBackgroundArtifact)]
+        ])
+      ])
+    ],
+    [stubTrue, constant(CardBackgroundGold)]
+  ])
+]);

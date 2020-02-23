@@ -16,7 +16,10 @@ import {
   COLOR_IDENTITY_CARD_GRADIENT_COLOR
 } from "/src/enum/color-identity.enum";
 
-import { colorIdentityGradientGetter } from "/src/util/card.util";
+import {
+  colorIdentityGradientGetter,
+  getCardBackground
+} from "/src/util/card.util";
 
 import ManaCost from "./mana-cost.connect";
 
@@ -49,6 +52,20 @@ const Backdrop = styled(props => {
       colorIdentityGradientGetter(COLOR_IDENTITY_CARD_GRADIENT_COLOR)
     ])}
   );
+
+  &::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url(${flow([get("colorIdentity"), getCardBackground])});
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.5;
+  }
 `;
 
 const Content = styled(props => {
