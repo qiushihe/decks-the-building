@@ -5,9 +5,13 @@ const AWS = require("aws-sdk");
 const s3 = new AWS.S3();
 
 exports.handler = (evt, ctx) => {
+  const objectKey = evt.requestContext.path
+    .replace(new RegExp("^\/" + evt.requestContext.stage), "")
+    .replace(/^\//, "");
+
   s3.getObject({
     Bucket: process.env.ARTIFACTS_BUCKET_NAME,
-    Key: evt.requestContext.path.replace(new RegExp("^\/" + evt.requestContext.stage), "").replace(/^\//, "")
+    Key: objectKey
   }, (err, data) => {
     if (err) {
       ctx.succeed({
@@ -20,10 +24,18 @@ exports.handler = (evt, ctx) => {
           "</pre>"
       });
     } else {
+      let responseContentType = data.ContentType;
+
+      if (objectKey.match(/\.woff$/)) {
+        responseContentType = "font/woff";
+      } else if (objectKey.match(/\.woff2$/)) {
+        responseContentType = "font/woff2";
+      }
+
       ctx.succeed({
         statusCode: 200,
         headers: {
-          "Content-Type": data.ContentType,
+          "Content-Type": responseContentType,
           "Content-Length": data.ContentLength
         },
         body: data.Body.toString()
