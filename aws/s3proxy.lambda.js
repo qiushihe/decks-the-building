@@ -28,9 +28,15 @@ exports.handler = (evt, ctx) => {
       let responseContentType = data.ContentType;
       let isBase64Encoded = false;
 
-      const fontMatch = objectKey.match(/\.(woff|woff2|tff)$/);
+      const fontMatch = objectKey.match(/\.(woff|woff2|tff)$/i);
+      const imageMatch = objectKey.match(/\.(png|svg|gif|bmp|jpg|jpeg)$/i);
+
       if (fontMatch) {
         responseContentType = "font/" + fontMatch[1];
+        responseBody = data.Body.toString("base64");
+        isBase64Encoded = true;
+      } else if (imageMatch) {
+        responseContentType = "image/" + imageMatch[1];
         responseBody = data.Body.toString("base64");
         isBase64Encoded = true;
       }
