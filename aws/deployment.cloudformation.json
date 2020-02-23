@@ -330,7 +330,7 @@
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
-          "ZipFile": "var AWS=require(\"aws-sdk\"),s3=new AWS.S3;\nexports.handler=function(a,c){var d=a.requestContext.path.replace(new RegExp(\"^/\"+a.requestContext.stage),\"\").replace(/^\\//,\"\");s3.getObject({Bucket:process.env.ARTIFACTS_BUCKET_NAME,Key:d},function(a,b){if(a)c.succeed({statusCode:500,headers:{\"Content-Type\":\"text/html\"},body:\"<h1>Oh Nose! Shit didn't work!</h1><pre>Error: \"+JSON.stringify(a)+\"</pre>\"});else{var e=b.Body.toString(),f=b.ContentType,g=!1,h=d.match(/\\.(woff|woff2|tff)$/);h&&(f=\"font/\"+h[1],e=b.Body.toString(\"base64\"),g=!0);c.succeed({statusCode:200,\nheaders:{\"Content-Type\":f,\"Content-Length\":b.ContentLength},body:e,isBase64Encoded:g})}})};"
+          "ZipFile": "var AWS=require(\"aws-sdk\"),s3=new AWS.S3;\nexports.handler=function(a,g){var c=a.requestContext.path.replace(new RegExp(\"^/\"+a.requestContext.stage),\"\").replace(/^\\//,\"\");s3.getObject({Bucket:process.env.ARTIFACTS_BUCKET_NAME,Key:c},function(a,b){if(a)g.succeed({statusCode:500,headers:{\"Content-Type\":\"text/html\"},body:\"<h1>Oh Nose! Shit didn't work!</h1><pre>Error: \"+JSON.stringify(a)+\"</pre>\"});else{var d=b.Body.toString(),e=b.ContentType,f=!1,h=c.match(/\\.(woff|woff2|tff)$/i),k=c.match(/\\.(png|svg|gif|bmp|jpg|jpeg)$/i);h?(e=\"font/\"+h[1],\nd=b.Body.toString(\"base64\"),f=!0):k&&(e=\"image/\"+k[1],d=b.Body.toString(\"base64\"),f=!0);g.succeed({statusCode:200,headers:{\"Content-Type\":e,\"Content-Length\":b.ContentLength},body:d,isBase64Encoded:f})}})};"
         },
         "FunctionName": {
           "Fn::Sub": [

@@ -64,6 +64,8 @@ const Backdrop = styled(props => {
     background-image: url(${flow([get("colorIdentity"), getCardBackground])});
     background-repeat: no-repeat;
     background-size: cover;
+    border-radius: 10px;
+    overflow: hidden;
     opacity: 0.5;
   }
 `;
