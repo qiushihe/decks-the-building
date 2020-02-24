@@ -4,7 +4,7 @@
     "ArtifactsBucketNameParameter": {
       "Description": "Name of the S3 bucket to store deployment artifacts",
       "Type": "String",
-      "Default": "deployment-artifacts",
+      "Default": "deployment-bucket",
       "AllowedPattern": ".+"
     },
     "ApiGatewayRequiresAuthorizationParameter": {
@@ -25,7 +25,7 @@
     "DeploymentUsernameParameter": {
       "Description": "Username for the IAM user used by deployment processes (i.e. CircleCI)",
       "Type": "String",
-      "Default": "decks_the_building_deploy"
+      "Default": "deployment-user"
     }
   },
   "Conditions": {
@@ -71,6 +71,14 @@
       }
     },
     "StackS3BucketSuffix": {
+      "Type": "Custom::StackS3BucketSuffix",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt" : ["GetRandomIdFn", "Arn"]
+        }
+      }
+    },
+    "StackUsernameSuffix": {
       "Type": "Custom::StackS3BucketSuffix",
       "Properties": {
         "ServiceToken": {
@@ -584,7 +592,15 @@
     "DeploymentUser": {
       "Type": "AWS::IAM::User",
       "Properties": {
-        "UserName": { "Ref": "DeploymentUsernameParameter" },
+        "UserName": {
+          "Fn::Sub": [
+            "${Prefix}-${Name}-${Suffix}", {
+              "Prefix": { "Ref": "AWS::StackName" },
+              "Name": { "Ref": "DeploymentUsernameParameter" },
+              "Suffix": { "Fn::GetAtt": ["StackUsernameSuffix", "AlphanumericValue"] }
+            }
+          ]
+        },
         "Policies": [{
           "PolicyDocument": {
             "Statement": [{

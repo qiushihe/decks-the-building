@@ -26,13 +26,9 @@ const IconContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${get("size")}px;
-  height: ${get("size")}px;
-  margin: 2px;
+  margin: 0;
   padding: 0;
-  border-radius: 100%;
   background: #000000;
-  box-shadow: 0 0 0 1px #ffffff;
   opacity: 0.65;
 
   &:hover {
@@ -40,11 +36,11 @@ const IconContainer = styled.div`
   }
 
   &:first-child {
-    margin-left: 0;
+    border-bottom-left-radius: 6px;
   }
 
   &:last-child {
-    margin-right: 0;
+    border-bottom-right-radius: 6px;
   }
 `;
 
@@ -54,7 +50,7 @@ const IconStyle = css`
 `;
 
 const makeCardActionIcon = IconComponent => styled(IconComponent).attrs(
-  flow([get("size"), multiply(0.75), size => ({ size })])
+  flow([get("size"), multiply(0.6), size => ({ size })])
 )`
   ${IconStyle}
 `;
@@ -83,7 +79,7 @@ class CardActions extends React.PureComponent {
     return (
       <Base className={className}>
         {!collapsed && hasAlternateImage && (
-          <IconContainer size={size}>
+          <IconContainer>
             <Tooltip title="Alternate Card Image">
               <IconButton size="small" onClick={alternateCardImage}>
                 <AlternateCardImage size={size} />
@@ -91,28 +87,28 @@ class CardActions extends React.PureComponent {
             </Tooltip>
           </IconContainer>
         )}
-        <IconContainer size={size}>
+        <IconContainer>
           <Tooltip title="Duplicate Card Entry">
             <IconButton size="small" onClick={duplicateCard}>
               <DuplicateCardEntry size={size} />
             </IconButton>
           </Tooltip>
         </IconContainer>
-        <IconContainer size={size}>
+        <IconContainer>
           <Tooltip title="Subtract Card Copy">
             <IconButton size="small" onClick={subtractCopy}>
               <SubtractOneCardCopy size={size} />
             </IconButton>
           </Tooltip>
         </IconContainer>
-        <IconContainer size={size}>
+        <IconContainer>
           <Tooltip title="Add Card Copy">
             <IconButton size="small" onClick={addCopy}>
               <AddOneCardCopy size={size} />
             </IconButton>
           </Tooltip>
         </IconContainer>
-        <IconContainer size={size}>
+        <IconContainer>
           <Tooltip title={collapsed ? "Expand Card" : "Collapse Card"}>
             <IconButton size="small" onClick={toggleCard}>
               {collapsed ? (
