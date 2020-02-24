@@ -28,7 +28,11 @@ const ContainerBase = styled.div`
 const StyledCard = styled(Card)``;
 
 const StyledDraggable = styled(Draggable)`
-  padding: 1px 0;
+  padding-bottom: 1px;
+
+  &:last-child {
+    padding-bottom: 0;
+  }
 `;
 
 class Cards extends React.PureComponent {

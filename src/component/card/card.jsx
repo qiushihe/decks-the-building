@@ -13,11 +13,7 @@ import {
   CARD_WIDTH,
   CARD_HEIGHT,
   CARD_COLLAPSED_HEIGHT_SHRINK_FACTOR,
-  CARD_MENU_ICON_SIZE_FACTOR,
-  CARD_COLLAPSED_MENU_VERTICAL_OFFSET_FACTOR,
-  CARD_COLLAPSED_MENU_HORIZONTAL_OFFSET_FACTOR,
-  CARD_EXPANDED_MENU_VERTICAL_OFFSET_FACTOR,
-  CARD_EXPANDED_MENU_HORIZONTAL_OFFSET_FACTOR
+  CARD_MENU_ICON_SIZE_FACTOR
 } from "/src/config";
 
 import CardActions from "/src/component/card-actions";
@@ -31,43 +27,8 @@ const StyledCardActions = styled(props => {
   return <CardActions {...componentProps} />;
 })`
   position: absolute;
-  top: ${cond([
-    [
-      get("collapsed"),
-      flow([
-        get("scale"),
-        multiply(CARD_HEIGHT),
-        multiply(CARD_COLLAPSED_MENU_VERTICAL_OFFSET_FACTOR)
-      ])
-    ],
-    [
-      stubTrue,
-      flow([
-        get("scale"),
-        multiply(CARD_HEIGHT),
-        multiply(CARD_EXPANDED_MENU_VERTICAL_OFFSET_FACTOR)
-      ])
-    ]
-  ])}px;
-
-  right: ${cond([
-    [
-      get("collapsed"),
-      flow([
-        get("scale"),
-        multiply(CARD_HEIGHT),
-        multiply(CARD_COLLAPSED_MENU_HORIZONTAL_OFFSET_FACTOR)
-      ])
-    ],
-    [
-      stubTrue,
-      flow([
-        get("scale"),
-        multiply(CARD_HEIGHT),
-        multiply(CARD_EXPANDED_MENU_HORIZONTAL_OFFSET_FACTOR)
-      ])
-    ]
-  ])}px;
+  top: 0;
+  right: 12px;
 `;
 
 const Base = styled(props => {

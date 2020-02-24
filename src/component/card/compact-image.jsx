@@ -76,10 +76,10 @@ const Content = styled(props => {
 })`
   display: flex;
   position: absolute;
-  top: 6px;
-  left: 5px;
-  right: 5px;
-  bottom: 6px;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 1px 1px 1px 0 #0000003d;
@@ -129,7 +129,7 @@ const CardName = styled.div`
 
   span {
     font-family: "Beleren Bold", serif;
-    font-size: 14px;
+    font-size: 13px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
