@@ -16,10 +16,10 @@ export const STACK_CARDS_SPACING = 2;
 
 export const CARD_DEFAULT_SCALE = 4;
 export const CARD_ASPECT_RATIO = 1 + 11 / 28;
-export const CARD_HEIGHT = 100;
+export const CARD_HEIGHT = 95;
 export const CARD_WIDTH = CARD_HEIGHT / CARD_ASPECT_RATIO;
 
 // The following are expressed as the desired value
 // over the effective height of the card
 export const CARD_MENU_ICON_SIZE_FACTOR = 5 / 77;
-export const CARD_COLLAPSED_HEIGHT_SHRINK_FACTOR = 2 / 25;
+export const CARD_COLLAPSED_HEIGHT_SHRINK_FACTOR = 8 / 95;
