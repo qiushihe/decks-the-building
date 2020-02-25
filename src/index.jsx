@@ -8,20 +8,18 @@ import BelerenFontProvider from "/src/provider/beleren-font-provider";
 import ReduxStoreProvider from "/src/provider/redux-store.provider";
 import ModalProvider from "/src/provider/modal.provider";
 import createStore from "/src/store/create";
+import { withContainer } from "/src/util/render.util";
+
 import Application from "./component/application";
 
 const store = createStore({});
 
-const withProvider = (Provider, props = {}) => children => (
-  <Provider {...props}>{children}</Provider>
-);
-
 const withProviders = flowRight([
-  withProvider(NormalizedStyleProvider),
-  withProvider(MaterialUiProvider),
-  withProvider(BelerenFontProvider),
-  withProvider(ReduxStoreProvider, { store }),
-  withProvider(ModalProvider)
+  withContainer(NormalizedStyleProvider),
+  withContainer(MaterialUiProvider),
+  withContainer(BelerenFontProvider),
+  withContainer(ReduxStoreProvider, { store }),
+  withContainer(ModalProvider)
 ]);
 
 class AppRoot extends React.PureComponent {
