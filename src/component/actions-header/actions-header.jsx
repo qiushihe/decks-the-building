@@ -5,16 +5,12 @@ import flow from "lodash/fp/flow";
 import map from "lodash/fp/map";
 import isFunction from "lodash/fp/isFunction";
 
-import Toolbar from "@material-ui/core/Toolbar";
-import Tooltip from "@material-ui/core/Tooltip";
-import IconButton from "@material-ui/core/IconButton";
-
 import { DoubleArrowIcon } from "/src/component/icon";
 
-const Base = styled(Toolbar).attrs({
-  variant: "dense",
-  disableGutters: true
-})``;
+const Base = styled.div`
+  display: flex;
+  padding: 9px 0;
+`;
 
 const LabelBase = styled.div`
   position: relative;
@@ -28,6 +24,17 @@ const ActionsBase = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+`;
+
+const IconButton = styled.div`
+  display: flex;
+  border-radius: 100%;
+  padding: 3px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #e3e3e3;
+  }
 `;
 
 const IconStyle = css`
@@ -86,25 +93,21 @@ class ActionsHeader extends React.PureComponent {
         {menuOpened && (
           <React.Fragment>
             {flow([
-              map(({ title, icon: IconComponent, action }) => (
-                <Tooltip title={title}>
-                  <IconButton size="small" onClick={withHideMenu(action)}>
-                    <IconComponent />
-                  </IconButton>
-                </Tooltip>
+              map(({ icon: IconComponent, action }) => (
+                <IconButton size="small" onClick={withHideMenu(action)}>
+                  <IconComponent />
+                </IconButton>
               )),
               React.Children.toArray
             ])(actions)}
           </React.Fragment>
         )}
-        <Tooltip title={menuOpened ? "Hide Stack Menu" : "Show Stack Menu"}>
-          <IconButton
-            size="small"
-            onClick={menuOpened ? this.handleHideMenu : this.handleShowMenu}
-          >
-            {menuOpened ? <HideStackMenu /> : <ShowStackMenu />}
-          </IconButton>
-        </Tooltip>
+        <IconButton
+          size="small"
+          onClick={menuOpened ? this.handleHideMenu : this.handleShowMenu}
+        >
+          {menuOpened ? <HideStackMenu /> : <ShowStackMenu />}
+        </IconButton>
       </ActionsBase>
     );
   }

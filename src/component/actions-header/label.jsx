@@ -4,8 +4,6 @@ import styled from "styled-components";
 import isNil from "lodash/fp/isNil";
 import isFunction from "lodash/fp/isFunction";
 
-import { Typography } from "@material-ui/core";
-
 const Base = styled.div`
   display: flex;
   flex-direction: row;
@@ -25,12 +23,22 @@ const LabelContainer = styled.div`
   align-self: normal;
 `;
 
-const LabelTypography = styled(Typography)`
+const LabelText = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+
+  span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 15px;
+  }
 `;
 
 class Label extends React.PureComponent {
@@ -48,9 +56,9 @@ class Label extends React.PureComponent {
           {isFunction(label) ? (
             label()
           ) : (
-            <LabelTypography display="inline" noWrap={true}>
-              {label}
-            </LabelTypography>
+            <LabelText>
+              <span>{label}</span>
+            </LabelText>
           )}
         </LabelContainer>
       </Base>
