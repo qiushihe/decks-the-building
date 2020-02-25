@@ -59,7 +59,7 @@ class Cards extends React.PureComponent {
           render={ref => (
             <ContainerBase ref={ref}>
               {uncappedMap((cardId, index) => (
-                <StyledDraggable key={`${index}-${cardId}`}>
+                <StyledDraggable key={cardId}>
                   <StyledCard
                     stackId={stackId}
                     cardId={cardId}

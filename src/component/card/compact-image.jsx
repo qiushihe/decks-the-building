@@ -9,8 +9,6 @@ import first from "lodash/fp/first";
 import get from "lodash/fp/get";
 import map from "lodash/fp/map";
 
-import Tooltip from "@material-ui/core/Tooltip";
-
 import {
   COLOR_IDENTITY_LABEL_GRADIENT_COLOR,
   COLOR_IDENTITY_CARD_GRADIENT_COLOR
@@ -169,13 +167,11 @@ class CompactImage extends React.PureComponent {
       <Base className={className}>
         <Backdrop colorIdentity={colorIdentity}>
           <Content colorIdentity={colorIdentity}>
-            <Tooltip title={name}>
-              <NameContainer>
-                <CardName>
-                  <span>{name}</span>
-                </CardName>
-              </NameContainer>
-            </Tooltip>
+            <NameContainer>
+              <CardName>
+                <span>{name}</span>
+              </CardName>
+            </NameContainer>
             <ManaContainer>
               {flow([
                 trim,

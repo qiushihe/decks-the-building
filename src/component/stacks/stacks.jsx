@@ -8,6 +8,8 @@ import Stack from "/src/component/stack";
 
 const uncappedMap = map.convert({ cap: false });
 
+const Base = styled.div``;
+
 const ContainerBase = styled.div`
   display: flex !important;
   flex-direction: row;
@@ -41,35 +43,37 @@ class Stacks extends React.PureComponent {
     const { laneId, stackIds, moveStack } = this.props;
 
     return (
-      <Container
-        groupName="stack"
-        orientation="horizontal"
-        getChildPayload={index => ({ laneId, stackIndex: index })}
-        shouldAcceptDrop={({ groupName }) => groupName === "stack"}
-        onDrop={({ addedIndex, payload }) => {
-          if (addedIndex !== null) {
-            moveStack({
-              fromId: payload.laneId,
-              toId: laneId,
-              fromStackIndex: payload.stackIndex,
-              toStackIndex: addedIndex
-            });
-          }
-        }}
-        render={ref => (
-          <ContainerBase ref={ref}>
-            {uncappedMap((stackId, index) => (
-              <StyledDraggable key={`${index}-${stackId}`}>
-                <StyledStack
-                  laneId={laneId}
-                  stackId={stackId}
-                  stackIndex={index}
-                />
-              </StyledDraggable>
-            ))(stackIds)}
-          </ContainerBase>
-        )}
-      />
+      <Base>
+        <Container
+          groupName="stack"
+          orientation="horizontal"
+          getChildPayload={index => ({ laneId, stackIndex: index })}
+          shouldAcceptDrop={({ groupName }) => groupName === "stack"}
+          onDrop={({ addedIndex, payload }) => {
+            if (addedIndex !== null) {
+              moveStack({
+                fromId: payload.laneId,
+                toId: laneId,
+                fromStackIndex: payload.stackIndex,
+                toStackIndex: addedIndex
+              });
+            }
+          }}
+          render={ref => (
+            <ContainerBase ref={ref}>
+              {uncappedMap((stackId, index) => (
+                <StyledDraggable key={stackId}>
+                  <StyledStack
+                    laneId={laneId}
+                    stackId={stackId}
+                    stackIndex={index}
+                  />
+                </StyledDraggable>
+              ))(stackIds)}
+            </ContainerBase>
+          )}
+        />
+      </Base>
     );
   }
 }

@@ -12,13 +12,11 @@ const Base = styled.div`
   overflow: auto;
 `;
 
-const StyledLane = styled(Lane)``;
+const StyledLane = styled(Lane)`
+  margin: 3px 0;
+`;
 
 const StyledDraggable = styled(Draggable)`
-  ${StyledLane} {
-    margin: 3px 0;
-  }
-
   &:first-child {
     margin-top: 0;
   }
@@ -49,7 +47,7 @@ class Lanes extends React.PureComponent {
           }}
         >
           {uncappedMap((laneId, index) => (
-            <StyledDraggable key={`${index}-${laneId}`}>
+            <StyledDraggable key={laneId}>
               <StyledLane
                 workspaceId={workspaceId}
                 laneId={laneId}

@@ -50,12 +50,8 @@ const Base = styled(props => {
   ])}px;
   overflow: hidden !important;
 
-  ${StyledCardActions} {
-    opacity: 0;
-  }
-
-  &:hover ${StyledCardActions} {
-    opacity: 1;
+  &:not(:hover) ${StyledCardActions} {
+    display: none;
   }
 `;
 

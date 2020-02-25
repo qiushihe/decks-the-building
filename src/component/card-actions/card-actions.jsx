@@ -5,9 +5,6 @@ import flow from "lodash/fp/flow";
 import get from "lodash/fp/get";
 import multiply from "lodash/fp/multiply";
 
-import Tooltip from "@material-ui/core/Tooltip";
-import IconButton from "@material-ui/core/IconButton";
-
 import {
   DuplicateIcon,
   AddOneIcon,
@@ -42,6 +39,12 @@ const IconContainer = styled.div`
   &:last-child {
     border-bottom-right-radius: 6px;
   }
+`;
+
+const IconButton = styled.div`
+  display: flex;
+  padding: 3px;
+  cursor: pointer;
 `;
 
 const IconStyle = css`
@@ -80,44 +83,34 @@ class CardActions extends React.PureComponent {
       <Base className={className}>
         {!collapsed && hasAlternateImage && (
           <IconContainer>
-            <Tooltip title="Alternate Card Image">
-              <IconButton size="small" onClick={alternateCardImage}>
-                <AlternateCardImage size={size} />
-              </IconButton>
-            </Tooltip>
+            <IconButton size="small" onClick={alternateCardImage}>
+              <AlternateCardImage size={size} />
+            </IconButton>
           </IconContainer>
         )}
         <IconContainer>
-          <Tooltip title="Duplicate Card Entry">
-            <IconButton size="small" onClick={duplicateCard}>
-              <DuplicateCardEntry size={size} />
-            </IconButton>
-          </Tooltip>
+          <IconButton size="small" onClick={duplicateCard}>
+            <DuplicateCardEntry size={size} />
+          </IconButton>
         </IconContainer>
         <IconContainer>
-          <Tooltip title="Subtract Card Copy">
-            <IconButton size="small" onClick={subtractCopy}>
-              <SubtractOneCardCopy size={size} />
-            </IconButton>
-          </Tooltip>
+          <IconButton size="small" onClick={subtractCopy}>
+            <SubtractOneCardCopy size={size} />
+          </IconButton>
         </IconContainer>
         <IconContainer>
-          <Tooltip title="Add Card Copy">
-            <IconButton size="small" onClick={addCopy}>
-              <AddOneCardCopy size={size} />
-            </IconButton>
-          </Tooltip>
+          <IconButton size="small" onClick={addCopy}>
+            <AddOneCardCopy size={size} />
+          </IconButton>
         </IconContainer>
         <IconContainer>
-          <Tooltip title={collapsed ? "Expand Card" : "Collapse Card"}>
-            <IconButton size="small" onClick={toggleCard}>
-              {collapsed ? (
-                <ExpandCard size={size} />
-              ) : (
-                <CollapseCard size={size} />
-              )}
-            </IconButton>
-          </Tooltip>
+          <IconButton size="small" onClick={toggleCard}>
+            {collapsed ? (
+              <ExpandCard size={size} />
+            ) : (
+              <CollapseCard size={size} />
+            )}
+          </IconButton>
         </IconContainer>
       </Base>
     );
