@@ -1,8 +1,13 @@
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import isNil from "lodash/fp/isNil";
+import isFunction from "lodash/fp/isFunction";
 
-import { importWorkspace, exportWorkspace } from "/src/action/s3.action";
+import {
+  importWorkspace,
+  exportWorkspace,
+  clearLogin
+} from "/src/action/s3.action";
 
 import { selectedWorkspaceId } from "/src/selector/s3.selector";
 import { activeWorkspaceId } from "/src/selector/workspace.selector";
@@ -18,7 +23,8 @@ export default connect(
     importWorkspace: ({ remoteId, localId }) =>
       dispatch(importWorkspace({ remoteId, localId })),
     exportWorkspace: ({ localId, remoteId }) =>
-      dispatch(exportWorkspace({ localId, remoteId }))
+      dispatch(exportWorkspace({ localId, remoteId })),
+    clearLogin: () => dispatch(clearLogin())
   }),
   (stateProps, dispatchProps, ownProps) => ({
     ...stateProps,
@@ -26,6 +32,12 @@ export default connect(
     ...ownProps,
     hasLocal: !isNil(stateProps.localId),
     hasRemote: !isNil(stateProps.remoteId),
+    onSignOut: () => {
+      dispatchProps.clearLogin();
+      if (isFunction(ownProps.onSignOut)) {
+        ownProps.onSignOut();
+      }
+    },
     replaceCurrentWithSelected: () =>
       dispatchProps.importWorkspace({
         remoteId: stateProps.remoteId,

@@ -19,27 +19,33 @@ export default ({ dispatch }) => next => action => {
 
   return Promise.resolve(next(action)).then(() => {
     if (actionType === READY) {
-      return getFetchAllFromLocalService()
-        .retrieveAll()
-        .then(workspacesData => {
-          if (isEmpty(workspacesData)) {
-            return dispatch(
-              create({ id: uuidV4(), label: "Untitled" })
-            ).then(({ payload: { id } }) => dispatch(activate({ id })));
-          } else {
-            const importedFromJson = flow([
-              map(data => importFromJson(dispatch, data)),
-              Promise.all
-            ])(workspacesData);
+      const {
+        payload: { level }
+      } = action;
 
-            return importedFromJson.then(
-              flow([
-                first,
-                cond([[negate(isNil), id => dispatch(activate({ id }))]])
-              ])
-            );
-          }
-        });
+      if (level === 3) {
+        return getFetchAllFromLocalService()
+          .retrieveAll()
+          .then(workspacesData => {
+            if (isEmpty(workspacesData)) {
+              return dispatch(
+                create({ id: uuidV4(), label: "Untitled" })
+              ).then(({ payload: { id } }) => dispatch(activate({ id })));
+            } else {
+              const importedFromJson = flow([
+                map(data => importFromJson(dispatch, data)),
+                Promise.all
+              ])(workspacesData);
+
+              return importedFromJson.then(
+                flow([
+                  first,
+                  cond([[negate(isNil), id => dispatch(activate({ id }))]])
+                ])
+              );
+            }
+          });
+      }
     }
   });
 };

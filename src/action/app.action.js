@@ -6,4 +6,4 @@ export const READY = "APP/READY";
 
 export const boot = createPromisedAction(BOOT, [], invoke);
 
-export const ready = createPromisedAction(READY, [], invoke);
+export const ready = createPromisedAction(READY, ["level"], invoke);
