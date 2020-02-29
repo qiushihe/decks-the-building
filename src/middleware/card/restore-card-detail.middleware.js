@@ -57,7 +57,13 @@ export default ({ getState, dispatch }) => {
 
     return Promise.resolve(next(action)).then(() => {
       if (actionType === READY) {
-        return startRestoreQueue();
+        const {
+          payload: { level }
+        } = action;
+
+        if (level === 3) {
+          return startRestoreQueue();
+        }
       } else if (actionType === ADD) {
         const {
           payload: { cards }
