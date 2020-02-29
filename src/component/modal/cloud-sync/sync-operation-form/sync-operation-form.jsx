@@ -10,6 +10,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import Select from "@material-ui/core/Select";
 
 import BaseModal from "/src/component/modal/base";
+import Arrange from "/src/component/arrange";
 
 import WorkspacesList from "./workspaces-list.connect";
 
@@ -76,7 +77,7 @@ export class SyncOperationForm extends React.PureComponent {
   }
 
   render() {
-    const { hasLocal, hasRemote, onCancel } = this.props;
+    const { hasLocal, hasRemote, onCancel, onSignOut } = this.props;
 
     const { operation } = this.state;
 
@@ -91,18 +92,25 @@ export class SyncOperationForm extends React.PureComponent {
       <BaseModal
         renderTitle={() => "Workspaces in the Cloud"}
         renderActions={() => (
-          <React.Fragment>
-            <Button onClick={onCancel} color="secondary">
-              Cancel
-            </Button>
-            <Button
-              onClick={this.handleSubmit}
-              color="primary"
-              disabled={isEmpty(operation)}
-            >
-              Submit
-            </Button>
-          </React.Fragment>
+          <Arrange>
+            <Arrange.Fill>
+              <Button onClick={onSignOut} color="secondary">
+                Sign Out
+              </Button>
+            </Arrange.Fill>
+            <Arrange.Fit>
+              <Button onClick={onCancel} color="secondary">
+                Cancel
+              </Button>
+              <Button
+                onClick={this.handleSubmit}
+                color="primary"
+                disabled={isEmpty(operation)}
+              >
+                Submit
+              </Button>
+            </Arrange.Fit>
+          </Arrange>
         )}
       >
         <DialogContentText>
@@ -142,6 +150,7 @@ SyncOperationForm.propTypes = {
   hasRemote: PropTypes.bool,
   onComplete: PropTypes.func,
   onCancel: PropTypes.func,
+  onSignOut: PropTypes.func,
   replaceCurrentWithSelected: PropTypes.func,
   openSelectedAsNew: PropTypes.func,
   saveCurrentToSelected: PropTypes.func,
@@ -153,6 +162,7 @@ SyncOperationForm.defaultProps = {
   hasRemote: false,
   onComplete: () => {},
   onCancel: () => {},
+  onSignOut: () => {},
   replaceCurrentWithSelected: () => {},
   openSelectedAsNew: () => {},
   saveCurrentToSelected: () => {},

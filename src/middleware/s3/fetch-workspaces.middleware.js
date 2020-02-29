@@ -4,6 +4,8 @@ import map from "lodash/fp/map";
 
 import { getS3Client } from "/src/api/s3.api";
 
+import { READY } from "/src/action/app.action";
+
 import {
   SET_LOGIN,
   FETCH_AVAILABLE_WORKSPACES,
@@ -34,16 +36,18 @@ export default ({ dispatch }) => next => action => {
   };
 
   return Promise.resolve(next(action)).then(() => {
-    if (actionType === SET_LOGIN) {
+    if (actionType === READY) {
       const {
-        payload: { login }
+        payload: { level }
       } = action;
 
-      return s3Client
-        .setLogin(login)
-        .then(fetchAvailableWorkspaces)
-        .catch(() => dispatch(clearLogin()));
-    } else if (actionType === FETCH_AVAILABLE_WORKSPACES) {
+      if (level === 2 && s3Client.isLoggedIn()) {
+        return fetchAvailableWorkspaces().catch(() => dispatch(clearLogin()));
+      }
+    } else if (
+      actionType === SET_LOGIN ||
+      actionType === FETCH_AVAILABLE_WORKSPACES
+    ) {
       return fetchAvailableWorkspaces().catch(() => dispatch(clearLogin()));
     }
   });

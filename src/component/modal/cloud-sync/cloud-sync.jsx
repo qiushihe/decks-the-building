@@ -9,7 +9,11 @@ export class CloudSync extends React.PureComponent {
     const { hideModal, hasLogin } = this.props;
 
     return hasLogin ? (
-      <SyncOperationForm onComplete={hideModal} onCancel={hideModal} />
+      <SyncOperationForm
+        onComplete={hideModal}
+        onCancel={hideModal}
+        onSignOut={hideModal}
+      />
     ) : (
       <LoginForm cancelLogin={hideModal} />
     );
