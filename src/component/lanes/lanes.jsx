@@ -17,11 +17,11 @@ const StyledLane = styled(Lane)`
 `;
 
 const StyledDraggable = styled(Draggable)`
-  &:first-child {
+  &:first-child ${StyledLane} {
     margin-top: 0;
   }
 
-  &:last-child {
+  &:last-child ${StyledLane} {
     margin-bottom: 0;
   }
 `;
