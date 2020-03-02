@@ -2,7 +2,6 @@ import { handleActions } from "redux-actions";
 
 import {
   CREATE,
-  RESTORE,
   RENAME,
   REMOVE,
   CLEAR,
@@ -11,10 +10,10 @@ import {
   ADD_LANES,
   REMOVE_LANES
 } from "/src/action/workspace.action";
+
 import { withPayload } from "/src/util/reducer.util";
 
 import create from "./workspace/create";
-import restore from "./workspace/restore";
 import rename from "./workspace/rename";
 import remove from "./workspace/remove";
 import clear from "./workspace/clear";
@@ -31,7 +30,6 @@ const initialState = {
 export default handleActions(
   {
     [CREATE]: withPayload(create),
-    [RESTORE]: withPayload(restore),
     [RENAME]: withPayload(rename),
     [REMOVE]: withPayload(remove),
     [CLEAR]: withPayload(clear),

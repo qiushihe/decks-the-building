@@ -21,6 +21,7 @@ const LabelContainer = styled.div`
   display: flex;
   flex: 1 1 auto;
   align-self: normal;
+  align-items: center;
 `;
 
 const LabelText = styled.div`

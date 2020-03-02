@@ -2,10 +2,6 @@ import Promise from "bluebird";
 import flow from "lodash/fp/flow";
 import map from "lodash/fp/map";
 
-import { getS3Client } from "/src/api/s3.api";
-
-import { READY } from "/src/action/app.action";
-
 import {
   SET_LOGIN,
   FETCH_AVAILABLE_WORKSPACES,
@@ -13,7 +9,12 @@ import {
   addAvailableWorkspace
 } from "/src/action/s3.action";
 
-export default ({ dispatch }) => next => action => {
+import { getS3Client } from "/src/api/s3.api";
+import { READY } from "/src/action/app.action";
+import { contextualMiddleware } from "/src/util/middleware.util";
+import { APP_READY } from "/src/enum/action-lifecycle.enum";
+
+export default contextualMiddleware({}, ({ dispatch }) => next => action => {
   const { type: actionType } = action;
 
   const s3Client = getS3Client();
@@ -44,11 +45,14 @@ export default ({ dispatch }) => next => action => {
       if (level === 2 && s3Client.isLoggedIn()) {
         return fetchAvailableWorkspaces().catch(() => dispatch(clearLogin()));
       }
-    } else if (
-      actionType === SET_LOGIN ||
-      actionType === FETCH_AVAILABLE_WORKSPACES
-    ) {
+    } else if (actionType === SET_LOGIN) {
+      const { context: { actionLifecycle } = {} } = action;
+
+      if (actionLifecycle !== APP_READY) {
+        return fetchAvailableWorkspaces().catch(() => dispatch(clearLogin()));
+      }
+    } else if (actionType === FETCH_AVAILABLE_WORKSPACES) {
       return fetchAvailableWorkspaces().catch(() => dispatch(clearLogin()));
     }
   });
-};
+});

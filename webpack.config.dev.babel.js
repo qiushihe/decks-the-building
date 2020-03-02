@@ -4,7 +4,7 @@ import common from "./webpack.config.common.babel.js";
 
 export default merge(common, {
   mode: "development",
-  devtool: "inline-source-map",
+  devtool: "source-map",
   output: {
     publicPath: "/"
   },

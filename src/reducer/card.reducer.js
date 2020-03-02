@@ -2,17 +2,17 @@ import { handleActions } from "redux-actions";
 
 import {
   ADD,
-  RESTORE,
-  RESTORE_CARD_NAMES,
-  RESTORE_CARD_SYMBOLS
+  SET_CARD_DETAIL,
+  SET_CARD_NAMES,
+  SET_CARD_SYMBOLS
 } from "/src/action/card.action";
 
 import { withPayload } from "/src/util/reducer.util";
 
 import add from "./card/add";
-import restore from "./card/restore";
-import restoreCardNames from "./card/restore-card-names";
-import restoreCardSymbols from "./card/restore-card-symbols";
+import setCardDetail from "./card/set-card-detail";
+import setCardNames from "./card/set-card-names";
+import setCardSymbols from "./card/set-card-symbols";
 
 const initialState = {
   allCards: {},
@@ -23,9 +23,9 @@ const initialState = {
 export default handleActions(
   {
     [ADD]: withPayload(add),
-    [RESTORE]: withPayload(restore),
-    [RESTORE_CARD_NAMES]: withPayload(restoreCardNames),
-    [RESTORE_CARD_SYMBOLS]: withPayload(restoreCardSymbols)
+    [SET_CARD_DETAIL]: withPayload(setCardDetail),
+    [SET_CARD_NAMES]: withPayload(setCardNames),
+    [SET_CARD_SYMBOLS]: withPayload(setCardSymbols)
   },
   initialState
 );

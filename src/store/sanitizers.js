@@ -1,9 +1,9 @@
 import size from "lodash/fp/size";
 
-import { RESTORE_CARD_NAMES } from "/src/action/card.action";
+import { SET_CARD_NAMES } from "/src/action/card.action";
 
 const actionSanitizer = (action = {}) => {
-  if (action.type === RESTORE_CARD_NAMES) {
+  if (action.type === SET_CARD_NAMES) {
     const { payload = {}, payload: { names = [] } = {} } = action;
     return {
       ...action,
