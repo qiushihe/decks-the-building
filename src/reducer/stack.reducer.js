@@ -2,7 +2,6 @@ import { handleActions } from "redux-actions";
 
 import {
   CREATE,
-  RESTORE,
   RENAME,
   REMOVE,
   ADD_CARDS,
@@ -16,7 +15,6 @@ import {
 import { withPayload } from "/src/util/reducer.util";
 
 import create from "./stack/create";
-import restore from "./stack/restore";
 import rename from "./stack/rename";
 import remove from "./stack/remove";
 import addCards from "./stack/add-cards";
@@ -34,7 +32,6 @@ const initialState = {
 export default handleActions(
   {
     [CREATE]: withPayload(create),
-    [RESTORE]: withPayload(restore),
     [RENAME]: withPayload(rename),
     [REMOVE]: withPayload(remove),
     [ADD_CARDS]: withPayload(addCards),

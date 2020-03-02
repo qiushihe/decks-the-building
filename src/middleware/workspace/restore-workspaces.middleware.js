@@ -11,41 +11,46 @@ import isEmpty from "lodash/fp/isEmpty";
 import { READY } from "/src/action/app.action";
 import { create, activate } from "/src/action/workspace.action";
 import { getFetchAllFromLocalService } from "/src/service/workspace/fetch-all-from-local.service";
+import { contextualMiddleware } from "/src/util/middleware.util";
+import { APP_READY } from "/src/enum/action-lifecycle.enum";
 
 import importFromJson from "./import-from-json";
 
-export default ({ dispatch }) => next => action => {
-  const { type: actionType } = action;
+export default contextualMiddleware(
+  { actionLifecycle: APP_READY },
+  ({ dispatch }) => next => action => {
+    const { type: actionType } = action;
 
-  return Promise.resolve(next(action)).then(() => {
-    if (actionType === READY) {
-      const {
-        payload: { level }
-      } = action;
+    return Promise.resolve(next(action)).then(() => {
+      if (actionType === READY) {
+        const {
+          payload: { level }
+        } = action;
 
-      if (level === 3) {
-        return getFetchAllFromLocalService()
-          .retrieveAll()
-          .then(workspacesData => {
-            if (isEmpty(workspacesData)) {
-              return dispatch(
-                create({ id: uuidV4(), label: "Untitled" })
-              ).then(({ payload: { id } }) => dispatch(activate({ id })));
-            } else {
-              const importedFromJson = flow([
-                map(data => importFromJson(dispatch, data)),
-                Promise.all
-              ])(workspacesData);
+        if (level === 3) {
+          return getFetchAllFromLocalService()
+            .retrieveAll()
+            .then(workspacesData => {
+              if (isEmpty(workspacesData)) {
+                return dispatch(
+                  create({ id: uuidV4(), label: "Untitled" })
+                ).then(({ payload: { id } }) => dispatch(activate({ id })));
+              } else {
+                const importedFromJson = flow([
+                  map(data => importFromJson(dispatch, data)),
+                  Promise.all
+                ])(workspacesData);
 
-              return importedFromJson.then(
-                flow([
-                  first,
-                  cond([[negate(isNil), id => dispatch(activate({ id }))]])
-                ])
-              );
-            }
-          });
+                return importedFromJson.then(
+                  flow([
+                    first,
+                    cond([[negate(isNil), id => dispatch(activate({ id }))]])
+                  ])
+                );
+              }
+            });
+        }
       }
-    }
-  });
-};
+    });
+  }
+);

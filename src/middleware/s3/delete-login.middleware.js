@@ -1,10 +1,10 @@
 import Promise from "bluebird";
 
 import { CLEAR_LOGIN } from "/src/action/s3.action";
-
 import { getLocalForgeClient } from "/src/api/localforge.api";
+import { contextualMiddleware } from "/src/util/middleware.util";
 
-export default () => next => action => {
+export default contextualMiddleware({}, () => next => action => {
   const { type: actionType } = action;
 
   return Promise.resolve(next(action)).then(() => {
@@ -12,4 +12,4 @@ export default () => next => action => {
       return getLocalForgeClient().deleteCredential("S3");
     }
   });
-};
+});

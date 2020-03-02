@@ -5,10 +5,11 @@ import uuidV4 from "uuid/v4";
 import { IMPORT_WORKSPACE } from "/src/action/s3.action";
 import { clear, activate, save } from "/src/action/workspace.action";
 import { getFetchFromRemoteService } from "/src/service/workspace/fetch-from-remote.service";
+import { contextualMiddleware } from "/src/util/middleware.util";
 
 import importFromJson from "./import-from-json";
 
-export default ({ dispatch }) => next => action => {
+export default contextualMiddleware({}, ({ dispatch }) => next => action => {
   const { type: actionType } = action;
 
   return Promise.resolve(next(action)).then(() => {
@@ -46,4 +47,4 @@ export default ({ dispatch }) => next => action => {
         });
     }
   });
-};
+});

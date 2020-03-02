@@ -2,10 +2,11 @@ import Promise from "bluebird";
 
 import { SAVE } from "/src/action/workspace.action";
 import { getSaveToLocalService } from "/src/service/workspace/save-to-local.service";
+import { contextualMiddleware } from "/src/util/middleware.util";
 
 import exportToJson from "./export-to-json";
 
-export default ({ getState }) => next => action => {
+export default contextualMiddleware({}, ({ getState }) => next => action => {
   const { type: actionType } = action;
 
   return Promise.resolve(next(action)).then(() => {
@@ -21,4 +22,4 @@ export default ({ getState }) => next => action => {
       );
     }
   });
-};
+});

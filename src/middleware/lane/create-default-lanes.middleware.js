@@ -5,25 +5,30 @@ import map from "lodash/fp/map";
 
 import { CREATE, addLanes } from "/src/action/workspace.action";
 import { create as createLane } from "/src/action/lane.action";
+import { contextualMiddleware } from "/src/util/middleware.util";
+import { APP_READY } from "/src/enum/action-lifecycle.enum";
 
-export default ({ dispatch }) => next => action => {
+export default contextualMiddleware({}, ({ dispatch }) => next => action => {
   const { type: actionType } = action;
 
   return Promise.resolve(next(action)).then(() => {
     if (actionType === CREATE) {
       const {
-        payload: { id: workspaceId }
+        payload: { id: workspaceId },
+        context: { actionLifecycle } = {}
       } = action;
 
-      return flow([
-        map(label => ({ id: uuidV4(), label })),
-        map(({ id: laneId, label }) => {
-          return dispatch(createLane({ id: laneId, label })).then(() => {
-            return dispatch(addLanes({ id: workspaceId, laneIds: [laneId] }));
-          });
-        }),
-        Promise.all
-      ])(["Untitled"]);
+      if (actionLifecycle !== APP_READY) {
+        return flow([
+          map(label => ({ id: uuidV4(), label })),
+          map(({ id: laneId, label }) => {
+            return dispatch(createLane({ id: laneId, label })).then(() => {
+              return dispatch(addLanes({ id: workspaceId, laneIds: [laneId] }));
+            });
+          }),
+          Promise.all
+        ])(["Untitled"]);
+      }
     }
   });
-};
+});
