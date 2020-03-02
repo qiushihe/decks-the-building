@@ -12,12 +12,15 @@ import {
   workspaceLabel
 } from "/src/selector/workspace.selector";
 
+import { workspaceStatus } from "/src/selector/persistence-status.selector";
+
 import WorkspaceHeader from "./workspace-header";
 
 export default connect(
   createStructuredSelector({
     allWorkspaceIds,
-    workspaceLabel
+    workspaceLabel,
+    persistenceStatus: workspaceStatus
   }),
   dispatch => ({
     show: ({ name, props }) => dispatch(show({ name, props })),
