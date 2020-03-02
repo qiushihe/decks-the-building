@@ -5,25 +5,33 @@ import map from "lodash/fp/map";
 
 import { CREATE, addStacks } from "/src/action/lane.action";
 import { create as createStack } from "/src/action/stack.action";
+import { contextualMiddleware } from "/src/util/middleware.util";
+import { APP_READY, WORKSPACE_IMPORT } from "/src/enum/action-lifecycle.enum";
 
-export default ({ dispatch }) => next => action => {
+export default contextualMiddleware({}, ({ dispatch }) => next => action => {
   const { type: actionType } = action;
 
   return Promise.resolve(next(action)).then(() => {
     if (actionType === CREATE) {
       const {
-        payload: { id: laneId }
+        payload: { id: laneId },
+        context: { actionLifecycle } = {}
       } = action;
 
-      return flow([
-        map(label => ({ id: uuidV4(), label })),
-        map(({ id: stackId, label }) =>
-          dispatch(createStack({ id: stackId, label })).then(() =>
-            dispatch(addStacks({ id: laneId, stackIds: [stackId] }))
-          )
-        ),
-        Promise.all
-      ])(["Untitled"]);
+      if (
+        actionLifecycle !== APP_READY &&
+        actionLifecycle !== WORKSPACE_IMPORT
+      ) {
+        return flow([
+          map(label => ({ id: uuidV4(), label })),
+          map(({ id: stackId, label }) =>
+            dispatch(createStack({ id: stackId, label })).then(() =>
+              dispatch(addStacks({ id: laneId, stackIds: [stackId] }))
+            )
+          ),
+          Promise.all
+        ])(["Untitled"]);
+      }
     }
   });
-};
+});

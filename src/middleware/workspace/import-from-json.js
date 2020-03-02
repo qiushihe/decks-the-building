@@ -7,18 +7,18 @@ import get from "lodash/fp/get";
 import reduce from "lodash/fp/reduce";
 
 import {
-  restore as restoreStack,
+  create as createStack,
   addCards as addCardsToStack,
   changeCardCopies as changeCopiesOfCardInStack
 } from "/src/action/stack.action";
 
 import {
-  restore as restoreLane,
+  create as createLane,
   addStacks as addStacksToLane
 } from "/src/action/lane.action";
 
 import {
-  restore as restoreWorkspace,
+  create as createWorkspace,
   addLanes as addLanesToWorkspace
 } from "/src/action/workspace.action";
 
@@ -52,7 +52,7 @@ export default (dispatch, data) => {
     return restoreCardsPromise
       .then(flow([get("payload.cards"), map(get("id"))]))
       .then(cardIds =>
-        dispatch(restoreStack({ id, label, cardIds })).then(() =>
+        dispatch(createStack({ id, label, cardIds })).then(() =>
           isEmpty(cardIds)
             ? Promise.resolve()
             : dispatch(addCardsToStack({ id, cardIds }))
@@ -84,7 +84,7 @@ export default (dispatch, data) => {
 
     return restoreStacksPromise
       .then(stackIds =>
-        dispatch(restoreLane({ id, label, stackIds })).then(() =>
+        dispatch(createLane({ id, label, stackIds })).then(() =>
           dispatch(addStacksToLane({ id, stackIds }))
         )
       )
@@ -98,7 +98,7 @@ export default (dispatch, data) => {
 
     return restoreLanesPromise
       .then(laneIds =>
-        dispatch(restoreWorkspace({ id, label, laneIds })).then(() =>
+        dispatch(createWorkspace({ id, label, laneIds })).then(() =>
           isEmpty(laneIds)
             ? Promise.resolve()
             : dispatch(addLanesToWorkspace({ id, laneIds }))

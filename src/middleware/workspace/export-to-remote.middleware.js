@@ -8,31 +8,35 @@ import {
 } from "/src/action/s3.action";
 
 import { getSaveToRemoteService } from "/src/service/workspace/save-to-remote.service";
+import { contextualMiddleware } from "/src/util/middleware.util";
 
 import exportToJson from "./export-to-json";
 
-export default ({ getState, dispatch }) => next => action => {
-  const { type: actionType } = action;
+export default contextualMiddleware(
+  {},
+  ({ getState, dispatch }) => next => action => {
+    const { type: actionType } = action;
 
-  return Promise.resolve(next(action)).then(() => {
-    if (actionType === EXPORT_WORKSPACE) {
-      const newState = getState();
+    return Promise.resolve(next(action)).then(() => {
+      if (actionType === EXPORT_WORKSPACE) {
+        const newState = getState();
 
-      const {
-        payload: { localId, remoteId }
-      } = action;
+        const {
+          payload: { localId, remoteId }
+        } = action;
 
-      return exportToJson(newState, localId)
-        .then(data => ({
-          ...data,
-          id: remoteId || uuidV4()
-        }))
-        .then(data => getSaveToRemoteService().save(data.id, data))
-        .then(() =>
-          dispatch(clearAvailableWorkspaces()).then(() =>
-            dispatch(fetchAvailableWorkspaces())
-          )
-        );
-    }
-  });
-};
+        return exportToJson(newState, localId)
+          .then(data => ({
+            ...data,
+            id: remoteId || uuidV4()
+          }))
+          .then(data => getSaveToRemoteService().save(data.id, data))
+          .then(() =>
+            dispatch(clearAvailableWorkspaces()).then(() =>
+              dispatch(fetchAvailableWorkspaces())
+            )
+          );
+      }
+    });
+  }
+);

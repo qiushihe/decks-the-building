@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 
+import { SAVING, SAVED_LOCALLY } from "/src/enum/persistence-status.enum";
 import WorkspaceSelector from "/src/component/workspace-selector";
 
 import ActionsHeader, {
@@ -39,6 +40,13 @@ const IconStyle = css`
   }
 `;
 
+const PersistenceStatus = styled.div`
+  margin-left: 12px;
+  font-size: 12px;
+  color: #696969;
+  text-shadow: 0 0 1px #00000026;
+`;
+
 const makeWorkspaceActionIcon = IconComponent => styled(IconComponent).attrs({
   size: 20
 })`
@@ -51,11 +59,17 @@ const SaveWorkspaceIcon = makeWorkspaceActionIcon(SaveIcon);
 const SyncWithCloudIcon = makeWorkspaceActionIcon(ImportExportIcon);
 const CreateWorkspaceIcon = makeWorkspaceActionIcon(CreateIcon);
 
+const persistenceMessage = {
+  [SAVING]: "Saving ...",
+  [SAVED_LOCALLY]: "Saved Locally."
+};
+
 class WorkspaceHeader extends React.PureComponent {
   render() {
     const {
       className,
       workspaceId,
+      persistenceStatus,
       renameWorkspace,
       saveWorkspace,
       createWorkspace,
@@ -69,7 +83,14 @@ class WorkspaceHeader extends React.PureComponent {
           renderLabel={() => (
             <ActionsHeaderLabel
               icon={StyledWorkspaceIcon}
-              label={() => <WorkspaceSelector workspaceId={workspaceId} />}
+              label={() => (
+                <React.Fragment>
+                  <WorkspaceSelector workspaceId={workspaceId} />
+                  <PersistenceStatus>
+                    {persistenceMessage[persistenceStatus]}
+                  </PersistenceStatus>
+                </React.Fragment>
+              )}
             />
           )}
           actions={[
@@ -109,6 +130,7 @@ class WorkspaceHeader extends React.PureComponent {
 WorkspaceHeader.propTypes = {
   className: PropTypes.string,
   workspaceId: PropTypes.string,
+  persistenceStatus: PropTypes.string,
   renameWorkspace: PropTypes.func,
   saveWorkspace: PropTypes.func,
   createWorkspace: PropTypes.func,
@@ -119,6 +141,7 @@ WorkspaceHeader.propTypes = {
 WorkspaceHeader.defaultProps = {
   className: "",
   workspaceId: "",
+  persistenceStatus: "",
   renameWorkspace: () => {},
   saveWorkspace: () => {},
   createWorkspace: () => {},

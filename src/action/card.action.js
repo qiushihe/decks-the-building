@@ -5,10 +5,10 @@ import { invoke, invokeWith } from "/src/util/function.util";
 import { encodeCardName } from "/src/util/card.util";
 
 export const ADD = "CARD/ADD";
-export const RESTORE = "CARD/RESTORE";
 
-export const RESTORE_CARD_NAMES = "CARD/RESTORE_CARD_NAMES";
-export const RESTORE_CARD_SYMBOLS = "CARD/RESTORE_CARD_SYMBOLS";
+export const SET_CARD_DETAIL = "CARD/SET_CARD_DETAIL";
+export const SET_CARD_NAMES = "CARD/SET_CARD_NAMES";
+export const SET_CARD_SYMBOLS = "CARD/SET_CARD_SYMBOLS";
 
 export const CARD_DETAIL_ATTRIBUTES = [
   "layout",
@@ -29,20 +29,20 @@ export const add = createPromisedAction(
   }))
 );
 
-export const restore = createPromisedAction(
-  RESTORE,
+export const setCardDetail = createPromisedAction(
+  SET_CARD_DETAIL,
   ["id", "name", ...CARD_DETAIL_ATTRIBUTES],
   invoke
 );
 
-export const restoreCardNames = createPromisedAction(
-  RESTORE_CARD_NAMES,
+export const setCardNames = createPromisedAction(
+  SET_CARD_NAMES,
   ["names"],
   invoke
 );
 
-export const restoreCardSymbols = createPromisedAction(
-  RESTORE_CARD_SYMBOLS,
+export const setCardSymbols = createPromisedAction(
+  SET_CARD_SYMBOLS,
   ["symbols"],
   invoke
 );

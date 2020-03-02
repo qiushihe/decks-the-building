@@ -6,6 +6,7 @@ import stack from "./stack.reducer";
 import lane from "./lane.reducer";
 import workspace from "./workspace.reducer";
 import modal from "./modal.reducer";
+import persistenceStatus from "./persistence-status.reducer";
 
 export default () =>
   combineReducers({
@@ -14,5 +15,6 @@ export default () =>
     stack,
     lane,
     workspace,
-    modal
+    modal,
+    persistenceStatus
   });

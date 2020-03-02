@@ -5,15 +5,16 @@ import once from "lodash/fp/once";
 import isNil from "lodash/fp/isNil";
 
 import { READY } from "/src/action/app.action";
-import { ADD, restore } from "/src/action/card.action";
+import { ADD, setCardDetail } from "/src/action/card.action";
 import { cardName } from "/src/selector/card.selector";
 import { withProps } from "/src/util/selector.util";
 import { getMultiLevelCacheService } from "/src/service/card/multi-level-cache-read.service";
+import { contextualMiddleware } from "/src/util/middleware.util";
 
 const IDLE_DELAY = 2000;
 const BUSY_DELAY = 10;
 
-export default ({ getState, dispatch }) => {
+export default contextualMiddleware({}, ({ getState, dispatch }) => {
   const pendingCardIds = [];
   let currentTaskPromise = null;
 
@@ -29,7 +30,7 @@ export default ({ getState, dispatch }) => {
 
           return getMultiLevelCacheService()
             .readCardDetail(id, name)
-            .then(cardDetail => dispatch(restore({ id, ...cardDetail })));
+            .then(cardDetail => dispatch(setCardDetail({ id, ...cardDetail })));
         }
       });
 
@@ -73,4 +74,4 @@ export default ({ getState, dispatch }) => {
       }
     });
   };
-};
+});
