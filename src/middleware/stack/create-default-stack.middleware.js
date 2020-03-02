@@ -6,7 +6,7 @@ import map from "lodash/fp/map";
 import { CREATE, addStacks } from "/src/action/lane.action";
 import { create as createStack } from "/src/action/stack.action";
 import { contextualMiddleware } from "/src/util/middleware.util";
-import { APP_READY } from "/src/enum/action-lifecycle.enum";
+import { APP_READY, WORKSPACE_IMPORT } from "/src/enum/action-lifecycle.enum";
 
 export default contextualMiddleware({}, ({ dispatch }) => next => action => {
   const { type: actionType } = action;
@@ -18,7 +18,10 @@ export default contextualMiddleware({}, ({ dispatch }) => next => action => {
         context: { actionLifecycle } = {}
       } = action;
 
-      if (actionLifecycle !== APP_READY) {
+      if (
+        actionLifecycle !== APP_READY &&
+        actionLifecycle !== WORKSPACE_IMPORT
+      ) {
         return flow([
           map(label => ({ id: uuidV4(), label })),
           map(({ id: stackId, label }) =>

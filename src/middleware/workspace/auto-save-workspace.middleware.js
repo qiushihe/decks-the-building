@@ -6,7 +6,8 @@ import {
   RENAME as RENAME_WORKSPACE,
   MOVE_LANE,
   ADD_LANES,
-  REMOVE_LANES
+  REMOVE_LANES,
+  save
 } from "/src/action/workspace.action";
 
 import {
@@ -46,16 +47,19 @@ const AUTO_SAVE_ACTIONS = [
   CHANGE_CARD_COPIES
 ];
 
-export default contextualMiddleware({}, () => {
+export default contextualMiddleware({}, ({ dispatch }) => {
   return next => action => {
     const { type: actionType } = action;
 
     return Promise.resolve(next(action)).then(() => {
       if (includes(actionType)(AUTO_SAVE_ACTIONS)) {
-        const { context: { actionLifecycle } = {} } = action;
+        const {
+          payload: { id: workspaceId },
+          context: { actionLifecycle } = {}
+        } = action;
 
         if (actionLifecycle !== APP_READY) {
-          console.log(actionType);
+          console.log(action);
         }
       }
     });

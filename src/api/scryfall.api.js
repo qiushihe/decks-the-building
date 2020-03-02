@@ -40,9 +40,7 @@ class ScryfallClient {
           throw err;
         })
         .finally(() => {
-          setTimeout(() => {
-            release();
-          }, FETCH_DELAY);
+          setTimeout(release, FETCH_DELAY);
         });
     });
   }
