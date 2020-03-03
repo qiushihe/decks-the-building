@@ -80,7 +80,7 @@ const Content = styled(props => {
   bottom: 4px;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 1px 1px 1px 0 #0000003d;
+  box-shadow: 0 1px 1px 0 #000000;
   background: linear-gradient(
     315deg,
     ${flow([
@@ -128,6 +128,7 @@ const CardName = styled.div`
   span {
     font-family: "Beleren Bold", serif;
     font-size: 13px;
+    line-height: 16px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -143,8 +144,8 @@ const ManaContainer = styled.div`
   flex-direction: row;
   align-items: center;
   flex: 0 1 auto;
-  margin-left: 6px;
-  margin-right: 6px;
+  margin-left: 2px;
+  margin-right: 4px;
 
   ${StyledManaCost} {
     margin: 0 1px 0 0;
