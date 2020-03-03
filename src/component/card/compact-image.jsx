@@ -111,7 +111,7 @@ const NameContainer = styled.div`
   position: relative;
   display: flex;
   flex: 1 1 auto;
-  margin-left: 8px;
+  margin-left: 6px;
 `;
 
 const CardName = styled.div`
