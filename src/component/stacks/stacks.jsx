@@ -19,22 +19,17 @@ const ContainerBase = styled.div`
   width: 100%;
 `;
 
-const StyledStack = styled(Stack)``;
-
 const StyledDraggable = styled(Draggable)`
   display: flex !important;
   height: auto !important;
+  padding: 0 6px;
 
-  ${StyledStack} {
-    margin: 0 6px;
+  &:first-child {
+    padding-left: 0;
   }
 
-  &:first-child ${StyledStack} {
-    margin-left: 0;
-  }
-
-  &:last-child ${StyledStack} {
-    margin-right: 0;
+  &:last-child {
+    padding-right: 0;
   }
 `;
 
@@ -63,11 +58,7 @@ class Stacks extends React.PureComponent {
             <ContainerBase ref={ref}>
               {uncappedMap((stackId, index) => (
                 <StyledDraggable key={stackId}>
-                  <StyledStack
-                    laneId={laneId}
-                    stackId={stackId}
-                    stackIndex={index}
-                  />
+                  <Stack laneId={laneId} stackId={stackId} stackIndex={index} />
                 </StyledDraggable>
               ))(stackIds)}
             </ContainerBase>

@@ -12,17 +12,23 @@ const Base = styled.div`
   overflow: auto;
 `;
 
-const StyledLane = styled(Lane)`
-  margin: 3px 0;
+const ContainerBase = styled.div`
+  display: flex !important;
+  flex-direction: column;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 100%;
 `;
 
 const StyledDraggable = styled(Draggable)`
-  &:first-child ${StyledLane} {
-    margin-top: 0;
+  padding: 3px 0;
+
+  &:first-child {
+    padding-top: 0;
   }
 
-  &:last-child ${StyledLane} {
-    margin-bottom: 0;
+  &:last-child {
+    padding-bottom: 0;
   }
 `;
 
@@ -45,17 +51,20 @@ class Lanes extends React.PureComponent {
               });
             }
           }}
-        >
-          {uncappedMap((laneId, index) => (
-            <StyledDraggable key={laneId}>
-              <StyledLane
-                workspaceId={workspaceId}
-                laneId={laneId}
-                laneIndex={index}
-              />
-            </StyledDraggable>
-          ))(laneIds)}
-        </Container>
+          render={ref => (
+            <ContainerBase ref={ref}>
+              {uncappedMap((laneId, index) => (
+                <StyledDraggable key={laneId}>
+                  <Lane
+                    workspaceId={workspaceId}
+                    laneId={laneId}
+                    laneIndex={index}
+                  />
+                </StyledDraggable>
+              ))(laneIds)}
+            </ContainerBase>
+          )}
+        />
       </Base>
     );
   }

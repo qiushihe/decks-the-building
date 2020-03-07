@@ -25,10 +25,12 @@ const ContainerBase = styled.div`
   min-height: 100px !important;
 `;
 
-const StyledCard = styled(Card)``;
-
 const StyledDraggable = styled(Draggable)`
-  padding-bottom: 1px;
+  padding: 1px 0;
+
+  &:first-child {
+    padding-top: 0;
+  }
 
   &:last-child {
     padding-bottom: 0;
@@ -60,11 +62,7 @@ class Cards extends React.PureComponent {
             <ContainerBase ref={ref}>
               {uncappedMap((cardId, index) => (
                 <StyledDraggable key={cardId}>
-                  <StyledCard
-                    stackId={stackId}
-                    cardId={cardId}
-                    cardIndex={index}
-                  />
+                  <Card stackId={stackId} cardId={cardId} cardIndex={index} />
                 </StyledDraggable>
               ))(cardIds)}
             </ContainerBase>
