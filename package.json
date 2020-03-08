@@ -4,7 +4,7 @@
   "description": "Decks the Building",
   "main": "src/index.jsx",
   "scripts": {
-    "dev": "webpack-dev-server --progress --hot --config ./webpack.config.dev.babel.js",
+    "dev": "webpack-dev-server --progress --hot --disable-host-check --host 0.0.0.0 --config ./webpack.config.dev.babel.js",
     "build": "npm run eslint && webpack -p --progress --config ./webpack.config.build.babel.js",
     "eslint": "eslint --fix --ext .js --ext .jsx ./src ./test",
     "test-mocha": "cross-env NODE_ENV=test mocha",
@@ -45,7 +45,7 @@
     "react-dom": "^16.8.6",
     "react-redux": "^7.1.0",
     "react-resize-observer": "^1.1.1",
-    "react-smooth-dnd": "~0.10.0",
+    "react-smooth-dnd": "^0.11.1",
     "react-tag-autocomplete": "^6.0.0-beta.4",
     "redux": "^4.0.4",
     "redux-actions": "^2.6.5",

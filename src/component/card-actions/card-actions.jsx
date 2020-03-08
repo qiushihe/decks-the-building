@@ -83,28 +83,34 @@ class CardActions extends React.PureComponent {
       <Base className={className}>
         {!collapsed && hasAlternateImage && (
           <IconContainer>
-            <IconButton size="small" onClick={alternateCardImage}>
+            <IconButton
+              title="Alternate Card Image"
+              onClick={alternateCardImage}
+            >
               <AlternateCardImage size={size} />
             </IconButton>
           </IconContainer>
         )}
         <IconContainer>
-          <IconButton size="small" onClick={duplicateCard}>
+          <IconButton title="Duplicate Entry" onClick={duplicateCard}>
             <DuplicateCardEntry size={size} />
           </IconButton>
         </IconContainer>
         <IconContainer>
-          <IconButton size="small" onClick={subtractCopy}>
+          <IconButton title="Subtract 1 Copy" onClick={subtractCopy}>
             <SubtractOneCardCopy size={size} />
           </IconButton>
         </IconContainer>
         <IconContainer>
-          <IconButton size="small" onClick={addCopy}>
+          <IconButton title="Add 1 Copy" onClick={addCopy}>
             <AddOneCardCopy size={size} />
           </IconButton>
         </IconContainer>
         <IconContainer>
-          <IconButton size="small" onClick={toggleCard}>
+          <IconButton
+            title={collapsed ? "Show Full Art" : "Hide Full Art"}
+            onClick={toggleCard}
+          >
             {collapsed ? (
               <ExpandCard size={size} />
             ) : (

@@ -104,7 +104,6 @@ const CountContainer = styled.div`
   left: 1px;
   width: 25px;
   bottom: 0;
-  cursor: default;
 `;
 
 const NameContainer = styled.div`
@@ -133,7 +132,6 @@ const CardName = styled.div`
     white-space: nowrap;
     text-overflow: ellipsis;
     text-shadow: 0px 1px #ffffffbf;
-    cursor: default;
   }
 `;
 

@@ -1,13 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 import { SAVING, SAVED_LOCALLY } from "/src/enum/persistence-status.enum";
 import WorkspaceSelector from "/src/component/workspace-selector";
-
-import ActionsHeader, {
-  ActionsHeaderLabel
-} from "/src/component/actions-header";
+import ActionsHeader from "/src/component/actions-header";
 
 import {
   RenameIcon,
@@ -19,7 +16,7 @@ import {
 } from "/src/component/icon";
 
 const Base = styled.div`
-  padding: 6px 6px 6px 22px;
+  padding: 22px 6px 6px 22px;
   margin-bottom: 3px;
   background-color: #ebeef2;
   box-shadow: 0 3px 3px -3px #00000069;
@@ -30,16 +27,6 @@ const StyledWorkspaceIcon = styled(WorkspaceIcon)`
   margin-right: 3px;
 `;
 
-const IconStyle = css`
-  margin: 2px;
-  cursor: pointer;
-  opacity: 0.75;
-
-  &:hover {
-    opacity: 1;
-  }
-`;
-
 const PersistenceStatus = styled.div`
   margin-left: 12px;
   font-size: 12px;
@@ -47,17 +34,12 @@ const PersistenceStatus = styled.div`
   text-shadow: 0 0 1px #00000026;
 `;
 
-const makeWorkspaceActionIcon = IconComponent => styled(IconComponent).attrs({
-  size: 20
-})`
-  ${IconStyle}
+const SelectorContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 2px;
 `;
-
-const RenameWorkspaceIcon = makeWorkspaceActionIcon(RenameIcon);
-const DeleteWorkspaceIcon = makeWorkspaceActionIcon(DeleteIcon);
-const SaveWorkspaceIcon = makeWorkspaceActionIcon(SaveIcon);
-const SyncWithCloudIcon = makeWorkspaceActionIcon(ImportExportIcon);
-const CreateWorkspaceIcon = makeWorkspaceActionIcon(CreateIcon);
 
 const persistenceMessage = {
   [SAVING]: "Saving ...",
@@ -80,47 +62,42 @@ class WorkspaceHeader extends React.PureComponent {
     return (
       <Base className={className}>
         <ActionsHeader
-          renderLabel={() => (
-            <ActionsHeaderLabel
-              icon={StyledWorkspaceIcon}
-              label={() => (
-                <React.Fragment>
-                  <WorkspaceSelector workspaceId={workspaceId} />
-                  <PersistenceStatus>
-                    {persistenceMessage[persistenceStatus]}
-                  </PersistenceStatus>
-                </React.Fragment>
-              )}
-            />
+          icon={StyledWorkspaceIcon}
+          label={() => (
+            <SelectorContainer>
+              <WorkspaceSelector workspaceId={workspaceId} />
+              <PersistenceStatus>
+                {persistenceMessage[persistenceStatus]}
+              </PersistenceStatus>
+            </SelectorContainer>
           )}
           actions={[
             {
               title: "Rename Workspace",
-              icon: RenameWorkspaceIcon,
+              icon: RenameIcon,
               action: renameWorkspace
             },
             {
               title: "Save Workspace",
-              icon: SaveWorkspaceIcon,
+              icon: SaveIcon,
               action: saveWorkspace
             },
             {
               title: "Sync Workspace",
-              icon: SyncWithCloudIcon,
+              icon: ImportExportIcon,
               action: syncWithCloud
             },
             {
               title: "Delete Workspace",
-              icon: DeleteWorkspaceIcon,
+              icon: DeleteIcon,
               action: removeWorkspace
             },
             {
               title: "Create Workspace",
-              icon: CreateWorkspaceIcon,
+              icon: CreateIcon,
               action: createWorkspace
             }
           ]}
-          disableLabelAutoHide={true}
         />
       </Base>
     );

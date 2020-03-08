@@ -6,8 +6,9 @@ import LaneHeader from "/src/component/lane-header";
 import Stacks from "/src/component/stacks";
 
 const Base = styled.div`
-  overflow: hidden;
-  min-width: 0;
+  display: inline-flex;
+  flex-direction: column;
+  min-width: 100%;
   background-color: #ebeef2;
   padding: 0 6px;
   box-shadow: 0 0 0 1px #00000026;
@@ -18,11 +19,6 @@ const Divider = styled.div`
   width: 100%;
   height: 1px;
   margin-bottom: 12px;
-`;
-
-const StacksContainer = styled.div`
-  overflow: auto;
-  padding-bottom: 6px;
 `;
 
 class Lane extends React.PureComponent {
@@ -37,9 +33,7 @@ class Lane extends React.PureComponent {
           laneIndex={laneIndex}
         />
         <Divider />
-        <StacksContainer>
-          <Stacks laneId={laneId} />
-        </StacksContainer>
+        <Stacks laneId={laneId} />
       </Base>
     );
   }

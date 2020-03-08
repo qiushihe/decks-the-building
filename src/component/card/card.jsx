@@ -49,6 +49,7 @@ const Base = styled(props => {
     [stubTrue, flow([get("scale"), multiply(CARD_HEIGHT)])]
   ])}px;
   overflow: hidden !important;
+  cursor: pointer;
 
   &:not(:hover) ${StyledCardActions} {
     display: none;

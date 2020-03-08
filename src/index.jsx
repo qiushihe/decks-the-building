@@ -7,6 +7,7 @@ import MaterialUiProvider from "/src/provider/material-ui.provider";
 import BelerenFontProvider from "/src/provider/beleren-font-provider";
 import ReduxStoreProvider from "/src/provider/redux-store.provider";
 import ModalProvider from "/src/provider/modal.provider";
+
 import createStore from "/src/store/create";
 import { withContainer } from "/src/util/render.util";
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Container, Draggable } from "react-smooth-dnd";
@@ -8,42 +8,22 @@ import Stack from "/src/component/stack";
 
 const uncappedMap = map.convert({ cap: false });
 
-const Base = styled.div``;
+const Base = memo(styled.div`
+  display: inline-flex;
+  min-width: 100%;
+  padding-bottom: 12px;
+`);
 
-const ContainerBase = styled.div`
-  display: flex !important;
-  flex-direction: row;
-  flex: 1 1 auto;
-  min-height: 168px !important;
-  height: 100%;
-  width: 100%;
-`;
-
-const StyledStack = styled(Stack)``;
-
-const StyledDraggable = styled(Draggable)`
-  display: flex !important;
-  height: auto !important;
-
-  ${StyledStack} {
-    margin: 0 6px;
-  }
-
-  &:first-child ${StyledStack} {
-    margin-left: 0;
-  }
-
-  &:last-child ${StyledStack} {
-    margin-right: 0;
-  }
-`;
+const StackContainer = memo(styled.div`
+  margin: 0 2px;
+`);
 
 class Stacks extends React.PureComponent {
   render() {
-    const { laneId, stackIds, moveStack } = this.props;
+    const { className, laneId, stackIds, moveStack } = this.props;
 
     return (
-      <Base>
+      <Base className={className}>
         <Container
           groupName="stack"
           orientation="horizontal"
@@ -59,32 +39,29 @@ class Stacks extends React.PureComponent {
               });
             }
           }}
-          render={ref => (
-            <ContainerBase ref={ref}>
-              {uncappedMap((stackId, index) => (
-                <StyledDraggable key={stackId}>
-                  <StyledStack
-                    laneId={laneId}
-                    stackId={stackId}
-                    stackIndex={index}
-                  />
-                </StyledDraggable>
-              ))(stackIds)}
-            </ContainerBase>
-          )}
-        />
+        >
+          {uncappedMap((stackId, index) => (
+            <Draggable key={index}>
+              <StackContainer>
+                <Stack laneId={laneId} stackId={stackId} stackIndex={index} />
+              </StackContainer>
+            </Draggable>
+          ))(stackIds)}
+        </Container>
       </Base>
     );
   }
 }
 
 Stacks.propTypes = {
+  className: PropTypes.string,
   laneId: PropTypes.string,
   stackIds: PropTypes.array,
   moveStack: PropTypes.func
 };
 
 Stacks.defaultProps = {
+  className: "",
   laneId: "",
   stackIds: [],
   moveStack: () => {}
