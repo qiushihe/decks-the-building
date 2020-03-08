@@ -45,7 +45,7 @@
     "react-dom": "^16.8.6",
     "react-redux": "^7.1.0",
     "react-resize-observer": "^1.1.1",
-    "react-smooth-dnd": "~0.10.0",
+    "react-smooth-dnd": "^0.11.1",
     "react-tag-autocomplete": "^6.0.0-beta.4",
     "redux": "^4.0.4",
     "redux-actions": "^2.6.5",
