@@ -1,10 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
-import ActionsHeader, {
-  ActionsHeaderLabel
-} from "/src/component/actions-header";
+import ActionsHeader from "/src/component/actions-header";
 
 import {
   StackIcon,
@@ -16,35 +14,13 @@ import {
 } from "/src/component/icon";
 
 const Base = styled(ActionsHeader)`
-  padding-left: 6px;
+  margin: 6px 0 2px 6px;
 `;
 
 const StyledStackIcon = styled(StackIcon)`
   color: #0000008a;
   margin-right: 3px;
 `;
-
-const IconStyle = css`
-  margin: 2px;
-  cursor: pointer;
-  opacity: 0.75;
-
-  &:hover {
-    opacity: 1;
-  }
-`;
-
-const makeStackActionIcon = IconComponent => styled(IconComponent).attrs({
-  size: 20
-})`
-  ${IconStyle}
-`;
-
-const RenameStack = makeStackActionIcon(RenameIcon);
-const AddCardsToStack = makeStackActionIcon(AddCardsIcon);
-const DeleteStack = makeStackActionIcon(DeleteIcon);
-const CombineCardsInStack = makeStackActionIcon(CombineCardsIcon);
-const CreateStack = makeStackActionIcon(CreateIcon);
 
 class StackHeader extends React.PureComponent {
   render() {
@@ -62,30 +38,26 @@ class StackHeader extends React.PureComponent {
     return (
       <Base
         className={className}
-        renderLabel={() => (
-          <ActionsHeaderLabel
-            icon={StyledStackIcon}
-            label={
-              stackCardsCount > 0
-                ? `${stackLabel} (${stackCardsCount})`
-                : stackLabel
-            }
-          />
-        )}
+        icon={StyledStackIcon}
+        label={
+          stackCardsCount > 0
+            ? `${stackLabel} (${stackCardsCount})`
+            : stackLabel
+        }
         actions={[
-          { title: "Rename Stack", icon: RenameStack, action: renameStack },
+          { title: "Edit", icon: RenameIcon, action: renameStack },
           {
-            title: "Add Cards to Stack",
-            icon: AddCardsToStack,
+            title: "+Cards",
+            icon: AddCardsIcon,
             action: addCardsToStack
           },
           {
-            title: "Combine Cards in Stack",
-            icon: CombineCardsInStack,
+            title: "Merge",
+            icon: CombineCardsIcon,
             action: combineDuplicateCards
           },
-          { title: "Delete Stack", icon: DeleteStack, action: removeStack },
-          { title: "Create Stack", icon: CreateStack, action: createStack }
+          { title: "Del", icon: DeleteIcon, action: removeStack },
+          { title: "New", icon: CreateIcon, action: createStack }
         ]}
       />
     );

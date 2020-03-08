@@ -133,7 +133,7 @@ const CardName = styled.div`
     white-space: nowrap;
     text-overflow: ellipsis;
     text-shadow: 0px 1px #ffffffbf;
-    cursor: default;
+    cursor: inherit;
   }
 `;
 

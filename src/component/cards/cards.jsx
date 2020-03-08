@@ -1,50 +1,44 @@
-import React from "react";
+import React, { memo } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Container, Draggable } from "react-smooth-dnd";
 import map from "lodash/fp/map";
+import isEmpty from "lodash/fp/isEmpty";
+import get from "lodash/fp/get";
+import cond from "lodash/fp/cond";
+import constant from "lodash/fp/constant";
+import stubTrue from "lodash/fp/stubTrue";
 
 import { STACK_CARDS_SPACING } from "/src/config";
 import Card from "/src/component/card";
 
 const uncappedMap = map.convert({ cap: false });
 
-const Base = styled.div`
+const Base = memo(styled.div`
   display: flex;
+  flex-direction: column;
   flex: 1 1 auto;
   padding: ${STACK_CARDS_SPACING - 1}px ${STACK_CARDS_SPACING}px;
   border-radius: 10px;
   background-color: #ffffff;
   box-shadow: 0 3px 6px -3px rgba(0, 0, 0, 0.2);
-`;
+  min-height: ${cond([
+    [get("isEmpty"), constant(100)],
+    [stubTrue, constant(0)]
+  ])}px;
+`);
 
-const ContainerBase = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 100px !important;
-`;
-
-const StyledDraggable = styled(Draggable)`
-  padding: 1px 0;
-
-  &:first-child {
-    padding-top: 0;
-  }
-
-  &:last-child {
-    padding-bottom: 0;
-  }
-`;
+const CardContainer = memo(styled.div`
+  margin: 1px 0;
+`);
 
 class Cards extends React.PureComponent {
   render() {
     const { className, stackId, cardIds, moveCard } = this.props;
 
     return (
-      <Base>
+      <Base className={className} isEmpty={isEmpty(cardIds)}>
         <Container
-          className={className}
           groupName="card"
           getChildPayload={index => ({ stackId, cardIndex: index })}
           shouldAcceptDrop={({ groupName }) => groupName === "card"}
@@ -58,16 +52,15 @@ class Cards extends React.PureComponent {
               });
             }
           }}
-          render={ref => (
-            <ContainerBase ref={ref}>
-              {uncappedMap((cardId, index) => (
-                <StyledDraggable key={cardId}>
-                  <Card stackId={stackId} cardId={cardId} cardIndex={index} />
-                </StyledDraggable>
-              ))(cardIds)}
-            </ContainerBase>
-          )}
-        />
+        >
+          {uncappedMap((cardId, index) => (
+            <Draggable key={index}>
+              <CardContainer>
+                <Card stackId={stackId} cardId={cardId} cardIndex={index} />
+              </CardContainer>
+            </Draggable>
+          ))(cardIds)}
+        </Container>
       </Base>
     );
   }

@@ -10,7 +10,6 @@ import {
   FlipToFrontOutlined,
   FullscreenRounded,
   FullscreenExitRounded,
-  DoubleArrow,
   TableChartRounded,
   ViewCarouselRounded,
   ViewListRounded,
@@ -44,5 +43,3 @@ export const DuplicateIcon = makeIconHoc(FlipToFrontOutlined);
 export const AlternateImageIcon = makeIconHoc(Rotate90DegreesCcwRounded);
 export const ExpandIcon = makeIconHoc(FullscreenRounded);
 export const CollapseIcon = makeIconHoc(FullscreenExitRounded);
-
-export const DoubleArrowIcon = makeIconHoc(DoubleArrow);

@@ -1,134 +1,171 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import flow from "lodash/fp/flow";
 import map from "lodash/fp/map";
 import isFunction from "lodash/fp/isFunction";
 
-import { DoubleArrowIcon } from "/src/component/icon";
-
-const Base = styled.div`
+const BaseIconAndLabel = styled.div`
   display: flex;
-  padding: 9px 0;
+  flex-direction: row;
+  flex: 1 1 auto;
 `;
 
-const LabelBase = styled.div`
-  position: relative;
+const BaseIcon = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  flex: 0 1 auto;
+`;
+
+const IconContainer = styled.div`
+  display: flex;
+`;
+
+const BaseLabel = styled.div`
+  display: flex;
+  flex-direction: column;
   flex: 1 1 auto;
+  justify-content: center;
+`;
+
+const LabelContainer = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  justify-content: center;
+
+  &::before {
+    content: "\\a0";
+  }
+`;
+
+const LabelTextContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  span {
+    font-size: 15px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
 `;
 
 const ActionsBase = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: center;
+  margin-left: 27px;
 `;
 
-const IconButton = styled.div`
+const ActionButton = styled.div`
   display: flex;
-  border-radius: 100%;
-  padding: 3px;
   cursor: pointer;
+  text-transform: uppercase;
+  font-size: 11px;
+  margin: 0 2px;
+  color: #00000096;
+  box-shadow: inset 0 0 0 1px #00000096;
+  border-radius: 4px;
+  padding: 0 4px;
 
   &:hover {
-    background-color: #e3e3e3;
+    color: #000000;
+    box-shadow: inset 0 0 0 1px #000000;
+  }
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
   }
 `;
 
-const IconStyle = css`
-  margin: 2px;
-  cursor: pointer;
-  opacity: 0.75;
+const Base = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 auto;
 
-  &:hover {
+  ${ActionsBase} {
+    opacity: 0;
+  }
+
+  &:hover ${ActionsBase} {
     opacity: 1;
   }
 `;
 
-const makeActionIcon = IconComponent => styled(IconComponent).attrs({
-  size: 20
-})`
-  ${IconStyle}
-`;
-
-const HideStackMenu = makeActionIcon(DoubleArrowIcon);
-const ShowStackMenu = styled(makeActionIcon(DoubleArrowIcon))`
-  transform: rotate(180deg);
-`;
-
 class ActionsHeader extends React.PureComponent {
-  constructor(...args) {
-    super(...args);
-
-    this.state = {
-      menuOpened: false
-    };
-
-    this.handleShowMenu = this.handleShowMenu.bind(this);
-    this.handleHideMenu = this.handleHideMenu.bind(this);
-  }
-
-  handleShowMenu() {
-    this.setState({ menuOpened: true });
-  }
-
-  handleHideMenu() {
-    this.setState({ menuOpened: false });
-  }
-
   renderActions() {
     const { actions } = this.props;
-    const { menuOpened } = this.state;
-
-    const withHideMenu = actionFn => (...args) => {
-      const ret = actionFn(...args);
-      this.handleHideMenu();
-      return ret;
-    };
 
     return (
-      <ActionsBase>
-        {menuOpened && (
-          <React.Fragment>
-            {flow([
-              map(({ icon: IconComponent, action }) => (
-                <IconButton size="small" onClick={withHideMenu(action)}>
-                  <IconComponent />
-                </IconButton>
-              )),
-              React.Children.toArray
-            ])(actions)}
-          </React.Fragment>
-        )}
-        <IconButton
-          size="small"
-          onClick={menuOpened ? this.handleHideMenu : this.handleShowMenu}
-        >
-          {menuOpened ? <HideStackMenu /> : <ShowStackMenu />}
-        </IconButton>
-      </ActionsBase>
+      <React.Fragment>
+        {flow([
+          map(({ title, action }) => (
+            <ActionButton onClick={action}>{title}</ActionButton>
+          )),
+          React.Children.toArray
+        ])(actions)}
+      </React.Fragment>
     );
   }
 
-  render() {
-    const { className, renderLabel, disableLabelAutoHide } = this.props;
-    const { menuOpened } = this.state;
+  renderIcon() {
+    const { icon } = this.props;
 
-    const shouldRenderLabel =
-      (!menuOpened || disableLabelAutoHide) && isFunction(renderLabel);
+    if (isFunction(icon)) {
+      return icon();
+    } else if (icon != null) {
+      const IconComponent = icon;
+      return (
+        <IconContainer>
+          <IconComponent />
+        </IconContainer>
+      );
+    } else {
+      return null;
+    }
+  }
+
+  renderLabel() {
+    const { label } = this.props;
+
+    if (isFunction(label)) {
+      return label();
+    } else {
+      return (
+        <LabelContainer>
+          <LabelTextContainer>
+            <span>{label}</span>
+          </LabelTextContainer>
+        </LabelContainer>
+      );
+    }
+  }
+
+  render() {
+    const { className } = this.props;
+
+    const renderedIcon = this.renderIcon();
+    const renderedLabel = this.renderLabel();
 
     return (
       <Base className={className}>
-        <LabelBase>
-          {shouldRenderLabel ? (
-            renderLabel()
-          ) : (
-            <React.Fragment>&nbsp;</React.Fragment>
-          )}
-        </LabelBase>
-        {this.renderActions()}
+        <BaseIconAndLabel>
+          {renderedIcon !== null && <BaseIcon>{renderedIcon}</BaseIcon>}
+          {renderedLabel !== null && <BaseLabel>{renderedLabel}</BaseLabel>}
+        </BaseIconAndLabel>
+        <ActionsBase>{this.renderActions()}</ActionsBase>
       </Base>
     );
   }
@@ -136,22 +173,22 @@ class ActionsHeader extends React.PureComponent {
 
 ActionsHeader.propTypes = {
   className: PropTypes.string,
-  renderLabel: PropTypes.func,
+  icon: PropTypes.oneOfType([PropTypes.elementType, PropTypes.func]),
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
   actions: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string,
       icon: PropTypes.elementType,
       action: PropTypes.func
     })
-  ),
-  disableLabelAutoHide: PropTypes.bool
+  )
 };
 
 ActionsHeader.defaultProps = {
   className: "",
-  renderLabel: null,
-  actions: [],
-  disableLabelAutoHide: false
+  icon: null,
+  label: "",
+  actions: []
 };
 
 export default ActionsHeader;

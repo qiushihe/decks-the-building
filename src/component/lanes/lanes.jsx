@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Container, Draggable } from "react-smooth-dnd";
@@ -8,75 +8,68 @@ import Lane from "/src/component/lane";
 
 const uncappedMap = map.convert({ cap: false });
 
-const Base = styled.div`
+const ScrollContainer = styled.div`
   overflow: auto;
 `;
 
-const ContainerBase = styled.div`
-  display: flex !important;
+const Base = memo(styled.div`
+  display: inline-flex;
   flex-direction: column;
-  flex: 1 1 auto;
-  width: 100%;
-  min-height: 100%;
-`;
+  min-width: 100%;
+`);
 
-const StyledDraggable = styled(Draggable)`
-  padding: 3px 0;
-
-  &:first-child {
-    padding-top: 0;
-  }
-
-  &:last-child {
-    padding-bottom: 0;
-  }
-`;
+const LaneContainer = memo(styled.div`
+  margin: 4px 0;
+`);
 
 class Lanes extends React.PureComponent {
   render() {
-    const { workspaceId, laneIds, moveLane } = this.props;
+    const { className, workspaceId, laneIds, moveLane } = this.props;
 
     return (
-      <Base>
-        <Container
-          groupName="lane"
-          lockAxis="y"
-          getChildPayload={index => ({ laneIndex: index })}
-          shouldAcceptDrop={({ groupName }) => groupName === "lane"}
-          onDrop={({ addedIndex, payload }) => {
-            if (addedIndex !== null) {
-              moveLane({
-                fromIndex: payload.laneIndex,
-                toIndex: addedIndex
-              });
-            }
-          }}
-          render={ref => (
-            <ContainerBase ref={ref}>
-              {uncappedMap((laneId, index) => (
-                <StyledDraggable key={laneId}>
+      <ScrollContainer>
+        <Base className={className}>
+          <Container
+            groupName="lane"
+            lockAxis="y"
+            getChildPayload={index => ({ laneIndex: index })}
+            shouldAcceptDrop={({ groupName }) => groupName === "lane"}
+            onDrop={({ addedIndex, payload }) => {
+              if (addedIndex !== null) {
+                moveLane({
+                  fromIndex: payload.laneIndex,
+                  toIndex: addedIndex
+                });
+              }
+            }}
+          >
+            {uncappedMap((laneId, index) => (
+              <Draggable key={index}>
+                <LaneContainer>
                   <Lane
                     workspaceId={workspaceId}
                     laneId={laneId}
                     laneIndex={index}
                   />
-                </StyledDraggable>
-              ))(laneIds)}
-            </ContainerBase>
-          )}
-        />
-      </Base>
+                </LaneContainer>
+              </Draggable>
+            ))(laneIds)}
+          </Container>
+        </Base>
+      </ScrollContainer>
     );
   }
 }
 
 Lanes.propTypes = {
+  className: PropTypes.string,
   workspaceId: PropTypes.string,
   laneIds: PropTypes.array,
   moveLane: PropTypes.func
 };
 
 Lanes.defaultProps = {
+  className: "",
   workspaceId: "",
   laneIds: [],
   moveLane: () => {}
