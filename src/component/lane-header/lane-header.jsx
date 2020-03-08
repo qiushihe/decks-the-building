@@ -39,9 +39,9 @@ class LaneHeader extends React.PureComponent {
           laneCardsCount > 0 ? `${laneLabel} (${laneCardsCount})` : laneLabel
         }
         actions={[
-          { title: "Edit", icon: RenameIcon, action: renameLane },
-          { title: "Del", icon: DeleteIcon, action: removeLane },
-          { title: "New", icon: CreateIcon, action: createLane }
+          { title: "Rename Lane", icon: RenameIcon, action: renameLane },
+          { title: "Delete Lane", icon: DeleteIcon, action: removeLane },
+          { title: "Create Lane", icon: CreateIcon, action: createLane }
         ]}
       />
     );

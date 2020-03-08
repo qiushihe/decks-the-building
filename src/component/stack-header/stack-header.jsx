@@ -45,19 +45,19 @@ class StackHeader extends React.PureComponent {
             : stackLabel
         }
         actions={[
-          { title: "Edit", icon: RenameIcon, action: renameStack },
+          { title: "Rename Stack", icon: RenameIcon, action: renameStack },
           {
-            title: "+Cards",
+            title: "Add Cards to Stack",
             icon: AddCardsIcon,
             action: addCardsToStack
           },
           {
-            title: "Merge",
+            title: "Combine Cards in Stack",
             icon: CombineCardsIcon,
             action: combineDuplicateCards
           },
-          { title: "Del", icon: DeleteIcon, action: removeStack },
-          { title: "New", icon: CreateIcon, action: createStack }
+          { title: "Delete Stack", icon: DeleteIcon, action: removeStack },
+          { title: "Create Stack", icon: CreateIcon, action: createStack }
         ]}
       />
     );

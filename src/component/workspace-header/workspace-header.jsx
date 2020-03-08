@@ -73,27 +73,27 @@ class WorkspaceHeader extends React.PureComponent {
           )}
           actions={[
             {
-              title: "Edit",
+              title: "Rename Workspace",
               icon: RenameIcon,
               action: renameWorkspace
             },
             {
-              title: "Save",
+              title: "Save Workspace",
               icon: SaveIcon,
               action: saveWorkspace
             },
             {
-              title: "Sync",
+              title: "Sync Workspace",
               icon: ImportExportIcon,
               action: syncWithCloud
             },
             {
-              title: "Del",
+              title: "Delete Workspace",
               icon: DeleteIcon,
               action: removeWorkspace
             },
             {
-              title: "New",
+              title: "Create Workspace",
               icon: CreateIcon,
               action: createWorkspace
             }

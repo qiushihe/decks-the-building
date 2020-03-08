@@ -1,7 +1,7 @@
 import React from "react";
 
 import {
-  EditOutlined,
+  Edit,
   AddCircleOutlineRounded,
   PostAddRounded,
   LayersOutlined,
@@ -13,7 +13,7 @@ import {
   TableChartRounded,
   ViewCarouselRounded,
   ViewListRounded,
-  DeleteRounded,
+  RemoveCircleOutlineRounded,
   ExposurePlus1Rounded,
   ExposureNeg1Rounded,
   Rotate90DegreesCcwRounded
@@ -27,8 +27,8 @@ export const WorkspaceIcon = makeIconHoc(TableChartRounded);
 export const LaneIcon = makeIconHoc(ViewCarouselRounded);
 export const StackIcon = makeIconHoc(ViewListRounded);
 
-export const RenameIcon = makeIconHoc(EditOutlined);
-export const DeleteIcon = makeIconHoc(DeleteRounded);
+export const RenameIcon = makeIconHoc(Edit);
+export const DeleteIcon = makeIconHoc(RemoveCircleOutlineRounded);
 export const CreateIcon = makeIconHoc(AddCircleOutlineRounded);
 
 export const AddCardsIcon = makeIconHoc(PostAddRounded);

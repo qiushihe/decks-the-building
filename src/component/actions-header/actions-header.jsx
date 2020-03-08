@@ -69,16 +69,12 @@ const ActionButton = styled.div`
   display: flex;
   cursor: pointer;
   text-transform: uppercase;
-  font-size: 11px;
   margin: 0 2px;
   color: #00000096;
-  box-shadow: inset 0 0 0 1px #00000096;
-  border-radius: 4px;
-  padding: 0 4px;
+  border-radius: 9999px;
 
   &:hover {
     color: #000000;
-    box-shadow: inset 0 0 0 1px #000000;
   }
 
   &:first-child {
@@ -111,8 +107,10 @@ class ActionsHeader extends React.PureComponent {
     return (
       <React.Fragment>
         {flow([
-          map(({ title, action }) => (
-            <ActionButton onClick={action}>{title}</ActionButton>
+          map(({ title, icon: IconComponent, action }) => (
+            <ActionButton onClick={action} title={title}>
+              <IconComponent size={16} />
+            </ActionButton>
           )),
           React.Children.toArray
         ])(actions)}
