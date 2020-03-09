@@ -1,5 +1,6 @@
 import Promise from "bluebird";
 import flow from "lodash/fp/flow";
+import map from "lodash/fp/map";
 import get from "lodash/fp/get";
 import cond from "lodash/fp/cond";
 import isNaN from "lodash/fp/isNaN";
@@ -238,6 +239,18 @@ class MultiLevelCacheService {
               .then(constant(cardData))
           )
       );
+  }
+
+  readCardsDetail(params) {
+    return flow([
+      map(({ cardId, cardName }) =>
+        this.readCardDetail(cardId, cardName).then(cardDetail => ({
+          id: cardId,
+          ...cardDetail
+        }))
+      ),
+      Promise.all
+    ])(params);
   }
 }
 
