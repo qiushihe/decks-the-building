@@ -8,8 +8,11 @@ import stubTrue from "lodash/fp/stubTrue";
 import identity from "lodash/fp/identity";
 import constant from "lodash/fp/constant";
 
-export const createPromisedAction = (type, payloadAttrNames, dispatchFn) => {
-  const actionCreator = createAction(type, pick(payloadAttrNames));
+export const createPromisedAction = (type, payloadAttrs, dispatchFn) => {
+  const actionCreator = createAction(
+    type,
+    isFunction(payloadAttrs) ? payloadAttrs : pick(payloadAttrs)
+  );
 
   return inputPayload => (dispatch, getState) =>
     Promise.resolve().then(() =>
