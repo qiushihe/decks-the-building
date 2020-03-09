@@ -24,7 +24,6 @@ const BATCH_TIMINGS = [1000, 500];
 export default contextualMiddleware({}, ({ getState, dispatch }) => {
   let pendingCardIds = [];
   let currentBatchSize = 5;
-  let currentBatchTime = 0;
   let currentTaskPromise = null;
 
   const processRestoreQueue = () => {
@@ -57,11 +56,11 @@ export default contextualMiddleware({}, ({ getState, dispatch }) => {
         .catch(err => console.warn(err))
         .finally(() => {
           if (!isEmpty(cardIds)) {
-            currentBatchTime = new Date().getTime() - batchStartTime;
-            const perCardTime = currentBatchTime / size(cardIds);
+            const batchConsumedTime = new Date().getTime() - batchStartTime;
+            const perCardTime = batchConsumedTime / size(cardIds);
 
-            if (currentBatchTime >= BATCH_TIMINGS[0]) {
-              const extraTime = currentBatchTime - BATCH_TIMINGS[0];
+            if (batchConsumedTime >= BATCH_TIMINGS[0]) {
+              const extraTime = batchConsumedTime - BATCH_TIMINGS[0];
               let extraCards = Math.ceil(extraTime / perCardTime);
 
               if (extraCards > currentBatchSize / 2) {
@@ -69,8 +68,8 @@ export default contextualMiddleware({}, ({ getState, dispatch }) => {
               }
 
               currentBatchSize = currentBatchSize - extraCards;
-            } else if (currentBatchTime <= BATCH_TIMINGS[1]) {
-              const extraTime = BATCH_TIMINGS[1] - currentBatchTime;
+            } else if (batchConsumedTime <= BATCH_TIMINGS[1]) {
+              const extraTime = BATCH_TIMINGS[1] - batchConsumedTime;
               let extraCards = Math.floor(extraTime / perCardTime);
 
               if (extraCards > currentBatchSize / 2) {
