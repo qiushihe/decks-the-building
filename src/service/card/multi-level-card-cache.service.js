@@ -52,14 +52,14 @@ const logAndRethrowError = prefix => err => {
   throw err;
 };
 
-class MultiLevelCacheService {
+class MultiLevelCardCacheService {
   constructor() {
     this.localForge = getLocalForgeClient();
     this.s3 = getS3Client();
     this.scryfall = getScryfallClient();
   }
 
-  readCardCatalog(catalogName) {
+  readCatalog(catalogName) {
     if (
       catalogName !== CARD_CATALOG_NAMES &&
       catalogName !== CARD_CATALOG_SYMBOLS
@@ -70,42 +70,42 @@ class MultiLevelCacheService {
     const nowTimestamp = new Date().getTime();
 
     return this.localForge
-      .fetchCardCatalog(
+      .fetchCatalog(
         CATALOG_LOCALFORGE_NAMES[catalogName],
         CATALOG_VERSIONS[catalogName]
       )
       .catch(
         logAndRethrowError([
-          `readCardCatalog(${catalogName})`,
-          "localForge.fetchCardCatalog"
+          `readCatalog(${catalogName})`,
+          "localForge.fetchCatalog"
         ])
       )
       .catch(() =>
         this.s3
-          .fetchCardCatalog(
+          .fetchCatalog(
             CATALOG_S3_NAMES[catalogName],
             CATALOG_VERSIONS[catalogName]
           )
           .catch(
             logAndRethrowError([
-              `readCardCatalog(${catalogName})`,
-              "localForge.fetchCardCatalog",
-              "s3.fetchCardCatalog"
+              `readCatalog(${catalogName})`,
+              "localForge.fetchCatalog",
+              "s3.fetchCatalog"
             ])
           )
           .then(catalogData =>
             this.localForge
-              .storeCardCatalog(
+              .storeCatalog(
                 CATALOG_LOCALFORGE_NAMES[catalogName],
                 CATALOG_VERSIONS[catalogName],
                 catalogData
               )
               .catch(
                 logAndRethrowError([
-                  `readCardCatalog(${catalogName})`,
-                  "localForge.fetchCardCatalog",
-                  "s3.fetchCardCatalog",
-                  "localForge.storeCardCatalog"
+                  `readCatalog(${catalogName})`,
+                  "localForge.fetchCatalog",
+                  "s3.fetchCatalog",
+                  "localForge.storeCatalog"
                 ])
               )
               .then(constant(catalogData))
@@ -124,7 +124,7 @@ class MultiLevelCacheService {
         if (nowTimestamp - cacheTimestamp >= CATALOG_TIMEOUTS[catalogName]) {
           const err = new Error("catalog data has timed out");
           logAndRethrowError([
-            `readCardCatalog(${catalogName})`,
+            `readCatalog(${catalogName})`,
             "cache timestamp check"
           ])(err);
           throw err;
@@ -134,11 +134,11 @@ class MultiLevelCacheService {
       })
       .catch(() =>
         this.scryfall
-          .fetchCardCatalog(catalogName)
+          .fetchCatalog(catalogName)
           .catch(
             logAndRethrowError([
-              `readCardCatalog(${catalogName})`,
-              "scryfall.fetchCardCatalog"
+              `readCatalog(${catalogName})`,
+              "scryfall.fetchCatalog"
             ])
           )
           .then(catalogData => ({
@@ -147,20 +147,20 @@ class MultiLevelCacheService {
           }))
           .then(catalogData =>
             this.s3
-              .storeCardCatalog(
+              .storeCatalog(
                 CATALOG_S3_NAMES[catalogName],
                 CATALOG_VERSIONS[catalogName],
                 catalogData
               )
               .catch(
                 logAndRethrowError([
-                  `readCardCatalog(${catalogName})`,
-                  "s3.storeCardCatalog"
+                  `readCatalog(${catalogName})`,
+                  "s3.storeCatalog"
                 ])
               )
               .catch(constant(null))
               .finally(() =>
-                this.localForge.storeCardCatalog(
+                this.localForge.storeCatalog(
                   CATALOG_LOCALFORGE_NAMES[catalogName],
                   CATALOG_VERSIONS[catalogName],
                   catalogData
@@ -256,9 +256,9 @@ class MultiLevelCacheService {
 
 let DefaultInstance = null;
 
-export const getMultiLevelCacheService = () => {
+export const getMultiLevelCardCacheService = () => {
   if (DefaultInstance === null) {
-    DefaultInstance = new MultiLevelCacheService();
+    DefaultInstance = new MultiLevelCardCacheService();
   }
   return DefaultInstance;
 };

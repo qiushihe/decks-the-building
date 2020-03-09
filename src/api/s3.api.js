@@ -41,11 +41,19 @@ class S3Client {
     });
   }
 
-  storeCardCatalog(name, version, data) {
+  storePreference(name, value) {
+    return this.storeById("preferences", name, value);
+  }
+
+  fetchPreference(name) {
+    return this.fetchById("preferences", name);
+  }
+
+  storeCatalog(name, version, data) {
     return this.storeById("catalog", `${name}-${version}`, data);
   }
 
-  fetchCardCatalog(name, version) {
+  fetchCatalog(name, version) {
     return this.fetchById("catalog", `${name}-${version}`);
   }
 

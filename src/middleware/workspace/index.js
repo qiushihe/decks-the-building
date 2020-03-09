@@ -4,6 +4,7 @@ import deleteWorkspace from "./delete-workspace.middleware";
 import importFromRemote from "./import-from-remote.middleware";
 import exportToRemote from "./export-to-remote.middleware";
 import autoSaveWorkspace from "./auto-save-workspace.middleware";
+import saveActiveWorkspace from "./save-active-workspace.middleware";
 
 export default [
   restoreWorkspaces,
@@ -11,5 +12,6 @@ export default [
   deleteWorkspace,
   importFromRemote,
   exportToRemote,
-  autoSaveWorkspace
+  autoSaveWorkspace,
+  saveActiveWorkspace
 ];
