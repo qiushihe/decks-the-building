@@ -8,7 +8,6 @@ import negate from "lodash/fp/negate";
 import isEmpty from "lodash/fp/isEmpty";
 import isNil from "lodash/fp/isNil";
 import size from "lodash/fp/size";
-import times from "lodash/fp/times";
 
 import { READY } from "/src/action/app.action";
 import { ADD, setCardsDetail } from "/src/action/card.action";
@@ -34,14 +33,12 @@ export default contextualMiddleware({}, ({ getState, dispatch }) => {
       const batchStartTime = new Date().getTime();
 
       const cardIds = [];
-      times(() => {
-        if (!isEmpty(pendingCardIds)) {
-          const cardId = pendingCardIds.shift();
-          if (!isNil(cardId)) {
-            cardIds.push(cardId);
-          }
+      while (!isEmpty(pendingCardIds) && size(cardIds) < currentBatchSize) {
+        const cardId = pendingCardIds.shift();
+        if (!isNil(cardId)) {
+          cardIds.push(cardId);
         }
-      })(currentBatchSize);
+      }
 
       currentTaskPromise = flow([
         map(cardId => ({
