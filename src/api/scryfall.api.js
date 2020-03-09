@@ -20,7 +20,7 @@ class ScryfallClient {
     this.mutex = new Mutex();
   }
 
-  fetchCardCatalog(catalogName) {
+  fetchCatalog(catalogName) {
     let catalogUrl = null;
 
     if (catalogName === CARD_CATALOG_NAMES) {

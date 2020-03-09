@@ -1,12 +1,15 @@
 import Promise from "bluebird";
+import isNil from "lodash/fp/isNil";
+import isEmpty from "lodash/fp/isEmpty";
 
 import { READY } from "/src/action/app.action";
 import { setLogin } from "/src/action/s3.action";
 
 import { getS3Client } from "/src/api/s3.api";
-import { getLocalForgeClient } from "/src/api/localforge.api";
 import { contextualMiddleware } from "/src/util/middleware.util";
 import { APP_READY } from "/src/enum/action-lifecycle.enum";
+
+import { getMultiLevelPreferenceCacheService } from "/src/service/preference/multi-level-preference-cache.service";
 
 export default contextualMiddleware(
   { actionLifecycle: APP_READY },
@@ -21,11 +24,11 @@ export default contextualMiddleware(
           } = action;
 
           if (level === 1) {
-            return getLocalForgeClient()
-              .fetchCredential("S3")
+            return getMultiLevelPreferenceCacheService()
+              .readLocalPreference("credential", "s3-login")
               .catch(() => null)
               .then(login => {
-                if (login !== null) {
+                if (!isNil(login) && !isEmpty(login)) {
                   return getS3Client()
                     .setLogin(login)
                     .then(() => dispatch(setLogin({ login })));
