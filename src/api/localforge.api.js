@@ -71,23 +71,19 @@ const getRecord = (model, id, { storageEngine } = {}) => {
 };
 
 class LocalForgeClient {
-  storeCredential(name, data) {
-    return this.storeById("Credential", name, data);
+  storePreference(name, value) {
+    return this.storeById("Preference", name, value);
   }
 
-  fetchCredential(name) {
-    return this.fetchById("Credential", name);
+  fetchPreference(name) {
+    return this.fetchById("Preference", name);
   }
 
-  deleteCredential(name) {
-    return this.deleteById("Credential", name);
-  }
-
-  storeCardCatalog(name, version, data) {
+  storeCatalog(name, version, data) {
     return this.storeById("Catalog", `${name}-${version}`, data);
   }
 
-  fetchCardCatalog(name, version) {
+  fetchCatalog(name, version) {
     return this.fetchById("Catalog", `${name}-${version}`);
   }
 

@@ -13,8 +13,8 @@ import { READY } from "/src/action/app.action";
 import { ADD, setCardsDetail } from "/src/action/card.action";
 import { cardName } from "/src/selector/card.selector";
 import { withProps } from "/src/util/selector.util";
-import { getMultiLevelCacheService } from "/src/service/card/multi-level-cache-read.service";
 import { contextualMiddleware } from "/src/util/middleware.util";
+import { getMultiLevelCardCacheService } from "/src/service/card/multi-level-card-cache.service";
 
 const IDLE_DELAY = 2000;
 const BUSY_DELAY = 10;
@@ -46,7 +46,7 @@ export default contextualMiddleware({}, ({ getState, dispatch }) => {
           cardName: withProps({ cardId })(cardName)(currentState)
         })),
         params =>
-          getMultiLevelCacheService()
+          getMultiLevelCardCacheService()
             .readCardsDetail(params)
             .then(
               cond([
