@@ -2,12 +2,13 @@ import Promise from "bluebird";
 import flow from "lodash/fp/flow";
 import map from "lodash/fp/map";
 import get from "lodash/fp/get";
-import concat from "lodash/fp/concat";
 import once from "lodash/fp/once";
 import cond from "lodash/fp/cond";
 import negate from "lodash/fp/negate";
 import isEmpty from "lodash/fp/isEmpty";
+import isNil from "lodash/fp/isNil";
 import size from "lodash/fp/size";
+import times from "lodash/fp/times";
 
 import { READY } from "/src/action/app.action";
 import { ADD, setCardsDetail } from "/src/action/card.action";
@@ -22,7 +23,8 @@ const BATCH_RANGE = [1, 100];
 const BATCH_TIMINGS = [1000, 500];
 
 export default contextualMiddleware({}, ({ getState, dispatch }) => {
-  let pendingCardIds = [];
+  const pendingCardIds = [];
+
   let currentBatchSize = 5;
   let currentTaskPromise = null;
 
@@ -31,8 +33,15 @@ export default contextualMiddleware({}, ({ getState, dispatch }) => {
       const currentState = getState();
       const batchStartTime = new Date().getTime();
 
-      const cardIds = pendingCardIds.slice(0, currentBatchSize);
-      pendingCardIds = pendingCardIds.slice(currentBatchSize);
+      const cardIds = [];
+      times(() => {
+        if (!isEmpty(pendingCardIds)) {
+          const cardId = pendingCardIds.shift();
+          if (!isNil(cardId)) {
+            cardIds.push(cardId);
+          }
+        }
+      })(currentBatchSize);
 
       currentTaskPromise = flow([
         map(cardId => ({
@@ -119,7 +128,7 @@ export default contextualMiddleware({}, ({ getState, dispatch }) => {
           payload: { cards }
         } = action;
 
-        pendingCardIds = flow([map(get("id")), concat(pendingCardIds)])(cards);
+        map(card => pendingCardIds.push(get("id")(card)))(cards);
       }
     });
   };
