@@ -43,6 +43,7 @@ const Content = styled.div`
   flex-direction: column;
   flex: 1 1 auto;
   margin: ${STACK_CONTENT_SPACING}px;
+  height: 100%;
 `;
 
 class Stack extends React.PureComponent {

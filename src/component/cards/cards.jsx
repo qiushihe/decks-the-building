@@ -26,6 +26,10 @@ const Base = memo(styled.div`
     [get("isEmpty"), constant(100)],
     [stubTrue, constant(0)]
   ])}px;
+
+  & > .smooth-dnd-container {
+    height: 100%;
+  }
 `);
 
 const CardContainer = memo(styled.div`
