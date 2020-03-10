@@ -16,6 +16,7 @@ const Base = memo(styled.div`
 
 const StackContainer = memo(styled.div`
   margin: 0 2px;
+  height: 100%;
 `);
 
 class Stacks extends React.PureComponent {
