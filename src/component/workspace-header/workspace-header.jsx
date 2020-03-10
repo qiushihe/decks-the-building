@@ -28,7 +28,6 @@ const StyledWorkspaceIcon = styled(WorkspaceIcon)`
 `;
 
 const PersistenceStatus = styled.div`
-  margin-left: 12px;
   font-size: 12px;
   color: #696969;
   text-shadow: 0 0 1px #00000026;
@@ -63,9 +62,12 @@ class WorkspaceHeader extends React.PureComponent {
       <Base className={className}>
         <ActionsHeader
           icon={StyledWorkspaceIcon}
-          label={() => (
+          label={({ menuTrigger }) => (
             <SelectorContainer>
               <WorkspaceSelector workspaceId={workspaceId} />
+              <React.Fragment>&nbsp;&nbsp;</React.Fragment>
+              {menuTrigger}
+              <React.Fragment>&nbsp;&nbsp;</React.Fragment>
               <PersistenceStatus>
                 {persistenceMessage[persistenceStatus]}
               </PersistenceStatus>

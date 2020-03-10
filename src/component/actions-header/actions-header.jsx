@@ -4,6 +4,9 @@ import styled from "styled-components";
 import flow from "lodash/fp/flow";
 import map from "lodash/fp/map";
 import isFunction from "lodash/fp/isFunction";
+import isEmpty from "lodash/fp/isEmpty";
+
+import { ThreeDotsIcon } from "/src/component/icon";
 
 const BaseIconAndLabel = styled.div`
   display: flex;
@@ -50,12 +53,26 @@ const LabelTextContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+`;
 
-  span {
-    font-size: 15px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+const LabelText = styled.span`
+  position: relative;
+  display: inline-block;
+  font-size: 15px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+`;
+
+const MenuTrigger = styled.div`
+  display: inline-flex;
+  border-radius: 9999px;
+  color: #000000;
+  cursor: pointer;
+
+  &:hover {
+    color: #ffffff;
+    background-color: #6c6d6f;
   }
 `;
 
@@ -136,15 +153,23 @@ class ActionsHeader extends React.PureComponent {
   }
 
   renderLabel() {
-    const { label } = this.props;
+    const { label, actions } = this.props;
+
+    const menuTrigger = isEmpty(actions) ? null : (
+      <MenuTrigger>
+        <ThreeDotsIcon size={16} />
+      </MenuTrigger>
+    );
 
     if (isFunction(label)) {
-      return label();
+      return label({ menuTrigger });
     } else {
       return (
         <LabelContainer>
           <LabelTextContainer>
-            <span>{label}</span>
+            <LabelText>{label}</LabelText>
+            {!isEmpty(actions) && <React.Fragment>&nbsp;&nbsp;</React.Fragment>}
+            {menuTrigger}
           </LabelTextContainer>
         </LabelContainer>
       );

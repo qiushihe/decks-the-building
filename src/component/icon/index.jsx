@@ -16,7 +16,8 @@ import {
   RemoveCircleOutlineRounded,
   ExposurePlus1Rounded,
   ExposureNeg1Rounded,
-  Rotate90DegreesCcwRounded
+  Rotate90DegreesCcwRounded,
+  MoreVertRounded
 } from "@material-ui/icons";
 
 const makeIconHoc = IconComponent => ({ size = 24, ...restProps }) => (
@@ -43,3 +44,5 @@ export const DuplicateIcon = makeIconHoc(FlipToFrontOutlined);
 export const AlternateImageIcon = makeIconHoc(Rotate90DegreesCcwRounded);
 export const ExpandIcon = makeIconHoc(FullscreenRounded);
 export const CollapseIcon = makeIconHoc(FullscreenExitRounded);
+
+export const ThreeDotsIcon = makeIconHoc(MoreVertRounded);
