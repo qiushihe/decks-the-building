@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import { SAVING, SAVED_LOCALLY } from "/src/enum/persistence-status.enum";
+import { WORKSPACE_MENU } from "/src/enum/tooltip.enum";
 import WorkspaceSelector from "/src/component/workspace-selector";
 import ActionsHeader from "/src/component/actions-header";
 
@@ -100,6 +101,8 @@ class WorkspaceHeader extends React.PureComponent {
               action: createWorkspace
             }
           ]}
+          menuName={WORKSPACE_MENU}
+          menuProps={{ workspaceId }}
         />
       </Base>
     );

@@ -8,7 +8,9 @@ import Lane from "/src/component/lane";
 
 const uncappedMap = map.convert({ cap: false });
 
-const ScrollContainer = styled.div`
+const ScrollContainer = styled.div.attrs({
+  ["data-tooltip-scrollable"]: true
+})`
   overflow: auto;
 `;
 

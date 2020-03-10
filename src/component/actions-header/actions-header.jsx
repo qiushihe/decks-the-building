@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import uuidV4 from "uuid/v4";
 import flow from "lodash/fp/flow";
 import map from "lodash/fp/map";
 import isFunction from "lodash/fp/isFunction";
@@ -118,6 +119,11 @@ const Base = styled.div`
 `;
 
 class ActionsHeader extends React.PureComponent {
+  constructor(...args) {
+    super(...args);
+
+    this.triggerTooltipId = uuidV4();
+  }
   renderActions() {
     const { actions } = this.props;
 
@@ -153,10 +159,13 @@ class ActionsHeader extends React.PureComponent {
   }
 
   renderLabel() {
-    const { label, actions } = this.props;
+    const { label, menuName, showMenu } = this.props;
 
-    const menuTrigger = isEmpty(actions) ? null : (
-      <MenuTrigger>
+    const menuTrigger = isEmpty(menuName) ? null : (
+      <MenuTrigger
+        data-tooltip-trigger={this.triggerTooltipId}
+        onClick={() => showMenu(this.triggerTooltipId)}
+      >
         <ThreeDotsIcon size={16} />
       </MenuTrigger>
     );
@@ -168,7 +177,9 @@ class ActionsHeader extends React.PureComponent {
         <LabelContainer>
           <LabelTextContainer>
             <LabelText>{label}</LabelText>
-            {!isEmpty(actions) && <React.Fragment>&nbsp;&nbsp;</React.Fragment>}
+            {!isEmpty(menuName) && (
+              <React.Fragment>&nbsp;&nbsp;</React.Fragment>
+            )}
             {menuTrigger}
           </LabelTextContainer>
         </LabelContainer>
@@ -204,14 +215,18 @@ ActionsHeader.propTypes = {
       icon: PropTypes.elementType,
       action: PropTypes.func
     })
-  )
+  ),
+  menuName: PropTypes.string,
+  showMenu: PropTypes.func
 };
 
 ActionsHeader.defaultProps = {
   className: "",
   icon: null,
   label: "",
-  actions: []
+  actions: [],
+  menuName: "",
+  showMenu: () => {}
 };
 
 export default ActionsHeader;

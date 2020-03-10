@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import ActionsHeader from "/src/component/actions-header";
+import { LANE_MENU } from "/src/enum/tooltip.enum";
 
 import {
   RenameIcon,
@@ -24,6 +25,7 @@ class LaneHeader extends React.PureComponent {
   render() {
     const {
       className,
+      laneId,
       laneLabel,
       laneCardsCount,
       renameLane,
@@ -43,6 +45,8 @@ class LaneHeader extends React.PureComponent {
           { title: "Delete Lane", icon: DeleteIcon, action: removeLane },
           { title: "Create Lane", icon: CreateIcon, action: createLane }
         ]}
+        menuName={LANE_MENU}
+        menuProps={{ laneId }}
       />
     );
   }
@@ -50,6 +54,7 @@ class LaneHeader extends React.PureComponent {
 
 LaneHeader.propTypes = {
   className: PropTypes.string,
+  laneId: PropTypes.string,
   laneLabel: PropTypes.string,
   laneCardsCount: PropTypes.number,
   renameLane: PropTypes.func,
@@ -59,6 +64,7 @@ LaneHeader.propTypes = {
 
 LaneHeader.defaultProps = {
   className: "",
+  laneId: "",
   laneLabel: "",
   laneCardsCount: 0,
   renameLane: () => {},

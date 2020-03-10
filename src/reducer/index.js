@@ -6,6 +6,7 @@ import stack from "./stack.reducer";
 import lane from "./lane.reducer";
 import workspace from "./workspace.reducer";
 import modal from "./modal.reducer";
+import tooltip from "./tooltip.reducer";
 import persistenceStatus from "./persistence-status.reducer";
 
 export default () =>
@@ -16,5 +17,6 @@ export default () =>
     lane,
     workspace,
     modal,
+    tooltip,
     persistenceStatus
   });

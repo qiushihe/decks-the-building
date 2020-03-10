@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import ActionsHeader from "/src/component/actions-header";
+import { STACK_MENU } from "/src/enum/tooltip.enum";
 
 import {
   StackIcon,
@@ -26,6 +27,7 @@ class StackHeader extends React.PureComponent {
   render() {
     const {
       className,
+      stackId,
       stackLabel,
       stackCardsCount,
       addCardsToStack,
@@ -59,6 +61,8 @@ class StackHeader extends React.PureComponent {
           { title: "Delete Stack", icon: DeleteIcon, action: removeStack },
           { title: "Create Stack", icon: CreateIcon, action: createStack }
         ]}
+        menuName={STACK_MENU}
+        menuProps={{ stackId }}
       />
     );
   }
@@ -66,6 +70,7 @@ class StackHeader extends React.PureComponent {
 
 StackHeader.propTypes = {
   className: PropTypes.string,
+  stackId: PropTypes.string,
   stackLabel: PropTypes.string,
   stackCardsCount: PropTypes.number,
   addCardsToStack: PropTypes.func,
@@ -77,6 +82,7 @@ StackHeader.propTypes = {
 
 StackHeader.defaultProps = {
   className: "",
+  stackId: "",
   stackLabel: "",
   stackCardsCount: 0,
   addCardsToStack: () => {},
