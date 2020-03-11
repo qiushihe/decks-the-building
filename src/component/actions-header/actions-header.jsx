@@ -2,12 +2,16 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import uuidV4 from "uuid/v4";
-import flow from "lodash/fp/flow";
-import map from "lodash/fp/map";
 import isFunction from "lodash/fp/isFunction";
 import isEmpty from "lodash/fp/isEmpty";
 
 import { ThreeDotsIcon } from "/src/component/icon";
+
+const Base = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 auto;
+`;
 
 const BaseIconAndLabel = styled.div`
   display: flex;
@@ -63,6 +67,7 @@ const LabelText = styled.span`
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  cursor: default;
 `;
 
 const MenuTrigger = styled.div`
@@ -77,68 +82,11 @@ const MenuTrigger = styled.div`
   }
 `;
 
-const ActionsBase = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin-left: 27px;
-`;
-
-const ActionButton = styled.div`
-  display: flex;
-  cursor: pointer;
-  text-transform: uppercase;
-  margin: 0 2px;
-  color: #00000096;
-  border-radius: 9999px;
-
-  &:hover {
-    color: #000000;
-  }
-
-  &:first-child {
-    margin-left: 0;
-  }
-
-  &:last-child {
-    margin-right: 0;
-  }
-`;
-
-const Base = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 0 1 auto;
-
-  ${ActionsBase} {
-    opacity: 0;
-  }
-
-  &:hover ${ActionsBase} {
-    opacity: 1;
-  }
-`;
-
 class ActionsHeader extends React.PureComponent {
   constructor(...args) {
     super(...args);
 
     this.triggerTooltipId = uuidV4();
-  }
-  renderActions() {
-    const { actions } = this.props;
-
-    return (
-      <React.Fragment>
-        {flow([
-          map(({ title, icon: IconComponent, action }) => (
-            <ActionButton onClick={action} title={title}>
-              <IconComponent size={16} />
-            </ActionButton>
-          )),
-          React.Children.toArray
-        ])(actions)}
-      </React.Fragment>
-    );
   }
 
   renderIcon() {
@@ -159,7 +107,7 @@ class ActionsHeader extends React.PureComponent {
   }
 
   renderLabel() {
-    const { label, menuName, showMenu } = this.props;
+    const { label, labelSuffix, menuName, showMenu } = this.props;
 
     const menuTrigger = isEmpty(menuName) ? null : (
       <MenuTrigger
@@ -177,6 +125,7 @@ class ActionsHeader extends React.PureComponent {
         <LabelContainer>
           <LabelTextContainer>
             <LabelText>{label}</LabelText>
+            {isFunction(labelSuffix) ? labelSuffix() : labelSuffix}
             {!isEmpty(menuName) && (
               <React.Fragment>&nbsp;&nbsp;</React.Fragment>
             )}
@@ -199,7 +148,6 @@ class ActionsHeader extends React.PureComponent {
           {renderedIcon !== null && <BaseIcon>{renderedIcon}</BaseIcon>}
           {renderedLabel !== null && <BaseLabel>{renderedLabel}</BaseLabel>}
         </BaseIconAndLabel>
-        <ActionsBase>{this.renderActions()}</ActionsBase>
       </Base>
     );
   }
@@ -209,13 +157,7 @@ ActionsHeader.propTypes = {
   className: PropTypes.string,
   icon: PropTypes.oneOfType([PropTypes.elementType, PropTypes.func]),
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-  actions: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string,
-      icon: PropTypes.elementType,
-      action: PropTypes.func
-    })
-  ),
+  labelSuffix: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
   menuName: PropTypes.string,
   showMenu: PropTypes.func
 };
@@ -224,7 +166,7 @@ ActionsHeader.defaultProps = {
   className: "",
   icon: null,
   label: "",
-  actions: [],
+  labelSuffix: "",
   menuName: "",
   showMenu: () => {}
 };

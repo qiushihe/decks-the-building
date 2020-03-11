@@ -15,7 +15,7 @@ export const ContentBase = getContentBase({
 });
 
 const { tailWidth, tailHeight, tailSize, cornerRadius } = getTailParameters({
-  tailWidth: 30
+  tailWidth: 20
 });
 
 export const TailBase = getTailBase({ tailWidth, tailHeight });

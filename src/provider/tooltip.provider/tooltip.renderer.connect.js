@@ -1,6 +1,8 @@
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 
+import { hide } from "/src/action/tooltip.action";
+
 import {
   activeTooltipName,
   activeTooltipProps
@@ -12,5 +14,8 @@ export default connect(
   createStructuredSelector({
     tooltipName: activeTooltipName,
     tooltipProps: activeTooltipProps
+  }),
+  dispatch => ({
+    hide: () => dispatch(hide())
   })
 )(TooltipRenderer);

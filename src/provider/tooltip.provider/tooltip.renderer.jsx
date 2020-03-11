@@ -16,7 +16,7 @@ const ALL_TOOLTIP_COMPONENTS = {
 
 export class TooltipRenderer extends React.PureComponent {
   render() {
-    const { target, tooltipId, tooltipName, tooltipProps } = this.props;
+    const { target, tooltipId, tooltipName, tooltipProps, hide } = this.props;
 
     const TooltipComponent = ALL_TOOLTIP_COMPONENTS[tooltipName];
 
@@ -26,6 +26,7 @@ export class TooltipRenderer extends React.PureComponent {
           {...tooltipProps}
           tooltipId={tooltipId}
           target={target}
+          hideTooltip={hide}
         />
       );
     } else {
@@ -38,14 +39,16 @@ TooltipRenderer.propTypes = {
   target: PropTypes.object,
   tooltipId: PropTypes.string,
   tooltipName: PropTypes.string,
-  tooltipProps: PropTypes.object
+  tooltipProps: PropTypes.object,
+  hide: PropTypes.func
 };
 
 TooltipRenderer.defaultProps = {
   target: {},
   tooltipId: "",
   tooltipName: "",
-  tooltipProps: {}
+  tooltipProps: {},
+  hide: () => {}
 };
 
 export default TooltipRenderer;

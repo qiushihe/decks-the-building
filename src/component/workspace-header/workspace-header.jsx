@@ -6,18 +6,10 @@ import { SAVING, SAVED_LOCALLY } from "/src/enum/persistence-status.enum";
 import { WORKSPACE_MENU } from "/src/enum/tooltip.enum";
 import WorkspaceSelector from "/src/component/workspace-selector";
 import ActionsHeader from "/src/component/actions-header";
-
-import {
-  RenameIcon,
-  DeleteIcon,
-  SaveIcon,
-  ImportExportIcon,
-  CreateIcon,
-  WorkspaceIcon
-} from "/src/component/icon";
+import { WorkspaceIcon } from "/src/component/icon";
 
 const Base = styled.div`
-  padding: 22px 6px 6px 22px;
+  padding: 12px 6px 12px 22px;
   margin-bottom: 3px;
   background-color: #ebeef2;
   box-shadow: 0 3px 3px -3px #00000069;
@@ -48,16 +40,7 @@ const persistenceMessage = {
 
 class WorkspaceHeader extends React.PureComponent {
   render() {
-    const {
-      className,
-      workspaceId,
-      persistenceStatus,
-      renameWorkspace,
-      saveWorkspace,
-      createWorkspace,
-      removeWorkspace,
-      syncWithCloud
-    } = this.props;
+    const { className, workspaceId, persistenceStatus } = this.props;
 
     return (
       <Base className={className}>
@@ -74,33 +57,6 @@ class WorkspaceHeader extends React.PureComponent {
               </PersistenceStatus>
             </SelectorContainer>
           )}
-          actions={[
-            {
-              title: "Rename Workspace",
-              icon: RenameIcon,
-              action: renameWorkspace
-            },
-            {
-              title: "Save Workspace",
-              icon: SaveIcon,
-              action: saveWorkspace
-            },
-            {
-              title: "Sync Workspace",
-              icon: ImportExportIcon,
-              action: syncWithCloud
-            },
-            {
-              title: "Delete Workspace",
-              icon: DeleteIcon,
-              action: removeWorkspace
-            },
-            {
-              title: "Create Workspace",
-              icon: CreateIcon,
-              action: createWorkspace
-            }
-          ]}
           menuName={WORKSPACE_MENU}
           menuProps={{ workspaceId }}
         />
@@ -112,23 +68,13 @@ class WorkspaceHeader extends React.PureComponent {
 WorkspaceHeader.propTypes = {
   className: PropTypes.string,
   workspaceId: PropTypes.string,
-  persistenceStatus: PropTypes.string,
-  renameWorkspace: PropTypes.func,
-  saveWorkspace: PropTypes.func,
-  createWorkspace: PropTypes.func,
-  removeWorkspace: PropTypes.func,
-  syncWithCloud: PropTypes.func
+  persistenceStatus: PropTypes.string
 };
 
 WorkspaceHeader.defaultProps = {
   className: "",
   workspaceId: "",
-  persistenceStatus: "",
-  renameWorkspace: () => {},
-  saveWorkspace: () => {},
-  createWorkspace: () => {},
-  removeWorkspace: () => {},
-  syncWithCloud: () => {}
+  persistenceStatus: ""
 };
 
 export default WorkspaceHeader;
