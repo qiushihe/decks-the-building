@@ -146,7 +146,7 @@ const ManaContainer = styled.div`
   margin-right: 4px;
 
   ${StyledManaCost} {
-    margin: 0 1px 0 0;
+    margin: 0 0.75px;
   }
 
   ${StyledManaCost}:first-child {

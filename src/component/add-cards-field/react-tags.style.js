@@ -3,6 +3,7 @@ import reduce from "lodash/fp/reduce";
 
 import { getRandomId } from "/src/util/random-id.util";
 import { styleClassName } from "/src/util/classname.util";
+import { MODAL } from "/src/enum/global-z-index.enum";
 
 let classNamePrefix = null;
 
@@ -79,7 +80,7 @@ export const getReactTagsStyles = () => {
       top: 100%;
       left: 0;
       width: 100%;
-      z-index: 9999;
+      z-index: ${MODAL + 1};
 
       ul {
         margin: 4px -1px;

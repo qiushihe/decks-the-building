@@ -8,6 +8,7 @@ import AddCardsToStack from "/src/component/modal/add-cards-to-stack";
 import RenameObject from "/src/component/modal/rename-object";
 import RemoveObject from "/src/component/modal/remove-object";
 import CloudSync from "/src/component/modal/cloud-sync";
+import { MODAL } from "/src/enum/global-z-index.enum";
 
 import {
   ADD_CARDS_TO_STACK,
@@ -29,7 +30,7 @@ const Base = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 9999;
+  z-index: ${MODAL};
 
   .MuiDialog-paper {
     overflow-y: visible !important;

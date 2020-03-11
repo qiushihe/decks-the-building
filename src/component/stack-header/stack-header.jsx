@@ -3,18 +3,11 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import ActionsHeader from "/src/component/actions-header";
-
-import {
-  StackIcon,
-  RenameIcon,
-  CreateIcon,
-  DeleteIcon,
-  AddCardsIcon,
-  CombineCardsIcon
-} from "/src/component/icon";
+import { STACK_MENU } from "/src/enum/tooltip.enum";
+import { StackIcon } from "/src/component/icon";
 
 const Base = styled(ActionsHeader)`
-  margin: 6px 0 2px 6px;
+  margin: 6px 0 12px 6px;
 `;
 
 const StyledStackIcon = styled(StackIcon)`
@@ -26,39 +19,25 @@ class StackHeader extends React.PureComponent {
   render() {
     const {
       className,
+      laneId,
+      stackIndex,
+      stackId,
       stackLabel,
-      stackCardsCount,
-      addCardsToStack,
-      combineDuplicateCards,
-      renameStack,
-      createStack,
-      removeStack
+      stackCardsCount
     } = this.props;
 
     return (
       <Base
         className={className}
         icon={StyledStackIcon}
-        label={
-          stackCardsCount > 0
-            ? `${stackLabel} (${stackCardsCount})`
-            : stackLabel
+        label={stackLabel}
+        labelSuffix={() =>
+          stackCardsCount > 0 ? (
+            <React.Fragment>&nbsp;({stackCardsCount})</React.Fragment>
+          ) : null
         }
-        actions={[
-          { title: "Rename Stack", icon: RenameIcon, action: renameStack },
-          {
-            title: "Add Cards to Stack",
-            icon: AddCardsIcon,
-            action: addCardsToStack
-          },
-          {
-            title: "Combine Cards in Stack",
-            icon: CombineCardsIcon,
-            action: combineDuplicateCards
-          },
-          { title: "Delete Stack", icon: DeleteIcon, action: removeStack },
-          { title: "Create Stack", icon: CreateIcon, action: createStack }
-        ]}
+        menuName={STACK_MENU}
+        menuProps={{ laneId, stackIndex, stackId }}
       />
     );
   }
@@ -66,24 +45,20 @@ class StackHeader extends React.PureComponent {
 
 StackHeader.propTypes = {
   className: PropTypes.string,
+  laneId: PropTypes.string,
+  stackIndex: PropTypes.number,
+  stackId: PropTypes.string,
   stackLabel: PropTypes.string,
-  stackCardsCount: PropTypes.number,
-  addCardsToStack: PropTypes.func,
-  combineDuplicateCards: PropTypes.func,
-  renameStack: PropTypes.func,
-  createStack: PropTypes.func,
-  removeStack: PropTypes.func
+  stackCardsCount: PropTypes.number
 };
 
 StackHeader.defaultProps = {
   className: "",
+  laneId: "",
+  stackIndex: 0,
+  stackId: "",
   stackLabel: "",
-  stackCardsCount: 0,
-  addCardsToStack: () => {},
-  combineDuplicateCards: () => {},
-  renameStack: () => {},
-  createStack: () => {},
-  removeStack: () => {}
+  stackCardsCount: 0
 };
 
 export default StackHeader;

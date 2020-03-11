@@ -6,6 +6,7 @@ import NormalizedStyleProvider from "/src/provider/normalized-style.provider";
 import MaterialUiProvider from "/src/provider/material-ui.provider";
 import BelerenFontProvider from "/src/provider/beleren-font-provider";
 import ReduxStoreProvider from "/src/provider/redux-store.provider";
+import TooltipProvider from "/src/provider/tooltip.provider";
 import ModalProvider from "/src/provider/modal.provider";
 
 import createStore from "/src/store/create";
@@ -20,6 +21,7 @@ const withProviders = flowRight([
   withContainer(MaterialUiProvider),
   withContainer(BelerenFontProvider),
   withContainer(ReduxStoreProvider, { store }),
+  withContainer(TooltipProvider),
   withContainer(ModalProvider)
 ]);
 
