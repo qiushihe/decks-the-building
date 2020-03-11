@@ -3,16 +3,11 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import ActionsHeader from "/src/component/actions-header";
-
-import {
-  RenameIcon,
-  DeleteIcon,
-  CreateIcon,
-  LaneIcon
-} from "/src/component/icon";
+import { LANE_MENU } from "/src/enum/tooltip.enum";
+import { LaneIcon } from "/src/component/icon";
 
 const Base = styled(ActionsHeader)`
-  margin: 16px 0 4px 16px;
+  margin: 12px 0 12px 16px;
 `;
 
 const StyledLaneIcon = styled(LaneIcon)`
@@ -24,25 +19,25 @@ class LaneHeader extends React.PureComponent {
   render() {
     const {
       className,
+      workspaceId,
+      laneIndex,
+      laneId,
       laneLabel,
-      laneCardsCount,
-      renameLane,
-      createLane,
-      removeLane
+      laneCardsCount
     } = this.props;
 
     return (
       <Base
         className={className}
         icon={StyledLaneIcon}
-        label={
-          laneCardsCount > 0 ? `${laneLabel} (${laneCardsCount})` : laneLabel
+        label={laneLabel}
+        labelSuffix={() =>
+          laneCardsCount > 0 ? (
+            <React.Fragment>&nbsp;({laneCardsCount})</React.Fragment>
+          ) : null
         }
-        actions={[
-          { title: "Rename Lane", icon: RenameIcon, action: renameLane },
-          { title: "Delete Lane", icon: DeleteIcon, action: removeLane },
-          { title: "Create Lane", icon: CreateIcon, action: createLane }
-        ]}
+        menuName={LANE_MENU}
+        menuProps={{ workspaceId, laneIndex, laneId }}
       />
     );
   }
@@ -50,20 +45,20 @@ class LaneHeader extends React.PureComponent {
 
 LaneHeader.propTypes = {
   className: PropTypes.string,
+  workspaceId: PropTypes.string,
+  laneIndex: PropTypes.number,
+  laneId: PropTypes.string,
   laneLabel: PropTypes.string,
-  laneCardsCount: PropTypes.number,
-  renameLane: PropTypes.func,
-  createLane: PropTypes.func,
-  removeLane: PropTypes.func
+  laneCardsCount: PropTypes.number
 };
 
 LaneHeader.defaultProps = {
   className: "",
+  workspaceId: "",
+  laneIndex: 0,
+  laneId: "",
   laneLabel: "",
-  laneCardsCount: 0,
-  renameLane: () => {},
-  createLane: () => {},
-  removeLane: () => {}
+  laneCardsCount: 0
 };
 
 export default LaneHeader;

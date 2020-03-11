@@ -2,6 +2,7 @@ import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 
 import { hide } from "/src/action/modal.action";
+
 import {
   hasActiveModal,
   activeModalName,
