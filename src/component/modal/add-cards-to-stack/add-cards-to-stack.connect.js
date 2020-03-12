@@ -9,6 +9,7 @@ import reduce from "lodash/fp/reduce";
 
 import { stackCardEntriesCount } from "/src/selector/stack.selector";
 import { add as addCards } from "/src/action/card.action";
+import { parseCardLine } from "/src/util/card.util";
 
 import {
   addCards as addCardsToStack,
@@ -16,8 +17,6 @@ import {
 } from "/src/action/stack.action";
 
 import AddCardsToStack from "./add-cards-to-stack";
-
-const cardLineRegexp = new RegExp("^((\\d*)(\\s*.)?\\s+)?(.+)$");
 
 const uncappedMap = map.convert({ cap: false });
 
@@ -43,10 +42,10 @@ export default connect(
     ...dispatchProps,
     ...ownProps,
     onSubmit: flow([
-      map(name => name.match(cardLineRegexp)),
-      map((matches = []) => ({
-        copies: parseInt(matches[2]) || 1,
-        name: matches[4]
+      map(parseCardLine),
+      map(({ quantity, name } = {}) => ({
+        copies: parseInt(quantity) || 1,
+        name
       })),
       cards => {
         const copiesByCardName = reduce(
