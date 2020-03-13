@@ -11,7 +11,8 @@ export class LaneMenu extends React.PureComponent {
       target,
       renameLane,
       createLane,
-      removeLane
+      removeLane,
+      exportCards
     } = this.props;
 
     return (
@@ -25,6 +26,8 @@ export class LaneMenu extends React.PureComponent {
           <MenuItem onClick={renameLane}>Rename Lane</MenuItem>
           <MenuItem onClick={removeLane}>Delete Lane</MenuItem>
           <MenuItem onClick={createLane}>Create Lane</MenuItem>
+          <MenuItem onClick={createLane}>Create Lane</MenuItem>
+          <MenuItem onClick={exportCards}>Export Cards</MenuItem>
         </MenuBase>
       </BaseTooltip>
     );
@@ -36,7 +39,8 @@ LaneMenu.propTypes = {
   target: PropTypes.object,
   renameLane: PropTypes.func,
   createLane: PropTypes.func,
-  removeLane: PropTypes.func
+  removeLane: PropTypes.func,
+  exportCards: PropTypes.func
 };
 
 LaneMenu.defaultProps = {
@@ -44,7 +48,8 @@ LaneMenu.defaultProps = {
   target: {},
   renameLane: () => {},
   createLane: () => {},
-  removeLane: () => {}
+  removeLane: () => {},
+  exportCards: () => {}
 };
 
 export default LaneMenu;

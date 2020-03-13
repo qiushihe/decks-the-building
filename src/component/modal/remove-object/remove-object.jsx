@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Button from "@material-ui/core/Button";
 import DialogContentText from "@material-ui/core/DialogContentText";
 
-import { WORKSPACE, LANE, STACK } from "/src/enum/nameable.enum";
+import { WORKSPACE, LANE, STACK } from "/src/enum/object.enum";
 import BaseModal from "/src/component/modal/base";
 
 const RemovableTitle = {

@@ -1,7 +1,7 @@
 import Promise from "bluebird";
 import { connect } from "react-redux";
 
-import { WORKSPACE, LANE, STACK } from "/src/enum/nameable.enum";
+import { WORKSPACE, LANE, STACK } from "/src/enum/object.enum";
 import { rename as renameWorkspace } from "/src/action/workspace.action";
 import { rename as renameLane } from "/src/action/lane.action";
 import { rename as renameStack } from "/src/action/stack.action";
