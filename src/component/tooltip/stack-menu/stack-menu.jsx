@@ -13,7 +13,8 @@ export class StackMenu extends React.PureComponent {
       combineDuplicateCards,
       renameStack,
       createStack,
-      removeStack
+      removeStack,
+      exportCards
     } = this.props;
 
     return (
@@ -31,6 +32,7 @@ export class StackMenu extends React.PureComponent {
           </MenuItem>
           <MenuItem onClick={removeStack}>Delete Stack</MenuItem>
           <MenuItem onClick={createStack}>Create Stack</MenuItem>
+          <MenuItem onClick={exportCards}>Export Cards</MenuItem>
         </MenuBase>
       </BaseTooltip>
     );
@@ -44,7 +46,8 @@ StackMenu.propTypes = {
   combineDuplicateCards: PropTypes.func,
   renameStack: PropTypes.func,
   createStack: PropTypes.func,
-  removeStack: PropTypes.func
+  removeStack: PropTypes.func,
+  exportCards: PropTypes.func
 };
 
 StackMenu.defaultProps = {
@@ -54,7 +57,8 @@ StackMenu.defaultProps = {
   combineDuplicateCards: () => {},
   renameStack: () => {},
   createStack: () => {},
-  removeStack: () => {}
+  removeStack: () => {},
+  exportCards: () => {}
 };
 
 export default StackMenu;

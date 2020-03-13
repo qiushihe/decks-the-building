@@ -3,6 +3,7 @@ import flow from "lodash/fp/flow";
 import toLower from "lodash/fp/toLower";
 import trim from "lodash/fp/trim";
 import get from "lodash/fp/get";
+import nth from "lodash/fp/nth";
 import cond from "lodash/fp/cond";
 import map from "lodash/fp/map";
 import reduce from "lodash/fp/reduce";
@@ -38,6 +39,25 @@ import {
 import { encode } from "/src/util/base64.util";
 
 export const encodeCardName = flow([trim, toLower, encode]);
+
+const CARD_LINE_REGEXP = new RegExp(
+  "^((\\d*)(\\s*.)?\\s+)?(.+?)((\\s+\\(([^()]+)\\))(\\s+(\\d+))?)?$"
+);
+
+const applyCardLineRegexp = flow([
+  trim,
+  (line = "") => line.match(CARD_LINE_REGEXP)
+]);
+
+export const parseCardLine = line => {
+  const matches = applyCardLineRegexp(line);
+  const quantity = nth(2)(matches);
+  const name = nth(4)(matches);
+  const set = nth(7)(matches);
+  const collectorNumber = nth(9)(matches);
+
+  return { quantity, name, set, collectorNumber };
+};
 
 const parseColorIdentity = flow([
   cond([

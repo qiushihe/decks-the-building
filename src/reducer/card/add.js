@@ -11,6 +11,7 @@ export default (state = {}, { cards } = {}) => {
           ? {
               ...result,
               [id]: {
+                id,
                 name,
                 detail: null
               }

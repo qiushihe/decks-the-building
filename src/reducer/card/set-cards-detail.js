@@ -9,6 +9,7 @@ export default (state = {}, cardsDetail = []) => {
         (result, { id, name, ...cardDetail }) => ({
           ...result,
           [id]: {
+            id,
             name,
             detail: {
               ...cardDetail

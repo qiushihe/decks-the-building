@@ -1,8 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import WorkspaceHeader from "/src/component/workspace-header";
-import Lanes from "/src/component/lanes";
+import Workspace from "/src/component/workspace";
 
 class Application extends React.PureComponent {
   componentDidMount() {
@@ -14,8 +13,7 @@ class Application extends React.PureComponent {
     const { workspaceId } = this.props;
     return (
       <React.Fragment>
-        <WorkspaceHeader workspaceId={workspaceId} />
-        <Lanes workspaceId={workspaceId} />
+        <Workspace workspaceId={workspaceId} />
       </React.Fragment>
     );
   }

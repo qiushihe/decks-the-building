@@ -6,7 +6,7 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import DialogContentText from "@material-ui/core/DialogContentText";
 
-import { WORKSPACE, LANE, STACK } from "/src/enum/nameable.enum";
+import { WORKSPACE, LANE, STACK } from "/src/enum/object.enum";
 import BaseModal from "/src/component/modal/base";
 
 const NameableTitle = {
@@ -71,7 +71,7 @@ export class RenameObject extends React.PureComponent {
         )}
       >
         <Base>
-          <DialogContentText id="alert-dialog-description">
+          <DialogContentText>
             Enter a new name for the {NameableTitle[nameable]} &quot;{name}
             &quot;:
           </DialogContentText>

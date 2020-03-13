@@ -13,7 +13,8 @@ export class WorkspaceMenu extends React.PureComponent {
       saveWorkspace,
       createWorkspace,
       removeWorkspace,
-      syncWithCloud
+      syncWithCloud,
+      exportCards
     } = this.props;
 
     return (
@@ -29,6 +30,7 @@ export class WorkspaceMenu extends React.PureComponent {
           <MenuItem onClick={syncWithCloud}>Sync Workspace</MenuItem>
           <MenuItem onClick={removeWorkspace}>Delete Workspace</MenuItem>
           <MenuItem onClick={createWorkspace}>Create Workspace</MenuItem>
+          <MenuItem onClick={exportCards}>Export Cards</MenuItem>
         </MenuBase>
       </BaseTooltip>
     );
@@ -42,7 +44,8 @@ WorkspaceMenu.propTypes = {
   saveWorkspace: PropTypes.func,
   createWorkspace: PropTypes.func,
   removeWorkspace: PropTypes.func,
-  syncWithCloud: PropTypes.func
+  syncWithCloud: PropTypes.func,
+  exportCards: PropTypes.func
 };
 
 WorkspaceMenu.defaultProps = {
@@ -52,7 +55,8 @@ WorkspaceMenu.defaultProps = {
   saveWorkspace: () => {},
   createWorkspace: () => {},
   removeWorkspace: () => {},
-  syncWithCloud: () => {}
+  syncWithCloud: () => {},
+  exportCards: () => {}
 };
 
 export default WorkspaceMenu;
