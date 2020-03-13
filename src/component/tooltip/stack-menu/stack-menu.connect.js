@@ -9,7 +9,7 @@ import {
   REMOVE_OBJECT
 } from "/src/enum/modal.enum";
 
-import { STACK } from "/src/enum/nameable.enum";
+import { STACK } from "/src/enum/object.enum";
 import { show } from "/src/action/modal.action";
 import { laneStacksCount } from "/src/selector/lane.selector";
 import { stackLabel } from "/src/selector/stack.selector";

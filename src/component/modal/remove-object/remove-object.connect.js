@@ -6,7 +6,7 @@ import first from "lodash/fp/first";
 import without from "lodash/fp/without";
 
 import { allWorkspaceIds } from "/src/selector/workspace.selector";
-import { WORKSPACE, LANE, STACK } from "/src/enum/nameable.enum";
+import { WORKSPACE, LANE, STACK } from "/src/enum/object.enum";
 import { removeStacks } from "/src/action/lane.action";
 
 import {

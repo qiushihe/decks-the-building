@@ -4,7 +4,7 @@ import uuidV4 from "uuid/v4";
 import isFunction from "lodash/fp/isFunction";
 
 import { RENAME_OBJECT, REMOVE_OBJECT, CLOUD_SYNC } from "/src/enum/modal.enum";
-import { WORKSPACE } from "/src/enum/nameable.enum";
+import { WORKSPACE } from "/src/enum/object.enum";
 import { show } from "/src/action/modal.action";
 import { save, create, activate } from "/src/action/workspace.action";
 import { workspaceLabel } from "/src/selector/workspace.selector";

@@ -4,7 +4,7 @@ import uuidV4 from "uuid/v4";
 import isFunction from "lodash/fp/isFunction";
 
 import { RENAME_OBJECT, REMOVE_OBJECT } from "/src/enum/modal.enum";
-import { LANE } from "/src/enum/nameable.enum";
+import { LANE } from "/src/enum/object.enum";
 import { show as showModal } from "/src/action/modal.action";
 import { workspaceLanesCount } from "/src/selector/workspace.selector";
 import { laneLabel } from "/src/selector/lane.selector";
