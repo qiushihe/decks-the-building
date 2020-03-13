@@ -6,7 +6,8 @@ import isFunction from "lodash/fp/isFunction";
 import {
   ADD_CARDS_TO_STACK,
   RENAME_OBJECT,
-  REMOVE_OBJECT
+  REMOVE_OBJECT,
+  EXPORT_CARDS
 } from "/src/enum/modal.enum";
 
 import { STACK } from "/src/enum/object.enum";
@@ -108,6 +109,20 @@ export default connect(
           name: stateProps.stackLabel,
           laneId: ownProps.laneId,
           stackId: ownProps.stackId
+        }
+      });
+    },
+    exportCards: () => {
+      if (isFunction(ownProps.hideTooltip)) {
+        ownProps.hideTooltip();
+      }
+
+      dispatchProps.show({
+        name: EXPORT_CARDS,
+        props: {
+          containerType: STACK,
+          containerId: ownProps.stackId,
+          containerName: stateProps.stackLabel
         }
       });
     }

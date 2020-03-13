@@ -8,20 +8,23 @@ import AddCardsToStack from "/src/component/modal/add-cards-to-stack";
 import RenameObject from "/src/component/modal/rename-object";
 import RemoveObject from "/src/component/modal/remove-object";
 import CloudSync from "/src/component/modal/cloud-sync";
+import ExportCards from "/src/component/modal/export-cards";
 import { MODAL } from "/src/enum/global-z-index.enum";
 
 import {
   ADD_CARDS_TO_STACK,
   RENAME_OBJECT,
   REMOVE_OBJECT,
-  CLOUD_SYNC
+  CLOUD_SYNC,
+  EXPORT_CARDS
 } from "/src/enum/modal.enum";
 
 const ALL_MODAL_COMPONENTS = {
   [ADD_CARDS_TO_STACK]: AddCardsToStack,
   [RENAME_OBJECT]: RenameObject,
   [REMOVE_OBJECT]: RemoveObject,
-  [CLOUD_SYNC]: CloudSync
+  [CLOUD_SYNC]: CloudSync,
+  [EXPORT_CARDS]: ExportCards
 };
 
 const Base = styled.div`

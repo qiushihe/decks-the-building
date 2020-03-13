@@ -71,7 +71,7 @@ export class RenameObject extends React.PureComponent {
         )}
       >
         <Base>
-          <DialogContentText id="alert-dialog-description">
+          <DialogContentText>
             Enter a new name for the {NameableTitle[nameable]} &quot;{name}
             &quot;:
           </DialogContentText>
