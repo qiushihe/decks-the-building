@@ -7,12 +7,13 @@ import {
   TableChartRounded,
   ViewCarouselRounded,
   ViewListRounded,
-  RemoveCircleOutlineRounded,
   ExposurePlus1Rounded,
   ExposureNeg1Rounded,
   Rotate90DegreesCcwRounded,
   MoreVertRounded,
-  ErrorRounded
+  ErrorRounded,
+  AddCircleOutlineRounded,
+  RemoveCircleOutlineRounded
 } from "@material-ui/icons";
 
 const makeIconHoc = IconComponent => ({ size = 24, ...restProps }) => (
@@ -23,8 +24,6 @@ export const WorkspaceIcon = makeIconHoc(TableChartRounded);
 export const LaneIcon = makeIconHoc(ViewCarouselRounded);
 export const StackIcon = makeIconHoc(ViewListRounded);
 
-export const DeleteIcon = makeIconHoc(RemoveCircleOutlineRounded);
-
 export const AddOneIcon = makeIconHoc(ExposurePlus1Rounded);
 export const SubtractOneIcon = makeIconHoc(ExposureNeg1Rounded);
 export const DuplicateIcon = makeIconHoc(FlipToFrontOutlined);
@@ -34,3 +33,6 @@ export const CollapseIcon = makeIconHoc(FullscreenExitRounded);
 
 export const ThreeDotsIcon = makeIconHoc(MoreVertRounded);
 export const ErrorIcon = makeIconHoc(ErrorRounded);
+
+export const AddIcon = makeIconHoc(AddCircleOutlineRounded);
+export const RemoveIcon = makeIconHoc(RemoveCircleOutlineRounded);
