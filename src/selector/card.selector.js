@@ -6,8 +6,6 @@ import size from "lodash/fp/size";
 import lt from "lodash/fp/lt";
 import includes from "lodash/fp/includes";
 import find from "lodash/fp/find";
-import negate from "lodash/fp/negate";
-import isNil from "lodash/fp/isNil";
 
 import { fromProps } from "/src/util/selector.util";
 
@@ -16,6 +14,11 @@ import { card as cardState } from "./root.selector";
 export const allCardNames = createSelector(cardState, get("allCardNames"));
 
 export const allCardSymbols = createSelector(cardState, get("allCardSymbols"));
+
+export const allFailedCardIds = createSelector(
+  cardState,
+  get("allFailedCardIds")
+);
 
 export const cardSymbol = createSelector(
   fromProps(get("symbol")),
@@ -36,9 +39,11 @@ export const cardById = createSelector(
 
 export const cardName = createSelector(cardById, get("name"));
 
-export const cardError = createSelector(cardById, get("error"));
-
-export const cardHasError = createSelector(cardError, negate(isNil));
+export const cardHasError = createSelector(
+  fromProps(get("cardId")),
+  allFailedCardIds,
+  (cardId, allFailedIds) => includes(cardId)(allFailedIds)
+);
 
 export const cardDetail = createSelector(cardById, get("detail"));
 

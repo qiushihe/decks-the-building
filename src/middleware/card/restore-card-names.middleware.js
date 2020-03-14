@@ -5,6 +5,7 @@ import { setCardNames } from "/src/action/card.action";
 import { CARD_CATALOG_NAMES } from "/src/enum/catalog.enum";
 import { contextualMiddleware } from "/src/util/middleware.util";
 import { getMultiLevelCardCacheService } from "/src/service/card/multi-level-card-cache.service";
+import { LEVEL_2 } from "/src/enum/app-readiness.enum";
 
 export default contextualMiddleware({}, ({ dispatch }) => {
   return next => action => {
@@ -16,7 +17,7 @@ export default contextualMiddleware({}, ({ dispatch }) => {
           payload: { level }
         } = action;
 
-        if (level === 2) {
+        if (level === LEVEL_2) {
           return getMultiLevelCardCacheService()
             .readCatalog(CARD_CATALOG_NAMES)
             .then(names => dispatch(setCardNames({ names })));

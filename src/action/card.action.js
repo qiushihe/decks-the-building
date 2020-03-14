@@ -10,6 +10,8 @@ export const SET_CARD_NAMES = "CARD/SET_CARD_NAMES";
 export const SET_CARD_SYMBOLS = "CARD/SET_CARD_SYMBOLS";
 export const SET_CARDS_DETAIL = "CARD/SET_CARDS_DETAIL";
 
+export const ADD_FAILED_CARD_IDS = "CARD/ADD_FAILED_CARD_IDS";
+
 export const CARD_DETAIL_ATTRIBUTES = [
   "layout",
   "colorIdentity",
@@ -43,6 +45,12 @@ export const setCardSymbols = createPromisedAction(
 
 export const setCardsDetail = createPromisedAction(
   SET_CARDS_DETAIL,
-  pickArray(["id", "name", "error", ...CARD_DETAIL_ATTRIBUTES]),
+  pickArray(["id", "name", ...CARD_DETAIL_ATTRIBUTES]),
+  invoke
+);
+
+export const addFailedCardIds = createPromisedAction(
+  ADD_FAILED_CARD_IDS,
+  ["ids"],
   invoke
 );

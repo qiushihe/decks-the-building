@@ -7,13 +7,12 @@ export default (state = {}, cardsDetail = []) => {
     allCards: {
       ...state.allCards,
       ...reduce(
-        (result, { id, name, error, ...cardDetail }) => ({
+        (result, { id, name, ...cardDetail }) => ({
           ...result,
           [id]: {
             ...getOr({}, id)(state.allCards),
             id,
             name,
-            error,
             detail: {
               ...cardDetail
             }

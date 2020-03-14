@@ -13,6 +13,7 @@ import { getS3Client } from "/src/api/s3.api";
 import { READY } from "/src/action/app.action";
 import { contextualMiddleware } from "/src/util/middleware.util";
 import { APP_READY } from "/src/enum/action-lifecycle.enum";
+import { LEVEL_2 } from "/src/enum/app-readiness.enum";
 
 export default contextualMiddleware({}, ({ dispatch }) => next => action => {
   const { type: actionType } = action;
@@ -42,7 +43,7 @@ export default contextualMiddleware({}, ({ dispatch }) => next => action => {
         payload: { level }
       } = action;
 
-      if (level === 2 && s3Client.isLoggedIn()) {
+      if (level === LEVEL_2 && s3Client.isLoggedIn()) {
         return fetchAvailableWorkspaces().catch(() => dispatch(clearLogin()));
       }
     } else if (actionType === SET_LOGIN) {

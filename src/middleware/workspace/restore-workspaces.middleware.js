@@ -13,6 +13,7 @@ import { contextualMiddleware } from "/src/util/middleware.util";
 import { APP_READY } from "/src/enum/action-lifecycle.enum";
 import { getFetchAllFromLocalService } from "/src/service/workspace/fetch-all-from-local.service";
 import { getMultiLevelPreferenceCacheService } from "/src/service/preference/multi-level-preference-cache.service";
+import { LEVEL_3 } from "/src/enum/app-readiness.enum";
 
 import importFromJson from "./import-from-json";
 
@@ -27,7 +28,7 @@ export default contextualMiddleware(
           payload: { level }
         } = action;
 
-        if (level === 3) {
+        if (level === LEVEL_3) {
           return getFetchAllFromLocalService()
             .retrieveAll()
             .then(workspacesData => {
