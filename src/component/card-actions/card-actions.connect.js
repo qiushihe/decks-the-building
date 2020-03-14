@@ -2,7 +2,11 @@ import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 
 import { stackCardCollapsedByCardIndex } from "/src/selector/stack.selector";
-import { cardDetailHasAlternateImage } from "/src/selector/card.selector";
+
+import {
+  cardHasError,
+  cardDetailHasAlternateImage
+} from "/src/selector/card.selector";
 
 import {
   toggleCards,
@@ -16,7 +20,8 @@ import CardActions from "./card-actions";
 export default connect(
   createStructuredSelector({
     collapsed: stackCardCollapsedByCardIndex,
-    hasAlternateImage: cardDetailHasAlternateImage
+    hasAlternateImage: cardDetailHasAlternateImage,
+    hasError: cardHasError
   }),
   dispatch => ({
     toggleCards: ({ id, cardIndices }) =>

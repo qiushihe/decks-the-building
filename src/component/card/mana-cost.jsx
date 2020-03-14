@@ -10,7 +10,7 @@ const ManaImage = styled.img`
   height: 12px;
   width: auto;
   border-radius: 9999px;
-  box-shadow: -0.5px 0.5px 0 0 black;
+  box-shadow: -1px 1px 0 0 black;
 `;
 
 class ManaCost extends React.PureComponent {

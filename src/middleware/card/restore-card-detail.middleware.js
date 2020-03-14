@@ -8,13 +8,19 @@ import negate from "lodash/fp/negate";
 import isEmpty from "lodash/fp/isEmpty";
 import isNil from "lodash/fp/isNil";
 import size from "lodash/fp/size";
+import over from "lodash/fp/over";
+import flatten from "lodash/fp/flatten";
+import compact from "lodash/fp/compact";
+import filter from "lodash/fp/filter";
+import includes from "lodash/fp/includes";
 
 import { READY } from "/src/action/app.action";
-import { ADD, setCardsDetail } from "/src/action/card.action";
-import { cardName } from "/src/selector/card.selector";
+import { ADD, setCardsDetail, addFailedCardIds } from "/src/action/card.action";
+import { cardName, allFailedCardIds } from "/src/selector/card.selector";
 import { withProps } from "/src/util/selector.util";
 import { contextualMiddleware } from "/src/util/middleware.util";
 import { getMultiLevelCardCacheService } from "/src/service/card/multi-level-card-cache.service";
+import { LEVEL_3 } from "/src/enum/app-readiness.enum";
 
 const IDLE_DELAY = 2000;
 const BUSY_DELAY = 10;
@@ -41,6 +47,9 @@ export default contextualMiddleware({}, ({ getState, dispatch }) => {
       }
 
       currentTaskPromise = flow([
+        filter(cardId =>
+          flow([allFailedCardIds, negate(includes(cardId))])(currentState)
+        ),
         map(cardId => ({
           cardId,
           cardName: withProps({ cardId })(cardName)(currentState)
@@ -49,17 +58,39 @@ export default contextualMiddleware({}, ({ getState, dispatch }) => {
           getMultiLevelCardCacheService()
             .readCardsDetail(params)
             .then(
-              cond([
-                [
-                  negate(isEmpty),
-                  cardsDetail => dispatch(setCardsDetail(cardsDetail))
-                ]
+              flow([
+                over([
+                  flow([
+                    filter(flow([get("error"), isNil])),
+                    cond([
+                      [
+                        negate(isEmpty),
+                        cardsDetail => dispatch(setCardsDetail(cardsDetail))
+                      ]
+                    ])
+                  ]),
+                  flow([
+                    filter(flow([get("error"), negate(isNil)])),
+                    cond([
+                      [
+                        negate(isEmpty),
+                        flow([
+                          map(get("id")),
+                          ids => dispatch(addFailedCardIds({ ids }))
+                        ])
+                      ]
+                    ])
+                  ])
+                ]),
+                flatten,
+                compact,
+                Promise.all
               ])
             )
       ])(cardIds);
 
       currentTaskPromise
-        .catch(err => console.warn(err))
+        .catch(err => console.error(err))
         .finally(() => {
           if (!isEmpty(cardIds)) {
             const batchConsumedTime = new Date().getTime() - batchStartTime;
@@ -117,7 +148,7 @@ export default contextualMiddleware({}, ({ getState, dispatch }) => {
           payload: { level }
         } = action;
 
-        if (level === 3) {
+        if (level === LEVEL_3) {
           return startRestoreQueue();
         }
       } else if (actionType === ADD) {

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import get from "lodash/fp/get";
 import map from "lodash/fp/map";
+import isEmpty from "lodash/fp/isEmpty";
 
 import Button from "@material-ui/core/Button";
 import Tabs from "@material-ui/core/Tabs";
@@ -20,7 +21,7 @@ export class AddCardsToStack extends React.PureComponent {
     super(...args);
 
     this.state = {
-      cardNames: "",
+      cardNames: [],
       tabIndex: 0
     };
 
@@ -32,6 +33,7 @@ export class AddCardsToStack extends React.PureComponent {
 
   handleTabChange(_, index) {
     this.setState({
+      cardNames: [],
       tabIndex: index
     });
   }
@@ -54,7 +56,7 @@ export class AddCardsToStack extends React.PureComponent {
   }
 
   render() {
-    const { tabIndex } = this.state;
+    const { tabIndex, cardNames } = this.state;
 
     return (
       <BaseModal
@@ -63,7 +65,11 @@ export class AddCardsToStack extends React.PureComponent {
             <Button onClick={this.handleCancel} color="secondary">
               Cancel
             </Button>
-            <Button onClick={this.handleAddCard} color="primary">
+            <Button
+              onClick={this.handleAddCard}
+              color="primary"
+              disabled={isEmpty(cardNames)}
+            >
               {tabIndex === 0 ? "Add" : "Import"}
             </Button>
           </React.Fragment>

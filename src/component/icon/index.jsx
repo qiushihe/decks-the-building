@@ -11,7 +11,8 @@ import {
   ExposurePlus1Rounded,
   ExposureNeg1Rounded,
   Rotate90DegreesCcwRounded,
-  MoreVertRounded
+  MoreVertRounded,
+  ErrorRounded
 } from "@material-ui/icons";
 
 const makeIconHoc = IconComponent => ({ size = 24, ...restProps }) => (
@@ -32,3 +33,4 @@ export const ExpandIcon = makeIconHoc(FullscreenRounded);
 export const CollapseIcon = makeIconHoc(FullscreenExitRounded);
 
 export const ThreeDotsIcon = makeIconHoc(MoreVertRounded);
+export const ErrorIcon = makeIconHoc(ErrorRounded);

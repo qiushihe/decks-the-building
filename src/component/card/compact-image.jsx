@@ -8,6 +8,10 @@ import split from "lodash/fp/split";
 import first from "lodash/fp/first";
 import get from "lodash/fp/get";
 import map from "lodash/fp/map";
+import cond from "lodash/fp/cond";
+import identity from "lodash/fp/identity";
+import stubTrue from "lodash/fp/stubTrue";
+import constant from "lodash/fp/constant";
 
 import {
   COLOR_IDENTITY_LABEL_GRADIENT_COLOR,
@@ -18,6 +22,8 @@ import {
   colorIdentityGradientGetter,
   getCardBackground
 } from "/src/util/card.util";
+
+import { ErrorIcon } from "/src/component/icon";
 
 import ManaCost from "./mana-cost.connect";
 
@@ -116,7 +122,7 @@ const NameContainer = styled.div`
 const CardName = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: flex-end;
+  align-items: center;
   flex: 1 1 auto;
   position: absolute;
   top: 0;
@@ -125,14 +131,48 @@ const CardName = styled.div`
   bottom: 0;
 
   span {
+    position: relative;
     font-family: "Beleren Bold", serif;
     font-size: 13px;
-    line-height: 16px;
+    line-height: 1;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    text-shadow: 0px 1px #ffffffbf;
+    text-shadow: 0 1px #ffffffbf;
+
+    &::after {
+      content: "";
+      width: 100%;
+      height: 1px;
+      background: #000000;
+      position: absolute;
+      bottom: 50%;
+      left: 0;
+      display: ${flow([
+        get("hasError"),
+        cond([
+          [identity, constant("block")],
+          [stubTrue, constant("none")]
+        ])
+      ])};
+    }
   }
+`;
+
+const StyledErrorIcon = styled(ErrorIcon)`
+  display: inline-flex !important;
+  font-size: 16px !important;
+  color: #c80000;
+`;
+
+const CardErrorIndicator = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 `;
 
 const StyledManaCost = styled(ManaCost)``;
@@ -144,6 +184,7 @@ const ManaContainer = styled.div`
   flex: 0 1 auto;
   margin-left: 2px;
   margin-right: 4px;
+  padding-bottom: 2px;
 
   ${StyledManaCost} {
     margin: 0 0.75px;
@@ -160,15 +201,27 @@ const ManaContainer = styled.div`
 
 class CompactImage extends React.PureComponent {
   render() {
-    const { className, count, name, manaCost, colorIdentity } = this.props;
+    const {
+      className,
+      count,
+      name,
+      manaCost,
+      colorIdentity,
+      hasError
+    } = this.props;
 
     return (
       <Base className={className}>
         <Backdrop colorIdentity={colorIdentity}>
           <Content colorIdentity={colorIdentity}>
             <NameContainer>
-              <CardName>
+              <CardName hasError={hasError}>
                 <span>{name}</span>
+                {hasError && (
+                  <CardErrorIndicator>
+                    <StyledErrorIcon />
+                  </CardErrorIndicator>
+                )}
               </CardName>
             </NameContainer>
             <ManaContainer>
@@ -195,7 +248,8 @@ CompactImage.propTypes = {
   count: PropTypes.number,
   name: PropTypes.string,
   manaCost: PropTypes.string,
-  colorIdentity: PropTypes.arrayOf(PropTypes.string)
+  colorIdentity: PropTypes.array,
+  hasError: PropTypes.bool
 };
 
 CompactImage.defaultProps = {
@@ -203,7 +257,8 @@ CompactImage.defaultProps = {
   count: 0,
   name: "",
   manaCost: "",
-  colorIdentity: []
+  colorIdentity: [],
+  hasError: false
 };
 
 export default CompactImage;
