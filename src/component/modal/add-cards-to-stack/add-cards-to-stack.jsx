@@ -11,8 +11,13 @@ import Tab from "@material-ui/core/Tab";
 
 import BaseModal from "/src/component/modal/base";
 import AddCardsField from "/src/component/add-cards-field";
+import ImportCardsField from "/src/component/import-cards-field";
 
 const StyledAddCardsField = styled(AddCardsField)`
+  width: 420px;
+`;
+
+const StyledImportCardsField = styled(ImportCardsField)`
   width: 420px;
 `;
 
@@ -84,7 +89,9 @@ export class AddCardsToStack extends React.PureComponent {
         {tabIndex === 0 && (
           <StyledAddCardsField onChange={this.handleFieldChange} />
         )}
-        {tabIndex === 1 && <div>Shits ain&apos;t done yo!</div>}
+        {tabIndex === 1 && (
+          <StyledImportCardsField onChange={this.handleFieldChange} />
+        )}
       </BaseModal>
     );
   }
