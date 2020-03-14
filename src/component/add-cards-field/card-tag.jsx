@@ -5,7 +5,8 @@ import styled from "styled-components";
 
 import { Typography } from "@material-ui/core";
 
-import { DeleteIcon } from "/src/component/icon";
+import Arrange from "/src/component/arrange";
+import { RemoveIcon } from "/src/component/icon";
 
 const Base = styled.div``;
 
@@ -15,11 +16,17 @@ const Content = styled.div`
   align-items: center;
 `;
 
-const DeleteEntry = styled(DeleteIcon).attrs({
+const QuantityControls = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 6px;
+`;
+
+const RemoveCopy = styled(RemoveIcon).attrs({
   size: 18
 })`
   cursor: pointer;
-  margin-right: 3px;
 `;
 
 class CardTag extends React.PureComponent {
@@ -34,8 +41,16 @@ class CardTag extends React.PureComponent {
     return (
       <Base className={classNames(className, selectedTag)}>
         <Content className={selectedTagName}>
-          <DeleteEntry onClick={onDelete} />
-          <Typography noWrap={true}>{cardName}</Typography>
+          <Arrange>
+            <Arrange.Fit>
+              <QuantityControls>
+                <RemoveCopy onClick={onDelete} />
+              </QuantityControls>
+            </Arrange.Fit>
+            <Arrange.Fill>
+              <Typography noWrap={true}>{cardName}</Typography>
+            </Arrange.Fill>
+          </Arrange>
         </Content>
       </Base>
     );
