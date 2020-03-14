@@ -23,6 +23,8 @@ import {
   getCardBackground
 } from "/src/util/card.util";
 
+import { ErrorIcon } from "/src/component/icon";
+
 import ManaCost from "./mana-cost.connect";
 
 const Base = styled.div`
@@ -157,6 +159,22 @@ const CardName = styled.div`
   }
 `;
 
+const StyledErrorIcon = styled(ErrorIcon)`
+  display: inline-flex !important;
+  font-size: 16px !important;
+  color: #c80000;
+`;
+
+const CardErrorIndicator = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
 const StyledManaCost = styled(ManaCost)``;
 
 const ManaContainer = styled.div`
@@ -199,6 +217,11 @@ class CompactImage extends React.PureComponent {
             <NameContainer>
               <CardName hasError={hasError}>
                 <span>{name}</span>
+                {hasError && (
+                  <CardErrorIndicator>
+                    <StyledErrorIcon />
+                  </CardErrorIndicator>
+                )}
               </CardName>
             </NameContainer>
             <ManaContainer>
