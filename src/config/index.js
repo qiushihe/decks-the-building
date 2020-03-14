@@ -5,11 +5,12 @@ export const SCRYFALL_API_ORIGIN =
 export const CARD_SYMBOLS_CACHE_VERSION = 1581979105335;
 export const CARD_NAMES_CACHE_VERSION = 1581979105335;
 export const CARD_DETAIL_CACHE_VERSION = 1582176953844;
+export const CARD_FETCH_FAILED_IDS_VERSION = 1582176953844;
 
-// days in milliseconds
-export const CARD_SYMBOLS_CACHE_TIMEOUT = 1000 * 60 * 60 * 24 * 90;
-export const CARD_NAMES_CACHE_TIMEOUT = 1000 * 60 * 60 * 24 * 3;
-export const CARD_DETAIL_CACHE_TIMEOUT = 1000 * 60 * 60 * 24 * 30;
+const daysInMilliseconds = days => 1000 * 60 * 60 * 24 * days;
+export const CARD_SYMBOLS_CACHE_TIMEOUT = daysInMilliseconds(90);
+export const CARD_NAMES_CACHE_TIMEOUT = daysInMilliseconds(3);
+export const CARD_DETAIL_CACHE_TIMEOUT = daysInMilliseconds(30);
 
 export const STACK_CONTENT_SPACING = 10;
 export const STACK_CARDS_SPACING = 2;

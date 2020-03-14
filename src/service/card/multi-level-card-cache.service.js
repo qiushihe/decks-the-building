@@ -238,6 +238,7 @@ class MultiLevelCardCacheService {
               )
               .then(constant(cardData))
           )
+          .catch(constant({ name: cardName, error: "FETCH_FAILED" }))
       );
   }
 

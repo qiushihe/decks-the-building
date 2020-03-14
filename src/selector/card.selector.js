@@ -15,6 +15,11 @@ export const allCardNames = createSelector(cardState, get("allCardNames"));
 
 export const allCardSymbols = createSelector(cardState, get("allCardSymbols"));
 
+export const allFailedCardIds = createSelector(
+  cardState,
+  get("allFailedCardIds")
+);
+
 export const cardSymbol = createSelector(
   fromProps(get("symbol")),
   allCardSymbols,
@@ -33,6 +38,12 @@ export const cardById = createSelector(
 );
 
 export const cardName = createSelector(cardById, get("name"));
+
+export const cardHasError = createSelector(
+  fromProps(get("cardId")),
+  allFailedCardIds,
+  (cardId, allFailedIds) => includes(cardId)(allFailedIds)
+);
 
 export const cardDetail = createSelector(cardById, get("detail"));
 

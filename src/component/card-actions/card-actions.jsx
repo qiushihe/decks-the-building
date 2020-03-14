@@ -72,6 +72,7 @@ class CardActions extends React.PureComponent {
       size,
       collapsed,
       hasAlternateImage,
+      hasError,
       toggleCard,
       addCopy,
       subtractCopy,
@@ -81,7 +82,7 @@ class CardActions extends React.PureComponent {
 
     return (
       <Base className={className}>
-        {!collapsed && hasAlternateImage && (
+        {!hasError && !collapsed && hasAlternateImage && (
           <IconContainer>
             <IconButton
               title="Alternate Card Image"
@@ -91,33 +92,39 @@ class CardActions extends React.PureComponent {
             </IconButton>
           </IconContainer>
         )}
-        <IconContainer>
-          <IconButton title="Duplicate Entry" onClick={duplicateCard}>
-            <DuplicateCardEntry size={size} />
-          </IconButton>
-        </IconContainer>
+        {!hasError && (
+          <IconContainer>
+            <IconButton title="Duplicate Entry" onClick={duplicateCard}>
+              <DuplicateCardEntry size={size} />
+            </IconButton>
+          </IconContainer>
+        )}
         <IconContainer>
           <IconButton title="Subtract 1 Copy" onClick={subtractCopy}>
             <SubtractOneCardCopy size={size} />
           </IconButton>
         </IconContainer>
-        <IconContainer>
-          <IconButton title="Add 1 Copy" onClick={addCopy}>
-            <AddOneCardCopy size={size} />
-          </IconButton>
-        </IconContainer>
-        <IconContainer>
-          <IconButton
-            title={collapsed ? "Show Full Art" : "Hide Full Art"}
-            onClick={toggleCard}
-          >
-            {collapsed ? (
-              <ExpandCard size={size} />
-            ) : (
-              <CollapseCard size={size} />
-            )}
-          </IconButton>
-        </IconContainer>
+        {!hasError && (
+          <IconContainer>
+            <IconButton title="Add 1 Copy" onClick={addCopy}>
+              <AddOneCardCopy size={size} />
+            </IconButton>
+          </IconContainer>
+        )}
+        {!hasError && (
+          <IconContainer>
+            <IconButton
+              title={collapsed ? "Show Full Art" : "Hide Full Art"}
+              onClick={toggleCard}
+            >
+              {collapsed ? (
+                <ExpandCard size={size} />
+              ) : (
+                <CollapseCard size={size} />
+              )}
+            </IconButton>
+          </IconContainer>
+        )}
       </Base>
     );
   }
@@ -127,6 +134,7 @@ CardActions.propTypes = {
   className: PropTypes.string,
   collapsed: PropTypes.bool,
   hasAlternateImage: PropTypes.bool,
+  hasError: PropTypes.bool,
   size: PropTypes.number,
   toggleCard: PropTypes.func,
   addCopy: PropTypes.func,
@@ -139,6 +147,7 @@ CardActions.defaultProps = {
   className: "",
   collapsed: false,
   hasAlternateImage: false,
+  hasError: false,
   size: 18,
   toggleCard: () => {},
   addCopy: () => {},
