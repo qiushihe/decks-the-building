@@ -1,4 +1,5 @@
 import reduce from "lodash/fp/reduce";
+import getOr from "lodash/fp/getOr";
 
 export default (state = {}, cardsDetail = []) => {
   return {
@@ -6,11 +7,13 @@ export default (state = {}, cardsDetail = []) => {
     allCards: {
       ...state.allCards,
       ...reduce(
-        (result, { id, name, ...cardDetail }) => ({
+        (result, { id, name, error, ...cardDetail }) => ({
           ...result,
           [id]: {
+            ...getOr({}, id)(state.allCards),
             id,
             name,
+            error,
             detail: {
               ...cardDetail
             }

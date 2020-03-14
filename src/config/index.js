@@ -1,6 +1,8 @@
 export const SCRYFALL_API_ORIGIN =
   process.env.SCRYFALL_API_ORIGIN || "https://api.scryfall.com";
 
+export const FAILED_CARDS_CATALOG_VERSION = "default";
+
 // Use `new Date().getTime()` to generate these value
 export const CARD_SYMBOLS_CACHE_VERSION = 1581979105335;
 export const CARD_NAMES_CACHE_VERSION = 1581979105335;

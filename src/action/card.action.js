@@ -43,6 +43,6 @@ export const setCardSymbols = createPromisedAction(
 
 export const setCardsDetail = createPromisedAction(
   SET_CARDS_DETAIL,
-  pickArray(["id", "name", ...CARD_DETAIL_ATTRIBUTES]),
+  pickArray(["id", "name", "error", ...CARD_DETAIL_ATTRIBUTES]),
   invoke
 );

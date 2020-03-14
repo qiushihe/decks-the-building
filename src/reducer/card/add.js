@@ -13,6 +13,7 @@ export default (state = {}, { cards } = {}) => {
               [id]: {
                 id,
                 name,
+                error: null,
                 detail: null
               }
             }

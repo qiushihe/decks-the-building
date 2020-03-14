@@ -6,7 +6,8 @@ import { stackCardCountByCardIndex } from "/src/selector/stack.selector";
 import {
   cardName,
   cardDetailManaCost,
-  cardDetailColorIdentity
+  cardDetailColorIdentity,
+  cardHasError
 } from "/src/selector/card.selector";
 
 import CompactImage from "./compact-image";
@@ -16,6 +17,7 @@ export default connect(
     count: stackCardCountByCardIndex,
     name: cardName,
     manaCost: cardDetailManaCost,
-    colorIdentity: cardDetailColorIdentity
+    colorIdentity: cardDetailColorIdentity,
+    hasError: cardHasError
   })
 )(CompactImage);

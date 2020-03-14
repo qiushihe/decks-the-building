@@ -59,7 +59,7 @@ export default contextualMiddleware({}, ({ getState, dispatch }) => {
       ])(cardIds);
 
       currentTaskPromise
-        .catch(err => console.warn(err))
+        .catch(err => console.error(err))
         .finally(() => {
           if (!isEmpty(cardIds)) {
             const batchConsumedTime = new Date().getTime() - batchStartTime;
