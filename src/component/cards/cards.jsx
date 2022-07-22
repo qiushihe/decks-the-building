@@ -28,6 +28,9 @@ const Base = memo(styled.div`
   ])}px;
 
   & > .smooth-dnd-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
     height: 100%;
   }
 `);
