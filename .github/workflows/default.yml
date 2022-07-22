@@ -16,7 +16,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 10.x
-      - run: npm install
+      - run: yarn install --frozen-lockfile
       - uses: actions/cache@v1
         with:
           path: ./node_modules
@@ -34,7 +34,7 @@ jobs:
         with:
           path: ./node_modules
           key: ${{ github.ref }}-${{ github.sha }}-node-modules
-      - run: npm test
+      - run: yarn test
 
   build:
     needs: [test]
@@ -48,7 +48,7 @@ jobs:
         with:
           path: ./node_modules
           key: ${{ github.ref }}-${{ github.sha }}-node-modules
-      - run: npm run build
+      - run: yarn build
       - uses: actions/cache@v1
         with:
           path: ./build
