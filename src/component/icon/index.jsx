@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import {
   FlipToFrontOutlined,
@@ -16,9 +17,17 @@ import {
   RemoveCircleOutlineRounded
 } from "@material-ui/icons";
 
-const makeIconHoc = IconComponent => ({ size = 24, ...restProps }) => (
-  <IconComponent {...restProps} style={{ fontSize: size }} />
-);
+const makeIconHoc = IconComponent => {
+  const IconHoc = ({ size = 24, ...restProps }) => (
+    <IconComponent {...restProps} style={{ fontSize: size }} />
+  );
+
+  IconHoc.propTypes = {
+    size: PropTypes.number
+  };
+
+  return IconHoc;
+};
 
 export const WorkspaceIcon = makeIconHoc(TableChartRounded);
 export const LaneIcon = makeIconHoc(ViewCarouselRounded);
